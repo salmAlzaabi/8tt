@@ -7,10 +7,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@300;400;600;700;900&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css" /></head>
+  <link rel="stylesheet" href="style.css" />
+</head>
 <body>
 
-<!-- ===== INTRO SCREEN ===== -->
 <div id="intro-screen" class="screen active">
   <div class="noise-overlay"></div>
   <div class="scanlines"></div>
@@ -19,154 +19,118 @@
     <div class="dept-label">وزارة الداخلية — قسم التحقيقات الجنائية</div>
     <h1 class="intro-title">مكتب التحقيقات<br/><span>الملفات السرية</span></h1>
     <p class="intro-sub">ثلاث قضايا. عشرة مشتبه بهم. محقق واحد يكتشف الحقيقة.</p>
-    <div class="classification-badge">سري للغاية — للمحققين المعتمدين فقط</div>
-    <button class="btn-primary" id="enter-btn">دخول المكتب</button>
-    <div class="case-count-preview">
-      <span>🔴 قضية قتل</span>
-      <span>🟡 قضية فساد</span>
-      <span>🔵 جريمة سيبرانية</span>
+    <div class="intro-actions">
+      <button id="enter-btn" class="btn-primary">الدخول للنظام</button>
     </div>
   </div>
 </div>
 
-<!-- ===== DASHBOARD SCREEN ===== -->
 <div id="dashboard-screen" class="screen">
-  <div class="noise-overlay"></div>
-  <div class="scanlines"></div>
-
-  <header class="top-bar">
-    <div class="top-bar-left">
-      <span class="badge-small">🔍</span>
-      <span class="dept-name">مكتب التحقيقات الجنائية</span>
+  <div class="header">
+    <div class="header-left">
+      <span class="status-dot"></span>
+      <span class="user-rank">المحقق المناوب</span>
     </div>
-    <div class="top-bar-right">
-      <span class="investigator-label">المحقق: أنت</span>
-      <div class="solved-counter">
-        القضايا المحلولة: <span id="solved-count">0</span>/3
+    <div class="header-logo">الملفات السرية</div>
+    <div class="header-stats">القضايا المحلولة: <span id="solved-count">0</span></div>
+  </div>
+
+  <div class="container">
+    <div class="dashboard-grid">
+      <div class="case-card" id="card-1" onclick="openCase(1)">
+        <div class="case-badge" style="background: #c94c4c;">جنائي</div>
+        <div class="case-info">
+          <h3 class="case-title">ليلة الجمعة السوداء</h3>
+          <p class="case-desc">رجل أعمال وُجد مقتولاً في مكتبه المغلق.</p>
+        </div>
+        <div class="case-footer">
+          <span class="case-id">#001</span>
+          <span class="case-stamp">قيد التحقيق</span>
+        </div>
+      </div>
+      <div class="case-card" id="card-2" onclick="openCase(2)">
+        <div class="case-badge" style="background: #4c7ac9;">سرقة</div>
+        <div class="case-info">
+          <h3 class="case-title">اختفاء العقد الملكي</h3>
+          <p class="case-desc">جوهرة نادرة تختفي من مزاد عالمي مؤمن.</p>
+        </div>
+        <div class="case-footer">
+          <span class="case-id">#002</span>
+          <span class="case-stamp">قيد التحقيق</span>
+        </div>
+      </div>
+      <div class="case-card" id="card-3" onclick="openCase(3)">
+        <div class="case-badge" style="background: #4cc97a;">إلكتروني</div>
+        <div class="case-info">
+          <h3 class="case-title">ظلال السيبرانية</h3>
+          <p class="case-desc">اختراق بنكي معقد يكشف أسراراً خطيرة.</p>
+        </div>
+        <div class="case-footer">
+          <span class="case-id">#003</span>
+          <span class="case-stamp">قيد التحقيق</span>
+        </div>
       </div>
     </div>
-  </header>
-
-  <main class="dashboard-main">
-    <h2 class="dashboard-title">لوحة القضايا النشطة</h2>
-    <p class="dashboard-sub">اختر قضية لبدء التحقيق</p>
-
-    <div class="cases-grid">
-
-      <!-- Case 1 -->
-      <div class="case-card" id="card-1" data-case="1">
-        <div class="case-stamp" id="stamp-1">مفتوحة</div>
-        <div class="case-number">ملف #٢٠٢٤-٠٠١</div>
-        <div class="case-icon">🔴</div>
-        <h3 class="case-title">ليلة الجمعة السوداء</h3>
-        <div class="case-type">جريمة قتل</div>
-        <p class="case-desc">وُجد رجل الأعمال <strong>خالد الرشيدي</strong> ميتاً في مكتبه. الباب كان مقفلاً من الداخل. ثلاثة مشتبه بهم، ثلاثة أكاذيب.</p>
-        <div class="case-meta">
-          <span>📍 برج المال، الطابق ٢٢</span>
-          <span>📅 الجمعة ١١ يناير</span>
-        </div>
-        <button class="btn-case" onclick="openCase(1)">فتح الملف</button>
-      </div>
-
-      <!-- Case 2 -->
-      <div class="case-card" id="card-2" data-case="2">
-        <div class="case-stamp" id="stamp-2">مفتوحة</div>
-        <div class="case-number">ملف #٢٠٢٤-٠٠٢</div>
-        <div class="case-icon">🟡</div>
-        <h3 class="case-title">الصفقة الملوثة</h3>
-        <div class="case-type">فساد وغسيل أموال</div>
-        <p class="case-desc">٢٠ مليون ريال اختفت من خزينة بلدية الغرب. المدير يتهم المساعد، والمساعد يتهم المحاسب. الأموال في مكان واحد فقط.</p>
-        <div class="case-meta">
-          <span>📍 بلدية الغرب</span>
-          <span>📅 خلال ثلاثة أشهر</span>
-        </div>
-        <button class="btn-case" onclick="openCase(2)">فتح الملف</button>
-      </div>
-
-      <!-- Case 3 -->
-      <div class="case-card" id="card-3" data-case="3">
-        <div class="case-stamp" id="stamp-3">مفتوحة</div>
-        <div class="case-number">ملف #٢٠٢٤-٠٠٣</div>
-        <div class="case-icon">🔵</div>
-        <h3 class="case-title">الشبح الرقمي</h3>
-        <div class="case-type">جريمة سيبرانية</div>
-        <p class="case-desc">اختُرق نظام البنك المركزي. سُرقت بيانات ٥٠٠ ألف عميل. المخترق ترك أثراً واحداً، وارتكب خطأً واحداً كافياً.</p>
-        <div class="case-meta">
-          <span>📍 البنك المركزي — الخوادم</span>
-          <span>📅 ليلة ٣ مارس</span>
-        </div>
-        <button class="btn-case" onclick="openCase(3)">فتح الملف</button>
-      </div>
-
-    </div>
-  </main>
+  </div>
 </div>
 
-<!-- ===== CASE SCREEN ===== -->
 <div id="case-screen" class="screen">
-  <div class="noise-overlay"></div>
-  <div class="scanlines"></div>
-
-  <header class="case-header">
-    <button class="btn-back" onclick="goBack()">← العودة للوحة</button>
-    <div class="case-header-title" id="case-header-title">القضية</div>
-    <div class="case-header-type" id="case-header-type"></div>
-  </header>
+  <div class="case-nav">
+    <button class="btn-back" onclick="goBack()">← العودة للرئيسية</button>
+    <div class="case-header-main">
+      <h1 id="case-header-title">اسم القضية</h1>
+      <span id="case-header-type" class="type-tag">نوع القضية</span>
+    </div>
+  </div>
 
   <div class="case-layout">
+    <div class="case-tabs">
+      <button class="tab-btn active" onclick="switchTab('file', this)">
+        <span class="tab-icon">📁</span> ملف القضية
+      </button>
+      <button class="tab-btn" onclick="switchTab('evidence', this)">
+        <span class="tab-icon">🧪</span> المختبر والأدلة
+      </button>
+      <button class="tab-btn" onclick="switchTab('suspects', this)">
+        <span class="tab-icon">👥</span> المشتبه بهم
+      </button>
+      <button class="tab-btn" onclick="switchTab('notebook', this)">
+        <span class="tab-icon">📓</span> المفكرة
+      </button>
+      <button class="tab-btn solve-tab-btn" onclick="switchTab('solve', this)">
+        <span class="tab-icon">⚖️</span> إغلاق القضية
+      </button>
+    </div>
 
-    <!-- Sidebar Tabs -->
-    <nav class="case-tabs">
-      <button class="tab-btn active" data-tab="evidence" onclick="switchTab('evidence', this)">
-        <span class="tab-icon">🔎</span>
-        الأدلة
-      </button>
-      <button class="tab-btn" data-tab="interrogation" onclick="switchTab('interrogation', this)">
-        <span class="tab-icon">👥</span>
-        الاستجواب
-      </button>
-      <button class="tab-btn" data-tab="notebook" onclick="switchTab('notebook', this)">
-        <span class="tab-icon">📓</span>
-        مفكرة المحقق
-      </button>
-      <button class="tab-btn" data-tab="solve" onclick="switchTab('solve', this)">
-        <span class="tab-icon">⚖️</span>
-        الحكم النهائي
-      </button>
-    </nav>
-
-    <!-- Tab Content -->
-    <div class="tab-content-area">
-
-      <!-- Evidence Tab -->
-      <div class="tab-pane active" id="tab-evidence">
-        <h2 class="pane-title">الأدلة المادية</h2>
-        <div class="evidence-grid" id="evidence-grid"></div>
+    <div class="case-content">
+      
+      <div class="tab-pane active" id="tab-file">
+        <h2 class="pane-title">ملخص مسرح الجريمة</h2>
+        <div id="case-summary-text" class="summary-box"></div>
+        <div class="investigation-status">
+          <div class="status-item"><span>المكان:</span> <strong id="case-loc">غير محدد</strong></div>
+          <div class="status-item"><span>الوقت:</span> <strong id="case-time">غير محدد</strong></div>
+        </div>
       </div>
 
-      <!-- Interrogation Tab -->
-      <div class="tab-pane" id="tab-interrogation">
-        <h2 class="pane-title">جلسات الاستجواب</h2>
-        <div class="suspects-list" id="suspects-list"></div>
+      <div class="tab-pane" id="tab-evidence">
+        <h2 class="pane-title">الأحراز والأدلة المادية</h2>
+        <div id="evidence-grid" class="evidence-grid"></div>
       </div>
 
-      <!-- Notebook Tab -->
+      <div class="tab-pane" id="tab-suspects">
+        <h2 class="pane-title">قائمة الاستجواب</h2>
+        <div id="suspects-list" class="suspects-list"></div>
+      </div>
+
       <div class="tab-pane" id="tab-notebook">
         <h2 class="pane-title">مفكرة المحقق</h2>
         <div class="notebook-area">
-          <div class="notebook-hints" id="notebook-hints"></div>
-          <div class="notebook-connections" id="notebook-connections">
-            <h3 class="connections-title">ربط الأدلة</h3>
-            <div class="connection-builder" id="connection-builder"></div>
-          </div>
-          <div class="notebook-notes">
-            <h3>ملاحظاتك الشخصية</h3>
-            <textarea id="personal-notes" placeholder="اكتب ملاحظاتك هنا... ما الذي يلفت انتباهك؟ أي التناقضات لاحظتها؟"></textarea>
-          </div>
+          <p class="notebook-hint">اربط الخيوط ببعضها.. ما الذي لاحظته؟</p>
+          <div id="notebook-entries" class="notebook-entries"></div>
         </div>
       </div>
 
-      <!-- Solve Tab -->
       <div class="tab-pane" id="tab-solve">
         <h2 class="pane-title">الحكم النهائي</h2>
         <div class="solve-area">
@@ -187,12 +151,11 @@
   </div>
 </div>
 
-<!-- ===== SOLUTION MODAL ===== -->
 <div id="solution-modal" class="modal-overlay hidden">
   <div class="modal-content">
     <div class="modal-header">
       <div class="modal-badge">⚖️ مشهد الحل النهائي</div>
-      <button class="modal-close" onclick="closeModal()">✕</button>
+      <button class="modal-close" onclick="closeModal()\">✕</button>
     </div>
     <div class="modal-body" id="modal-body"></div>
     <div class="modal-footer">
@@ -201,12 +164,10 @@
   </div>
 </div>
 
-<!-- Wrong Answer Flash -->
-<div id="wrong-flash" class="wrong-flash hidden">
-  <span>❌ الاسم خاطئ — راجع الأدلة مجدداً</span>
-</div>
+<div id="wrong-flash" class="wrong-flash hidden">❌ الاسم غير صحيح.. راجع الأدلة جيداً.</div>
 
 <script src="data.js"></script>
 <script src="app.js"></script>
+
 </body>
 </html>
