@@ -1,13 +1,15 @@
 // =============================================
-// DETECTIVE GAME — APP LOGIC
-// مكتب التحقيقات الجنائية
+// DETECTIVE GAME — APP LOGIC (النسخة النهائية)
 // =============================================
 
-// State
+// الحالة العامة
 let currentCase = null;
 let solvedCases = JSON.parse(localStorage.getItem('solvedCases') || '[]');
 
-// ---- SCREEN MANAGEMENT ----
+// إعداد محرك الصوت البشري
+const synth = window.speechSynthesis;
+
+// ---- إدارة الشاشات ----
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   const screen = document.getElementById(id);
@@ -15,245 +17,185 @@ function showScreen(id) {
   window.scrollTo(0, 0);
 }
 
-// ---- INTRO ----
+// ---- الدخول للنظام ----
 document.getElementById('enter-btn').addEventListener('click', () => {
   showScreen('dashboard-screen');
   updateDashboard();
 });
 
-// ---- DASHBOARD ----
+// ---- تحديث لوحة التحكم ----
 function updateDashboard() {
   document.getElementById('solved-count').textContent = solvedCases.length;
-
   solvedCases.forEach(caseId => {
     const card = document.getElementById(`card-${caseId}`);
-    const stamp = document.getElementById(`stamp-${caseId}`);
     if (card) {
       card.classList.add('solved');
-      card.querySelector('.case-stamp').textContent = '✔ محلولة';
+      const stamp = card.querySelector('.case-stamp');
+      if (stamp) stamp.textContent = '✔ محلولة';
     }
   });
 }
 
-// ---- OPEN CASE ----
+// ---- فتح قضية ----
 function openCase(caseId) {
   currentCase = CASES[caseId];
   if (!currentCase) return;
 
-  // Set header
   document.getElementById('case-header-title').textContent = currentCase.title;
   document.getElementById('case-header-type').textContent = currentCase.type;
 
-  // Render tabs
   renderEvidence();
   renderSuspects();
   renderNotebook();
   resetSolveTab();
 
-  // Switch to case screen
+  document.getElementById('case-summary-text').textContent = currentCase.summary;
+  document.getElementById('case-loc').textContent = "موقع الجريمة المذكور";
+  document.getElementById('case-time').textContent = "وقت الضبط";
+
   showScreen('case-screen');
-  switchTab('evidence', document.querySelector('.tab-btn[data-tab="evidence"]'));
+  switchTab('file', document.querySelector('.tab-btn.active'));
 }
 
-// ---- EVIDENCE ----
+// ---- عرض الأدلة ----
 function renderEvidence() {
-  const grid = document.getElementById('evidence-grid');
-  grid.innerHTML = currentCase.evidence.map(e => `
-    <div class="evidence-card">
-      <div class="evidence-img">${e.icon}</div>
-      <div class="evidence-body">
-        <div class="evidence-num">${e.id}</div>
-        <div class="evidence-title">${e.title}</div>
-        <div class="evidence-desc">${e.desc}</div>
-        <span class="evidence-tag">${e.tag}</span>
-      </div>
-    </div>
-  `).join('');
+  const container = document.getElementById('evidence-grid');
+  container.innerHTML = '';
+  currentCase.evidence.forEach(ev => {
+    const div = document.createElement('div');
+    div.className = 'evidence-card';
+    div.innerHTML = `
+      <div class="evidence-icon">${ev.icon}</div>
+      <h4>${ev.title}</h4>
+      <p>${ev.desc}</p>
+    `;
+    container.appendChild(div);
+  });
 }
 
-// ---- SUSPECTS ----
-function renderSuspects() {
-  const list = document.getElementById('suspects-list');
-  list.innerHTML = currentCase.suspects.map(s => `
-    <div class="suspect-card">
-      <div class="suspect-header" onclick="toggleSuspect('${s.id}', this)">
-        <div class="suspect-avatar">${s.emoji}</div>
-        <div class="suspect-info">
-          <div class="suspect-name">${s.name}</div>
-          <div class="suspect-role">${s.role}</div>
-        </div>
-        <div class="suspect-toggle">▼</div>
-      </div>
-      <div class="suspect-body" id="body-${s.id}">
-        <div class="suspect-audio">
-          <button class="audio-btn" onclick="playAudio('${s.id}')">▶ تشغيل التسجيل الصوتي</button>
-          <span class="audio-note">ملف صوتي — محاكاة (لا يوجد تسجيل حقيقي)</span>
-        </div>
-        <div class="statement-label">STATEMENT — إفادة الاستجواب</div>
-        <div class="statement-text">"${s.statement}"</div>
-        ${s.contradiction ? `
-          <div class="suspect-contradiction">
-            <span>${s.contradiction}</span>
-          </div>
-        ` : ''}
-      </div>
-    </div>
-  `).join('');
-}
+// ---- نظام الاستجواب (صوت وكتابة) ----
 
-function toggleSuspect(id, header) {
-  const body = document.getElementById(`body-${id}`);
-  const isOpen = body.classList.contains('open');
+function speakAndType(element, text) {
+  // إلغاء أي صوت سابق ومسح النص
+  synth.cancel();
+  element.innerHTML = "";
+  
+  // إعداد الصوت البشري
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'ar-SA';
+  utterance.rate = 0.9; // سرعة واقعية
 
-  // Close all
-  document.querySelectorAll('.suspect-body').forEach(b => b.classList.remove('open'));
-  document.querySelectorAll('.suspect-header').forEach(h => h.classList.remove('open'));
-
-  if (!isOpen) {
-    body.classList.add('open');
-    header.classList.add('open');
+  // تأثير الكتابة (تزامن الكلمات)
+  let i = 0;
+  const words = text.split(' ');
+  
+  function typeNextWord() {
+    if (i < words.length) {
+      element.innerHTML += words[i] + " ";
+      i++;
+      setTimeout(typeNextWord, 250); // سرعة ظهور الكلمات
+    }
   }
+
+  synth.speak(utterance);
+  typeNextWord();
 }
 
-function playAudio(id) {
-  // Simulate audio playback (no real audio)
-  const btn = event.target;
-  const origText = btn.textContent;
-  btn.textContent = '⏹ يُشغَّل... (محاكاة)';
-  btn.style.color = 'var(--gold)';
-  btn.style.borderColor = 'var(--gold-dim)';
-  setTimeout(() => {
-    btn.textContent = origText;
-    btn.style.color = '';
-    btn.style.borderColor = '';
-  }, 2500);
-}
-
-// ---- NOTEBOOK ----
-function renderNotebook() {
-  // Hints
-  const hintsEl = document.getElementById('notebook-hints');
-  hintsEl.innerHTML = `
-    <div style="font-weight:700; color: var(--gold); margin-bottom: 0.75rem; font-size:0.9rem;">💡 أدلة للتفكير</div>
-    ${currentCase.notebookHints.map(h => `
-      <div class="hint-item">
-        <span class="hint-icon">${h.icon}</span>
-        <span>${h.text}</span>
+function renderSuspects() {
+  const container = document.getElementById('suspects-list');
+  container.innerHTML = '';
+  
+  currentCase.suspects.forEach(s => {
+    const div = document.createElement('div');
+    div.className = 'suspect-card';
+    div.innerHTML = `
+      <div class="suspect-avatar">${s.avatar}</div>
+      <div class="suspect-meta">
+        <h4>${s.name}</h4>
+        <p>${s.role}</p>
       </div>
-    `).join('')}
-  `;
+      <div class="interrogation-box hidden" style="margin-top:10px; padding:10px; background:#1a1a24; border-right:3px solid #c9a84c;">
+         <p class="alibi-text" style="color:#e8e0d0; font-size:0.95rem;"></p>
+      </div>
+      <button class="btn-interrogate" style="margin-top:10px; cursor:pointer;">استجواب صوتي 🎤</button>
+    `;
 
-  // Connections
-  const connEl = document.getElementById('connection-builder');
-  connEl.innerHTML = currentCase.connections.map(c => `
-    <div class="connection-item">
-      <span class="conn-dot">🔗</span>
-      <span>${c}</span>
-    </div>
-  `).join('');
+    const btn = div.querySelector('.btn-interrogate');
+    const box = div.querySelector('.interrogation-box');
+    const textTarget = div.querySelector('.alibi-text');
 
-  // Clear notes
-  document.getElementById('personal-notes').value = '';
+    btn.onclick = () => {
+      box.classList.remove('hidden');
+      speakAndType(textTarget, s.alibi);
+    };
+
+    container.appendChild(div);
+  });
 }
 
-// ---- SOLVE ----
+// ---- المفكرة وحل القضية ----
+function renderNotebook() {
+  const container = document.getElementById('notebook-entries');
+  container.innerHTML = '';
+  currentCase.notes.forEach(note => {
+    const div = document.createElement('div');
+    div.className = 'note-item';
+    div.innerHTML = `<span class="note-bullet">⦿</span> ${note}`;
+    container.appendChild(div);
+  });
+}
+
 function resetSolveTab() {
   document.getElementById('culprit-input').value = '';
-  document.getElementById('solve-result').className = 'solve-result hidden';
-  document.getElementById('solve-result').innerHTML = '';
+  const resultDiv = document.getElementById('solve-result');
+  resultDiv.className = 'solve-result hidden';
+  resultDiv.innerHTML = '';
 }
 
 function checkSolution() {
   const input = document.getElementById('culprit-input').value.trim();
   if (!input) return;
 
-  const correctAnswer = currentCase.answer.toLowerCase().trim();
-  const inputLower = input.toLowerCase().trim();
-
-  // Check against main answer and hints
-  const allAnswers = [correctAnswer, ...(currentCase.answerHints || []).map(a => a.toLowerCase())];
-  const isCorrect = allAnswers.some(ans => inputLower.includes(ans) || ans.includes(inputLower) || inputLower === ans);
+  const isCorrect = currentCase.answerHints.some(hint => input.includes(hint));
 
   if (isCorrect) {
-    // Show result
-    const resultEl = document.getElementById('solve-result');
-    resultEl.className = 'solve-result correct';
-    resultEl.innerHTML = `
-      <h3>✅ صحيح — الجاني هو: ${currentCase.answer}</h3>
-      <p>ممتاز! لقد كشفت الحقيقة. شاهد مشهد الحل الكامل الآن.</p>
-    `;
-
-    // Mark solved
     if (!solvedCases.includes(currentCase.id)) {
       solvedCases.push(currentCase.id);
       localStorage.setItem('solvedCases', JSON.stringify(solvedCases));
     }
-
-    // Show modal after brief delay
-    setTimeout(() => showSolutionModal(), 800);
+    showSolutionModal();
   } else {
-    // Wrong
     showWrongFlash();
-    const resultEl = document.getElementById('solve-result');
-    resultEl.className = 'solve-result wrong';
-    resultEl.innerHTML = `
-      <h3>❌ اسم خاطئ</h3>
-      <p>راجع الأدلة والاستجوابات مجدداً. هناك تناقض واضح لم تكتشفه بعد.</p>
-    `;
   }
 }
 
-// Allow Enter key in solve input
-document.getElementById('culprit-input').addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') checkSolution();
-});
-
-// ---- WRONG FLASH ----
 function showWrongFlash() {
   const flash = document.getElementById('wrong-flash');
   flash.classList.remove('hidden');
   setTimeout(() => flash.classList.add('hidden'), 2500);
 }
 
-// ---- SOLUTION MODAL ----
 function showSolutionModal() {
   const modal = document.getElementById('solution-modal');
   const body = document.getElementById('modal-body');
-
-  body.innerHTML = `
-    <div class="solution-scene">
-      ${currentCase.solution.scene}
-    </div>
-  `;
-
+  body.innerHTML = `<div class="solution-scene">${currentCase.solution.scene}</div>`;
   modal.classList.remove('hidden');
-  document.body.style.overflow = 'hidden';
 }
 
 function closeModal() {
   document.getElementById('solution-modal').classList.add('hidden');
-  document.body.style.overflow = '';
   goBack();
 }
 
-// ---- TAB SWITCHING ----
+function goBack() {
+  showScreen('dashboard-screen');
+  updateDashboard();
+}
+
 function switchTab(tabName, btn) {
-  // Deactivate all
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-
-  // Activate selected
   if (btn) btn.classList.add('active');
   const pane = document.getElementById(`tab-${tabName}`);
   if (pane) pane.classList.add('active');
 }
-
-// ---- BACK ----
-function goBack() {
-  showScreen('dashboard-screen');
-  updateDashboard();
-  currentCase = null;
-}
-
-// ---- INIT ----
-updateDashboard();
