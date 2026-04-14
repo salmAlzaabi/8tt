@@ -1,1808 +1,1222 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>مكتب التحقيقات — الملفات السرية</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@300;400;600;700;900&family=Courier+Prime:wght@400;700&display=swap" />
-  <style>
-/* =============================================
-   DETECTIVE GAME — NOIR DARK THEME
-   مكتب التحقيقات الجنائية
-   ============================================= */
-
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-:root {
-  --bg-deep:       #0a0a0c;
-  --bg-mid:        #111116;
-  --bg-card:       #16161e;
-  --bg-hover:      #1e1e28;
-  --border:        #2a2a38;
-  --border-bright: #3d3d52;
-  --gold:          #c9a84c;
-  --gold-dim:      #8a6e30;
-  --gold-glow:     rgba(201,168,76,0.15);
-  --red:           #c94c4c;
-  --red-dim:       #6e2020;
-  --blue:          #4c7ac9;
-  --blue-dim:      #203060;
-  --green:         #4cc97a;
-  --green-dim:     #1d5233;
-  --text-primary:  #e8e0d0;
-  --text-secondary:#9a9080;
-  --text-muted:    #555060;
-  --font-ar:       'Cairo', 'Noto Sans Arabic', Tahoma, Arial, sans-serif;
-  --font-mono:     'Courier Prime', 'Courier New', monospace;
-  --font-display:  'Amiri', 'Noto Naskh Arabic', Georgia, serif;
-  --radius:        6px;
-  --shadow-glow:   0 0 30px rgba(201,168,76,0.08);
-}
-
-html { scroll-behavior: smooth; }
-
-body {
-  font-family: var(--font-ar);
-  background: var(--bg-deep);
-  color: var(--text-primary);
-  min-height: 100vh;
-  overflow-x: hidden;
-  direction: rtl;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-}
-
-/* ---- Atmospheric overlays ---- */
-.noise-overlay {
-  position: fixed; inset: 0; pointer-events: none; z-index: 1000;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-  opacity: 0.4;
-}
-
-.scanlines {
-  position: fixed; inset: 0; pointer-events: none; z-index: 999;
-  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
-}
-
-/* ---- Screen System ---- */
-.screen { display: none; min-height: 100vh; }
-.screen.active { display: flex; flex-direction: column; }
-
-/* =============================================
-   INTRO SCREEN
-   ============================================= */
-#intro-screen {
-  background: radial-gradient(ellipse at 50% 30%, #1a1208 0%, #0a0a0c 70%);
-  align-items: center; justify-content: center;
-  text-align: center; padding: 2rem;
-  position: relative;
-}
-
-#intro-screen::before {
-  content: '';
-  position: absolute; inset: 0;
-  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c9a84c' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-  pointer-events: none;
-}
-
-.intro-content { position: relative; z-index: 2; max-width: 600px; }
-
-.badge-icon {
-  font-size: 4rem; margin-bottom: 1rem;
-  filter: drop-shadow(0 0 20px var(--gold));
-  animation: float 3s ease-in-out infinite;
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
-}
-
-.dept-label {
-  font-family: var(--font-mono);
-  color: var(--gold-dim);
-  font-size: 0.75rem;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  margin-bottom: 1.5rem;
-}
-
-.intro-title {
-  font-family: var(--font-display);
-  font-size: clamp(2.5rem, 6vw, 4rem);
-  color: var(--text-primary);
-  line-height: 1.2;
-  margin-bottom: 0.5rem;
-  text-shadow: 0 0 40px rgba(201,168,76,0.2);
-}
-
-.intro-title span {
-  color: var(--gold);
-  display: block;
-}
-
-.intro-sub {
-  color: var(--text-secondary);
-  font-size: 1rem;
-  margin-bottom: 1.5rem;
-  font-weight: 300;
-}
-
-.classification-badge {
-  display: inline-block;
-  background: var(--red-dim);
-  border: 1px solid var(--red);
-  color: var(--red);
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  letter-spacing: 2px;
-  padding: 4px 14px;
-  margin-bottom: 2rem;
-  animation: blink-badge 2s steps(1) infinite;
-}
-
-@keyframes blink-badge {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
-}
-
-.btn-primary {
-  background: var(--gold);
-  color: #0a0805;
-  border: none;
-  padding: 14px 40px;
-  font-family: var(--font-ar);
-  font-size: 1.1rem;
-  font-weight: 700;
-  cursor: pointer;
-  border-radius: var(--radius);
-  transition: all 0.2s;
-  display: inline-block;
-  margin-bottom: 2rem;
-  letter-spacing: 1px;
-}
-
-.btn-primary:hover {
-  background: #e0bc60;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(201,168,76,0.4);
-}
-
-.case-count-preview {
-  display: flex; gap: 1.5rem; justify-content: center;
-  color: var(--text-muted); font-size: 0.85rem;
-}
-
-/* =============================================
-   TOP BAR
-   ============================================= */
-.top-bar {
-  background: var(--bg-card);
-  border-bottom: 1px solid var(--border);
-  padding: 0.75rem 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: sticky; top: 0; z-index: 100;
-}
-
-.top-bar-left { display: flex; align-items: center; gap: 0.75rem; }
-.badge-small { font-size: 1.2rem; }
-.dept-name { font-weight: 700; color: var(--gold); font-size: 0.95rem; }
-
-.top-bar-right { display: flex; align-items: center; gap: 1.5rem; }
-.investigator-label { color: var(--text-secondary); font-size: 0.85rem; }
-.solved-counter {
-  background: var(--bg-mid);
-  border: 1px solid var(--border);
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  color: var(--text-secondary);
-}
-.solved-counter span { color: var(--gold); font-weight: 700; }
-
-/* =============================================
-   DASHBOARD
-   ============================================= */
-#dashboard-screen { background: var(--bg-deep); }
-
-.dashboard-main { flex: 1; padding: 3rem 2rem; max-width: 1200px; margin: 0 auto; width: 100%; }
-
-.dashboard-title {
-  font-family: var(--font-display);
-  font-size: 2rem;
-  color: var(--text-primary);
-  margin-bottom: 0.5rem;
-}
-
-.dashboard-sub {
-  color: var(--text-secondary);
-  margin-bottom: 2.5rem;
-  font-size: 0.95rem;
-}
-
-.cases-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
-}
-
-.case-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 1.75rem;
-  position: relative;
-  transition: all 0.3s;
-  cursor: default;
-  overflow: hidden;
-}
-
-.case-card::before {
-  content: '';
-  position: absolute; top: 0; right: 0;
-  width: 100%; height: 3px;
-}
-
-#card-1::before { background: linear-gradient(90deg, transparent, var(--red)); }
-#card-2::before { background: linear-gradient(90deg, transparent, var(--gold)); }
-#card-3::before { background: linear-gradient(90deg, transparent, var(--blue)); }
-
-.case-card:hover {
-  border-color: var(--border-bright);
-  transform: translateY(-3px);
-  box-shadow: 0 12px 40px rgba(0,0,0,0.4);
-}
-
-.case-card.solved {
-  opacity: 0.7;
-  border-color: var(--green-dim);
-}
-.case-card.solved::before { background: linear-gradient(90deg, transparent, var(--green)) !important; }
-
-.case-stamp {
-  position: absolute; top: 1rem; left: 1rem;
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  letter-spacing: 2px;
-  border: 1px solid;
-  padding: 2px 8px;
-  border-radius: 3px;
-  text-transform: uppercase;
-}
-
-.case-card:not(.solved) .case-stamp { color: var(--red); border-color: var(--red); }
-.case-card.solved .case-stamp { color: var(--green); border-color: var(--green); content: 'محلولة'; }
-
-.case-number {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  color: var(--text-muted);
-  margin-bottom: 0.75rem;
-}
-
-.case-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
-
-.case-title {
-  font-family: var(--font-display);
-  font-size: 1.4rem;
-  color: var(--text-primary);
-  margin-bottom: 0.25rem;
-}
-
-.case-type {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  letter-spacing: 1px;
-  margin-bottom: 1rem;
-  text-transform: uppercase;
-  font-family: var(--font-mono);
-}
-
-.case-desc {
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-  line-height: 1.7;
-  margin-bottom: 1rem;
-}
-.case-desc strong { color: var(--gold); }
-
-.case-meta {
-  display: flex; flex-direction: column; gap: 0.3rem;
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  margin-bottom: 1.25rem;
-}
-
-.btn-case {
-  width: 100%;
-  background: transparent;
-  border: 1px solid var(--border-bright);
-  color: var(--text-primary);
-  padding: 10px;
-  border-radius: var(--radius);
-  font-family: var(--font-ar);
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.btn-case:hover {
-  background: var(--gold);
-  color: #0a0805;
-  border-color: var(--gold);
-  font-weight: 700;
-}
-
-/* =============================================
-   CASE SCREEN
-   ============================================= */
-#case-screen {
-  background: var(--bg-deep);
-  flex-direction: column;
-}
-
-.case-header {
-  background: var(--bg-card);
-  border-bottom: 1px solid var(--border);
-  padding: 0.75rem 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  position: sticky; top: 0; z-index: 100;
-}
-
-.btn-back {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text-secondary);
-  padding: 6px 14px;
-  border-radius: var(--radius);
-  font-family: var(--font-ar);
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
-  direction: ltr;
-}
-
-.btn-back:hover { border-color: var(--gold); color: var(--gold); }
-
-.case-header-title {
-  font-family: var(--font-display);
-  font-size: 1.25rem;
-  color: var(--text-primary);
-  flex: 1;
-}
-
-.case-header-type {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  color: var(--text-muted);
-  letter-spacing: 2px;
-}
-
-/* Layout */
-.case-layout {
-  display: flex;
-  flex: 1;
-  min-height: 0;
-}
-
-/* Sidebar tabs */
-.case-tabs {
-  width: 150px;
-  min-width: 150px;
-  background: var(--bg-card);
-  border-left: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  padding: 1rem 0;
-  gap: 0.25rem;
-}
-
-.tab-btn {
-  background: transparent;
-  border: none;
-  border-right: 3px solid transparent;
-  color: var(--text-muted);
-  padding: 0.75rem 1rem;
-  text-align: right;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-family: var(--font-ar);
-  font-size: 0.85rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.3rem;
-}
-
-.tab-btn .tab-icon { font-size: 1.3rem; }
-
-.tab-btn:hover { color: var(--text-secondary); background: var(--bg-hover); }
-
-.tab-btn.active {
-  color: var(--gold);
-  border-right-color: var(--gold);
-  background: var(--gold-glow);
-}
-
-/* Content area */
-.tab-content-area {
-  flex: 1;
-  overflow-y: auto;
-  padding: 2rem;
-}
-
-.tab-pane { display: none; animation: fadein 0.3s ease; }
-.tab-pane.active { display: block; }
-
-@keyframes fadein {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.pane-title {
-  font-family: var(--font-display);
-  font-size: 1.5rem;
-  color: var(--gold);
-  margin-bottom: 1.5rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--border);
-}
-
-/* =============================================
-   EVIDENCE
-   ============================================= */
-.evidence-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.25rem;
-}
-
-.evidence-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  overflow: hidden;
-  transition: all 0.2s;
-}
-
-.evidence-card:hover {
-  border-color: var(--gold-dim);
-  box-shadow: 0 4px 20px var(--gold-glow);
-}
-
-.evidence-img {
-  width: 100%;
-  height: 160px;
-  object-fit: cover;
-  background: var(--bg-mid);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 4rem;
-  border-bottom: 1px solid var(--border);
-}
-
-.evidence-body { padding: 1rem; }
-
-.evidence-num {
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  color: var(--text-muted);
-  letter-spacing: 2px;
-  margin-bottom: 0.4rem;
-}
-
-.evidence-title {
-  font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 0.5rem;
-  font-size: 0.95rem;
-}
-
-.evidence-desc {
-  font-size: 0.83rem;
-  color: var(--text-secondary);
-  line-height: 1.6;
-}
-
-.evidence-tag {
-  display: inline-block;
-  margin-top: 0.6rem;
-  background: var(--bg-mid);
-  border: 1px solid var(--border);
-  color: var(--text-muted);
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  padding: 2px 8px;
-  border-radius: 3px;
-}
-
-/* =============================================
-   INTERROGATION
-   ============================================= */
-.suspects-list { display: flex; flex-direction: column; gap: 1.25rem; }
-
-.suspect-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.suspect-header {
-  padding: 1rem 1.25rem;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  cursor: pointer;
-  transition: background 0.2s;
-  border-bottom: 1px solid transparent;
-}
-
-.suspect-header:hover { background: var(--bg-hover); }
-
-.suspect-header.open {
-  background: var(--bg-hover);
-  border-bottom-color: var(--border);
-}
-
-.suspect-avatar {
-  width: 50px; height: 50px;
-  background: var(--bg-mid);
-  border: 1px solid var(--border-bright);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  flex-shrink: 0;
-}
-
-.suspect-info { flex: 1; }
-.suspect-name {
-  font-weight: 700;
-  color: var(--text-primary);
-  font-size: 1rem;
-  margin-bottom: 0.2rem;
-}
-.suspect-role {
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  font-family: var(--font-mono);
-}
-
-.suspect-toggle {
-  color: var(--text-muted);
-  font-size: 0.8rem;
-  transition: transform 0.2s;
-}
-
-.suspect-header.open .suspect-toggle { transform: rotate(180deg); }
-
-.suspect-body { display: none; padding: 1.25rem; }
-.suspect-body.open { display: block; animation: fadein 0.2s ease; }
-
-.statement-label {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  color: var(--gold-dim);
-  letter-spacing: 2px;
-  margin-bottom: 0.5rem;
-}
-
-.statement-text {
-  background: var(--bg-mid);
-  border-right: 3px solid var(--gold-dim);
-  padding: 1rem;
-  border-radius: 0 var(--radius) var(--radius) 0;
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-  line-height: 1.8;
-  margin-bottom: 1rem;
-  font-style: italic;
-}
-
-.suspect-contradiction {
-  background: rgba(201,76,76,0.08);
-  border: 1px solid var(--red-dim);
-  border-radius: var(--radius);
-  padding: 0.75rem 1rem;
-  font-size: 0.82rem;
-  color: var(--red);
-  display: flex;
-  gap: 0.5rem;
-}
-
-.suspect-audio {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 0.75rem;
-}
-
-.audio-btn {
-  background: var(--bg-mid);
-  border: 1px solid var(--border);
-  color: var(--text-secondary);
-  padding: 6px 14px;
-  border-radius: var(--radius);
-  cursor: pointer;
-  font-size: 0.8rem;
-  font-family: var(--font-ar);
-  transition: all 0.2s;
-}
-.audio-btn:hover { border-color: var(--gold-dim); color: var(--gold); }
-.audio-note { font-size: 0.75rem; color: var(--text-muted); font-style: italic; }
-
-/* =============================================
-   NOTEBOOK
-   ============================================= */
-.notebook-area { display: flex; flex-direction: column; gap: 2rem; }
-
-.notebook-hints {
-  background: var(--bg-card);
-  border: 1px solid var(--gold-dim);
-  border-radius: 8px;
-  padding: 1.25rem;
-}
-
-.hint-item {
-  display: flex;
-  gap: 0.75rem;
-  padding: 0.6rem 0;
-  border-bottom: 1px solid var(--border);
-  font-size: 0.88rem;
-  color: var(--text-secondary);
-}
-.hint-item:last-child { border-bottom: none; }
-.hint-icon { color: var(--gold); flex-shrink: 0; }
-
-.notebook-connections {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 1.25rem;
-}
-
-.connections-title {
-  font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 1rem;
-  font-size: 1rem;
-}
-
-.connection-builder {
-  display: flex; flex-direction: column; gap: 0.5rem;
-}
-
-.connection-item {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  background: var(--bg-mid);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 0.75rem 1rem;
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-}
-.connection-item .conn-dot { color: var(--gold); }
-
-.notebook-notes {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 1.25rem;
-}
-
-.notebook-notes h3 {
-  font-size: 1rem;
-  color: var(--text-primary);
-  margin-bottom: 0.75rem;
-}
-
-#personal-notes {
-  width: 100%;
-  min-height: 160px;
-  background: var(--bg-mid);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  color: var(--text-primary);
-  font-family: var(--font-ar);
-  font-size: 0.9rem;
-  padding: 0.75rem;
-  resize: vertical;
-  line-height: 1.7;
-  transition: border-color 0.2s;
-}
-#personal-notes:focus {
-  outline: none;
-  border-color: var(--gold-dim);
-}
-#personal-notes::placeholder { color: var(--text-muted); }
-
-/* =============================================
-   SOLVE
-   ============================================= */
-.solve-area { max-width: 600px; margin: 0 auto; }
-
-.solve-intro {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
-  text-align: center;
-}
-
-.solve-intro p {
-  color: var(--text-secondary);
-  line-height: 1.7;
-  margin-bottom: 0.75rem;
-}
-
-.solve-warning {
-  background: rgba(201,168,76,0.08);
-  border: 1px solid var(--gold-dim);
-  color: var(--gold);
-  padding: 0.6rem 1rem;
-  border-radius: var(--radius);
-  font-size: 0.82rem;
-}
-
-.solve-input-area {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 1.5rem;
-  margin-bottom: 1rem;
-}
-
-.solve-label {
-  display: block;
-  color: var(--text-secondary);
-  font-size: 0.85rem;
-  margin-bottom: 0.5rem;
-}
-
-.solve-input {
-  width: 100%;
-  background: var(--bg-mid);
-  border: 1px solid var(--border-bright);
-  border-radius: var(--radius);
-  color: var(--text-primary);
-  font-family: var(--font-ar);
-  font-size: 1rem;
-  padding: 0.75rem 1rem;
-  margin-bottom: 1rem;
-  transition: border-color 0.2s;
-}
-.solve-input:focus {
-  outline: none;
-  border-color: var(--gold);
-  box-shadow: 0 0 0 2px var(--gold-glow);
-}
-
-.btn-solve {
-  width: 100%;
-  background: var(--red-dim);
-  border: 1px solid var(--red);
-  color: var(--red);
-  padding: 12px;
-  border-radius: var(--radius);
-  font-family: var(--font-ar);
-  font-size: 1rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s;
-  letter-spacing: 1px;
-}
-.btn-solve:hover {
-  background: var(--red);
-  color: white;
-}
-
-.solve-result { padding: 1.5rem; border-radius: 8px; text-align: center; }
-.solve-result.correct {
-  background: rgba(76,201,122,0.1);
-  border: 1px solid var(--green);
-  color: var(--green);
-}
-.solve-result.wrong {
-  background: rgba(201,76,76,0.1);
-  border: 1px solid var(--red);
-  color: var(--red);
-}
-.solve-result h3 { font-size: 1.2rem; margin-bottom: 0.5rem; }
-.solve-result p { font-size: 0.9rem; opacity: 0.8; }
-.hidden { display: none !important; }
-
-/* =============================================
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>ملفات سرية — التحقيقات الجنائية</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700;900&family=Special+Elite&display=swap"/>
+<style>
+/* ══════════════════════════════════════════════
+   CORK BOARD — INVESTIGATION FILES REDESIGN
+   ══════════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --cork:       #8B6914;
+  --cork-light: #A67C35;
+  --cork-bg:    #C8944A;
+  --paper:      #F5EDD8;
+  --paper-aged: #EDE0C4;
+  --paper-dark: #D4C5A0;
+  --ink:        #1A1208;
+  --ink-faded:  #3D3020;
+  --ink-light:  #6B5A3E;
+  --red-stamp:  #8B1A1A;
+  --red-tape:   #C0392B;
+  --yellow:     #E8C832;
+  --pin-red:    #CC2200;
+  --pin-shadow: rgba(0,0,0,0.5);
+  --thread-red: rgba(180,30,30,0.7);
+  --shadow-paper: 4px 6px 18px rgba(0,0,0,0.45);
+  --shadow-deep:  6px 10px 30px rgba(0,0,0,0.6);
+  --font-ar:    'Cairo', 'Tahoma', sans-serif;
+  --font-type:  'Special Elite', 'Courier New', monospace;
+  --font-disp:  'Amiri', Georgia, serif;
+}
+
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font-ar);
+  background:#0d0a06;
+  color:var(--ink);
+  min-height:100vh;
+  overflow-x:hidden;
+  direction:rtl;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ══ SCREENS ══ */
+.screen{display:none;min-height:100vh}
+.screen.active{display:block}
+
+/* ══════════════════════════════════════════════
+   INTRO — CLASSIFIED DOSSIER OPENING
+   ══════════════════════════════════════════════ */
+#intro-screen{
+  background:#0d0a06;
+  display:flex;align-items:center;justify-content:center;
+  min-height:100vh;
+  position:relative;overflow:hidden;
+}
+#intro-screen.active{display:flex}
+
+/* Aged paper texture bg */
+#intro-screen::before{
+  content:'';position:absolute;inset:0;
+  background:
+    repeating-linear-gradient(0deg,transparent,transparent 28px,rgba(139,105,20,0.04) 28px,rgba(139,105,20,0.04) 29px),
+    repeating-linear-gradient(90deg,transparent,transparent 28px,rgba(139,105,20,0.03) 28px,rgba(139,105,20,0.03) 29px);
+  pointer-events:none;
+}
+
+.dossier-cover{
+  width:min(480px,90vw);
+  background:var(--paper-aged);
+  border:3px solid #6B4F1A;
+  box-shadow:0 0 0 8px #3A2A0A, 0 0 0 10px #6B4F1A, var(--shadow-deep), 0 0 80px rgba(200,148,74,0.15);
+  padding:3rem 2.5rem;
+  text-align:center;
+  position:relative;
+  animation:coverReveal 1.2s cubic-bezier(.16,1,.3,1) both;
+}
+
+@keyframes coverReveal{
+  from{opacity:0;transform:scale(.88) rotateX(8deg);filter:brightness(.6)}
+  to{opacity:1;transform:scale(1) rotateX(0);filter:brightness(1)}
+}
+
+/* Red diagonal tape */
+.dossier-cover::before,.dossier-cover::after{
+  content:'سري للغاية  ·  سري للغاية  ·  سري للغاية  ·  سري للغاية';
+  position:absolute;
+  background:var(--red-tape);
+  color:#fff;
+  font-family:var(--font-type);
+  font-size:.6rem;
+  letter-spacing:3px;
+  padding:5px 0;
+  width:150%;
+  text-align:center;
+  left:-25%;
+}
+.dossier-cover::before{top:14%;transform:rotate(-3deg)}
+.dossier-cover::after{bottom:14%;transform:rotate(-3deg)}
+
+.cover-emblem{
+  font-size:3.5rem;margin-bottom:1rem;
+  filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+.cover-dept{
+  font-family:var(--font-type);
+  font-size:.65rem;letter-spacing:4px;
+  color:var(--ink-light);text-transform:uppercase;
+  margin-bottom:.5rem;
+}
+.cover-title{
+  font-family:var(--font-disp);
+  font-size:2.2rem;font-weight:700;
+  color:var(--ink);line-height:1.2;
+  margin-bottom:.3rem;
+  text-shadow:1px 1px 0 rgba(255,255,255,.4);
+}
+.cover-sub{
+  font-family:var(--font-type);
+  font-size:.75rem;color:var(--ink-light);
+  letter-spacing:2px;margin-bottom:2rem;
+}
+.cover-divider{
+  border:none;border-top:2px solid var(--ink-faded);
+  margin:1.2rem 0;
+}
+.cover-cases-preview{
+  display:flex;flex-direction:column;gap:.4rem;
+  margin-bottom:1.5rem;
+  font-family:var(--font-type);font-size:.75rem;
+  color:var(--ink-faded);
+}
+.cover-case-line{
+  display:flex;align-items:center;gap:.5rem;
+  border-bottom:1px dotted var(--paper-dark);
+  padding-bottom:.35rem;
+}
+.cover-case-line span:last-child{
+  margin-right:auto;font-size:.7rem;opacity:.7;
+}
+
+.btn-open-file{
+  background:var(--ink);color:var(--paper);
+  border:none;padding:12px 36px;
+  font-family:var(--font-disp);font-size:1.05rem;font-weight:700;
+  cursor:pointer;letter-spacing:1px;
+  position:relative;z-index:2;
+  box-shadow:3px 3px 0 var(--ink-faded);
+  transition:all .15s;
+}
+.btn-open-file:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--ink-faded)}
+.btn-open-file:active{transform:translate(1px,1px);box-shadow:1px 1px 0 var(--ink-faded)}
+
+.cover-stamp{
+  position:absolute;bottom:3.5rem;left:2rem;
+  font-family:var(--font-type);font-size:.6rem;
+  color:var(--red-stamp);border:2px solid var(--red-stamp);
+  padding:4px 8px;letter-spacing:2px;
+  transform:rotate(12deg);opacity:.85;
+}
+
+/* ══════════════════════════════════════════════
+   CORK BOARD — CASES DASHBOARD
+   ══════════════════════════════════════════════ */
+#dashboard-screen{
+  background:
+    radial-gradient(ellipse at 20% 50%, #2a1a06 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, #1a1008 0%, transparent 50%),
+    #100C04;
+  padding:2rem;min-height:100vh;
+}
+
+.board-header{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:2rem;
+  border-bottom:2px solid rgba(200,148,74,.2);
+  padding-bottom:1rem;
+}
+.board-title{
+  font-family:var(--font-disp);font-size:1.6rem;
+  color:var(--cork-bg);text-shadow:0 0 20px rgba(200,148,74,.3);
+}
+.board-stats{
+  font-family:var(--font-type);font-size:.75rem;
+  color:rgba(200,148,74,.6);letter-spacing:2px;
+}
+.solved-num{color:var(--cork-bg);font-size:1rem;font-weight:700}
+
+/* The cork board surface */
+.cork-board{
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Ccircle cx='1' cy='1' r='.6' fill='%23A67C35' opacity='.25'/%3E%3Ccircle cx='3' cy='3' r='.5' fill='%23C8944A' opacity='.15'/%3E%3C/svg%3E"),
+    linear-gradient(135deg,#7A5010 0%,#C8944A 30%,#A66820 60%,#C09040 100%);
+  border:8px solid #4A3008;
+  box-shadow:inset 0 0 40px rgba(0,0,0,.4), 0 0 0 3px #2A1A04, 0 8px 40px rgba(0,0,0,.7);
+  border-radius:4px;
+  padding:3rem 2rem;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:3rem 2rem;
+  position:relative;
+}
+
+/* ── CASE CARDS (pinned papers) ── */
+.case-pin-wrap{position:relative}
+
+.case-paper{
+  background:var(--paper);
+  box-shadow:var(--shadow-paper);
+  padding:1.5rem 1.25rem 1.25rem;
+  position:relative;
+  cursor:pointer;
+  transition:transform .25s cubic-bezier(.34,1.56,.64,1), box-shadow .25s;
+  border-bottom:3px solid var(--paper-dark);
+  /* Slight random tilts per card */
+}
+.case-paper:nth-child(1){transform:rotate(-1.5deg)}
+.case-paper:nth-child(2){transform:rotate(.8deg)}
+.case-paper:nth-child(3){transform:rotate(-2deg)}
+
+.case-paper:hover{
+  transform:rotate(0deg) scale(1.03) translateY(-6px) !important;
+  box-shadow:var(--shadow-deep);
+  z-index:10;
+}
+.case-paper.solved{opacity:.75}
+.case-paper.solved::after{
+  content:'محلولة ✓';
+  position:absolute;inset:0;
+  background:rgba(245,237,216,.7);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-type);font-size:1.4rem;
+  color:var(--red-stamp);letter-spacing:3px;
+  border:3px solid var(--red-stamp);
+  transform:rotate(-8deg) scale(1.05);
+  margin:15px;
+}
+
+/* Pin */
+.pin{
+  position:absolute;top:-14px;left:50%;transform:translateX(-50%);
+  width:20px;height:20px;
+  background:radial-gradient(circle at 35% 35%, #FF6655, #AA1100);
+  border-radius:50%;
+  box-shadow:0 3px 8px var(--pin-shadow), inset 0 -1px 2px rgba(0,0,0,.4);
+  z-index:5;
+}
+.pin::after{
+  content:'';position:absolute;top:3px;left:3px;
+  width:6px;height:6px;
+  background:rgba(255,220,200,.6);
+  border-radius:50%;
+}
+
+.paper-label{
+  font-family:var(--font-type);font-size:.6rem;
+  letter-spacing:3px;color:var(--ink-light);
+  text-transform:uppercase;margin-bottom:.5rem;
+  border-bottom:1px solid var(--paper-dark);padding-bottom:.3rem;
+}
+.paper-case-type{
+  display:inline-block;
+  font-family:var(--font-type);font-size:.6rem;
+  letter-spacing:2px;padding:2px 6px;
+  margin-bottom:.6rem;
+}
+.type-murder{background:rgba(139,26,26,.12);color:var(--red-stamp);border:1px solid rgba(139,26,26,.3)}
+.type-corrupt{background:rgba(139,105,20,.12);color:#7A5010;border:1px solid rgba(139,105,20,.3)}
+.type-cyber{background:rgba(20,60,139,.12);color:#1A3C8B;border:1px solid rgba(20,60,139,.3)}
+
+.paper-title{
+  font-family:var(--font-disp);font-size:1.3rem;
+  font-weight:700;color:var(--ink);
+  line-height:1.3;margin-bottom:.6rem;
+}
+.paper-divider{
+  border:none;border-top:1px dashed var(--paper-dark);margin:.6rem 0;
+}
+.paper-summary{
+  font-size:.78rem;line-height:1.65;
+  color:var(--ink-faded);margin-bottom:1rem;
+}
+.paper-summary strong{color:var(--ink);font-weight:700}
+
+.paper-meta{
+  display:flex;flex-direction:column;gap:.2rem;
+  font-family:var(--font-type);font-size:.65rem;
+  color:var(--ink-light);margin-bottom:1rem;
+}
+
+.btn-open-case{
+  width:100%;
+  background:var(--ink);color:var(--paper);
+  border:none;padding:9px 0;
+  font-family:var(--font-ar);font-size:.85rem;font-weight:700;
+  cursor:pointer;
+  box-shadow:2px 2px 0 var(--ink-light);
+  transition:all .15s;letter-spacing:1px;
+}
+.btn-open-case:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink-light)}
+.btn-open-case:active{transform:translate(1px,1px);box-shadow:none}
+
+/* Handwritten annotation */
+.paper-note{
+  position:absolute;bottom:-1.5rem;left:0;right:0;
+  font-family:var(--font-type);font-size:.6rem;
+  color:var(--red-stamp);text-align:center;
+  transform:rotate(1deg);
+}
+
+/* ══════════════════════════════════════════════
+   CASE SCREEN — INVESTIGATION DESK
+   ══════════════════════════════════════════════ */
+#case-screen{
+  background:#0d0a06;
+  min-height:100vh;
+}
+
+.case-topbar{
+  background:#0d0a06;
+  border-bottom:2px solid rgba(200,148,74,.15);
+  padding:.75rem 1.5rem;
+  display:flex;align-items:center;gap:1rem;
+  position:sticky;top:0;z-index:100;
+}
+.btn-back{
+  background:transparent;
+  border:1px solid rgba(200,148,74,.4);
+  color:rgba(200,148,74,.8);
+  padding:5px 14px;font-family:var(--font-ar);font-size:.8rem;
+  cursor:pointer;transition:all .2s;direction:ltr;
+}
+.btn-back:hover{border-color:var(--cork-bg);color:var(--cork-bg)}
+
+.topbar-case-name{
+  font-family:var(--font-disp);font-size:1.1rem;
+  color:var(--paper);flex:1;
+}
+.topbar-type{
+  font-family:var(--font-type);font-size:.65rem;
+  letter-spacing:2px;color:rgba(200,148,74,.5);
+}
+
+/* Section nav — looks like folder tabs */
+.folder-tabs{
+  display:flex;gap:0;
+  padding:0 1.5rem;
+  background:#0d0a06;
+  border-bottom:2px solid #3A2A0A;
+}
+.ftab{
+  background:#1A1208;
+  border:1px solid #3A2A0A;
+  border-bottom:none;
+  color:rgba(200,148,74,.45);
+  padding:.6rem 1.4rem;
+  font-family:var(--font-ar);font-size:.82rem;
+  cursor:pointer;transition:all .2s;
+  position:relative;top:2px;
+  margin-left:2px;
+}
+.ftab:hover{color:rgba(200,148,74,.7);background:#221A0A}
+.ftab.active{
+  background:var(--paper-aged);
+  color:var(--ink);font-weight:700;
+  border-color:#6B4F1A;
+}
+
+/* Content area — the "desk" */
+.desk-area{
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Crect width='60' height='60' fill='%23100C04'/%3E%3Ccircle cx='30' cy='30' r='1' fill='%23201408' opacity='.8'/%3E%3C/svg%3E"),
+    #100C04;
+  padding:2rem 1.5rem;
+  min-height:calc(100vh - 120px);
+}
+
+.tab-pane{display:none;animation:fadeSlide .25s ease both}
+.tab-pane.active{display:block}
+@keyframes fadeSlide{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── Section header on desk ── */
+.section-label{
+  font-family:var(--font-type);font-size:.65rem;
+  letter-spacing:4px;color:rgba(200,148,74,.4);
+  text-transform:uppercase;margin-bottom:1.5rem;
+  border-bottom:1px solid #2A1E0A;padding-bottom:.5rem;
+}
+
+/* ══════════════════════════════════════════════
+   EVIDENCE — flippable cards
+   ══════════════════════════════════════════════ */
+.evidence-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:1.5rem;
+}
+
+.ev-card-wrap{
+  perspective:800px;
+  height:240px;cursor:pointer;
+}
+.ev-card-inner{
+  position:relative;width:100%;height:100%;
+  transform-style:preserve-3d;
+  transition:transform .55s cubic-bezier(.4,0,.2,1);
+}
+.ev-card-wrap:hover .ev-card-inner,
+.ev-card-wrap.flipped .ev-card-inner{
+  transform:rotateY(180deg);
+}
+
+.ev-front,.ev-back{
+  position:absolute;inset:0;backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+}
+
+/* Front: evidence bag / sealed envelope look */
+.ev-front{
+  background:var(--paper-aged);
+  border:1px solid var(--paper-dark);
+  box-shadow:3px 4px 12px rgba(0,0,0,.5);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:.6rem;position:relative;overflow:hidden;
+}
+.ev-front::before{
+  content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(
+    -45deg,transparent,transparent 8px,
+    rgba(139,105,20,.06) 8px,rgba(139,105,20,.06) 9px
+  );
+}
+.ev-num{
+  position:absolute;top:.5rem;right:.6rem;
+  font-family:var(--font-type);font-size:.55rem;
+  color:var(--ink-light);letter-spacing:1px;
+}
+.ev-tag-label{
+  position:absolute;bottom:.5rem;left:0;right:0;
+  background:var(--ink);color:var(--paper);
+  font-family:var(--font-type);font-size:.58rem;
+  letter-spacing:1px;padding:3px 0;text-align:center;
+}
+.ev-icon{font-size:2.8rem;filter:drop-shadow(0 2px 4px rgba(0,0,0,.3))}
+.ev-title{
+  font-family:var(--font-ar);font-size:.82rem;font-weight:700;
+  color:var(--ink);text-align:center;padding:0 .5rem;
+}
+.ev-flip-hint{
+  font-family:var(--font-type);font-size:.55rem;
+  color:var(--ink-light);letter-spacing:1px;
+}
+
+/* Back: typed report page */
+.ev-back{
+  background:var(--paper);
+  border:1px solid var(--paper-dark);
+  box-shadow:3px 4px 12px rgba(0,0,0,.5);
+  transform:rotateY(180deg);
+  padding:.75rem;
+  display:flex;flex-direction:column;
+  overflow:hidden;
+}
+.ev-back-header{
+  font-family:var(--font-type);font-size:.6rem;
+  letter-spacing:2px;color:var(--red-stamp);
+  border-bottom:1px solid var(--paper-dark);
+  padding-bottom:.3rem;margin-bottom:.5rem;
+}
+.ev-back-title{
+  font-family:var(--font-ar);font-size:.8rem;font-weight:700;
+  color:var(--ink);margin-bottom:.4rem;
+}
+.ev-back-desc{
+  font-size:.75rem;line-height:1.6;
+  color:var(--ink-faded);flex:1;overflow:hidden;
+}
+/* Typewriter lines */
+.ev-back::after{
+  content:'';display:block;
+  background:repeating-linear-gradient(
+    transparent,transparent 18px,rgba(139,105,20,.15) 18px,rgba(139,105,20,.15) 19px
+  );
+  position:absolute;inset:0;pointer-events:none;
+}
+
+/* ══════════════════════════════════════════════
+   INTERROGATION — dossier photo cards
+   ══════════════════════════════════════════════ */
+.suspects-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:1.5rem;
+}
+
+.suspect-file{
+  background:var(--paper-aged);
+  border:1px solid var(--paper-dark);
+  box-shadow:3px 4px 16px rgba(0,0,0,.5);
+  overflow:hidden;
+  cursor:pointer;
+  transition:transform .2s, box-shadow .2s;
+}
+.suspect-file:hover{transform:translateY(-3px);box-shadow:5px 7px 24px rgba(0,0,0,.65)}
+
+.suspect-file-header{
+  background:var(--ink);
+  padding:.5rem .75rem;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.sf-label{font-family:var(--font-type);font-size:.58rem;letter-spacing:3px;color:rgba(245,237,216,.5)}
+.sf-status{font-family:var(--font-type);font-size:.58rem;color:rgba(245,237,216,.4);letter-spacing:2px}
+
+.suspect-file-body{padding:.75rem}
+.sf-photo-row{
+  display:flex;gap:.75rem;align-items:flex-start;
+  margin-bottom:.75rem;
+}
+.sf-photo{
+  width:64px;height:80px;flex-shrink:0;
+  background:var(--paper-dark);
+  border:1px solid var(--paper-dark);
+  display:flex;align-items:center;justify-content:center;
+  font-size:2.2rem;
+  box-shadow:2px 2px 6px rgba(0,0,0,.3);
+  position:relative;overflow:hidden;
+}
+/* Photo corner clips */
+.sf-photo::before,.sf-photo::after{
+  content:'';position:absolute;
+  width:10px;height:10px;
+  background:#F5EDD8;
+}
+.sf-photo::before{top:0;right:0;transform:rotate(45deg) translate(5px,-5px);border-bottom:1px solid var(--paper-dark)}
+.sf-photo::after{bottom:0;left:0;transform:rotate(45deg) translate(-5px,5px);border-top:1px solid var(--paper-dark)}
+
+.sf-info{flex:1}
+.sf-name{font-family:var(--font-ar);font-size:1rem;font-weight:700;color:var(--ink);margin-bottom:.2rem}
+.sf-role{font-family:var(--font-type);font-size:.6rem;letter-spacing:1px;color:var(--ink-light);margin-bottom:.4rem}
+.sf-toggle{
+  font-family:var(--font-type);font-size:.6rem;
+  letter-spacing:2px;color:var(--red-stamp);
+  border:1px solid var(--red-stamp);
+  padding:2px 6px;display:inline-block;cursor:pointer;
+}
+
+.sf-statement{
+  display:none;
+  background:var(--paper);
+  border:1px solid var(--paper-dark);
+  padding:.75rem;
+  margin-bottom:.5rem;
+  position:relative;
+}
+.sf-statement.open{display:block;animation:fadeSlide .2s ease}
+/* Red margin line like a notebook */
+.sf-statement::before{
+  content:'';position:absolute;top:0;right:0;bottom:0;
+  width:3px;background:rgba(192,57,43,.4);
+}
+.sf-stmt-label{
+  font-family:var(--font-type);font-size:.58rem;
+  letter-spacing:2px;color:var(--red-stamp);margin-bottom:.4rem;
+}
+.sf-stmt-text{
+  font-size:.8rem;line-height:1.7;
+  color:var(--ink-faded);font-style:italic;
+}
+.sf-contradiction{
+  background:rgba(139,26,26,.08);
+  border:1px solid rgba(139,26,26,.25);
+  padding:.6rem .75rem;
+  font-size:.75rem;color:var(--red-stamp);
+  margin-top:.5rem;
+  position:relative;
+}
+.sf-contradiction::before{content:'⚠ ';font-style:normal}
+
+/* ══════════════════════════════════════════════
+   NOTEBOOK — cork pinboard with string
+   ══════════════════════════════════════════════ */
+.notebook-board{
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Ccircle cx='1' cy='1' r='.6' fill='%23A67C35' opacity='.2'/%3E%3C/svg%3E"),
+    linear-gradient(135deg,#7A5010,#C8944A 40%,#A66820 70%,#C09040);
+  border:5px solid #4A3008;
+  box-shadow:inset 0 0 30px rgba(0,0,0,.35);
+  padding:2rem;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:2rem;
+  min-height:400px;
+  position:relative;
+}
+
+.nb-section{position:relative}
+.nb-paper{
+  background:var(--paper);
+  box-shadow:var(--shadow-paper);
+  padding:1rem;
+  position:relative;
+}
+.nb-paper::before{
+  content:'';position:absolute;top:-12px;left:50%;transform:translateX(-50%);
+  width:16px;height:16px;
+  background:radial-gradient(circle at 35% 35%,#FF6655,#AA1100);
+  border-radius:50%;
+  box-shadow:0 2px 6px rgba(0,0,0,.5);
+}
+.nb-paper-title{
+  font-family:var(--font-disp);font-size:1rem;font-weight:700;
+  color:var(--ink);margin-bottom:.75rem;
+  border-bottom:1px dashed var(--paper-dark);padding-bottom:.4rem;
+  text-align:center;
+}
+.hint-row{
+  display:flex;gap:.5rem;align-items:flex-start;
+  padding:.4rem 0;border-bottom:1px dotted var(--paper-dark);
+  font-size:.78rem;color:var(--ink-faded);line-height:1.5;
+}
+.hint-row:last-child{border-bottom:none}
+.hint-row .hi{color:var(--red-stamp);flex-shrink:0;font-size:.85rem}
+
+.conn-row{
+  display:flex;gap:.4rem;align-items:flex-start;
+  padding:.4rem 0;border-bottom:1px dotted var(--paper-dark);
+  font-size:.76rem;color:var(--ink-faded);line-height:1.5;
+}
+.conn-row:last-child{border-bottom:none}
+.conn-dot{color:var(--red-stamp);font-size:1rem;flex-shrink:0}
+
+.nb-notes-area{
+  grid-column:1/-1;
+}
+.nb-textarea{
+  width:100%;min-height:120px;
+  background:var(--paper);
+  border:1px solid var(--paper-dark);
+  font-family:var(--font-ar);font-size:.85rem;
+  padding:.75rem 1rem;color:var(--ink);
+  resize:vertical;line-height:1.8;
+  background-image:repeating-linear-gradient(
+    transparent,transparent 27px,rgba(139,105,20,.2) 27px,rgba(139,105,20,.2) 28px
+  );
+  background-attachment:local;
+}
+.nb-textarea:focus{outline:2px solid rgba(139,105,20,.4);outline-offset:1px}
+.nb-textarea::placeholder{color:var(--ink-light);font-style:italic;font-size:.8rem}
+
+/* ══════════════════════════════════════════════
+   SOLVE — typewriter verdict
+   ══════════════════════════════════════════════ */
+.verdict-desk{
+  max-width:600px;margin:0 auto;
+}
+.verdict-paper{
+  background:var(--paper-aged);
+  border:1px solid var(--paper-dark);
+  box-shadow:var(--shadow-deep);
+  padding:2rem;
+  position:relative;
+  margin-bottom:1.5rem;
+}
+.verdict-paper::before{
+  content:'وزارة الداخلية — إدارة التحقيقات الجنائية';
+  display:block;
+  font-family:var(--font-type);font-size:.6rem;
+  letter-spacing:2px;color:var(--ink-light);
+  text-align:center;margin-bottom:1rem;
+  border-bottom:2px solid var(--ink);padding-bottom:.5rem;
+}
+.verdict-title{
+  font-family:var(--font-disp);font-size:1.4rem;font-weight:700;
+  color:var(--ink);text-align:center;margin-bottom:.5rem;
+}
+.verdict-sub{
+  font-size:.83rem;color:var(--ink-faded);text-align:center;
+  line-height:1.7;margin-bottom:1.5rem;
+}
+.verdict-warning{
+  background:rgba(139,26,26,.08);border:1px solid rgba(139,26,26,.3);
+  padding:.6rem .75rem;
+  font-family:var(--font-type);font-size:.68rem;
+  color:var(--red-stamp);letter-spacing:1px;text-align:center;
+  margin-bottom:1.5rem;
+}
+
+.verdict-input-label{
+  font-family:var(--font-type);font-size:.65rem;
+  letter-spacing:2px;color:var(--ink-light);
+  display:block;margin-bottom:.4rem;
+}
+.verdict-input{
+  width:100%;
+  background:var(--paper);
+  border:none;border-bottom:2px solid var(--ink);
+  font-family:var(--font-ar);font-size:1.1rem;
+  padding:.6rem .5rem;color:var(--ink);
+  margin-bottom:1rem;
+  background-image:repeating-linear-gradient(
+    transparent,transparent 27px,rgba(139,105,20,.2) 27px,rgba(139,105,20,.2) 28px
+  );
+}
+.verdict-input:focus{outline:none;border-bottom-color:var(--red-stamp)}
+.verdict-input::placeholder{color:var(--ink-light);font-size:.85rem}
+
+.btn-verdict{
+  width:100%;
+  background:var(--ink);color:var(--paper);
+  border:none;padding:13px;
+  font-family:var(--font-disp);font-size:1.1rem;font-weight:700;
+  cursor:pointer;letter-spacing:2px;
+  box-shadow:3px 3px 0 var(--ink-faded);
+  transition:all .15s;
+}
+.btn-verdict:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--ink-faded)}
+.btn-verdict:active{transform:translate(1px,1px);box-shadow:none}
+
+.verdict-result{margin-top:1rem;padding:1rem;text-align:center;display:none}
+.verdict-result.correct{
+  background:rgba(20,80,20,.08);border:2px solid #285820;
+  font-family:var(--font-disp);font-size:1rem;color:#285820;
+}
+.verdict-result.wrong{
+  background:rgba(139,26,26,.08);border:2px solid var(--red-stamp);
+  font-family:var(--font-type);font-size:.8rem;color:var(--red-stamp);letter-spacing:1px;
+}
+
+/* ══════════════════════════════════════════════
    SOLUTION MODAL
-   ============================================= */
-.modal-overlay {
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,0.85);
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1.5rem;
-  animation: fadein 0.3s ease;
-  backdrop-filter: blur(4px);
+   ══════════════════════════════════════════════ */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.9);
+  z-index:9999;display:flex;align-items:center;justify-content:center;
+  padding:1.5rem;animation:fadeSlide .3s ease;
+  backdrop-filter:blur(3px);
 }
+.modal-overlay.hidden{display:none}
 
-.modal-content {
-  background: var(--bg-card);
-  border: 1px solid var(--gold-dim);
-  border-radius: 10px;
-  max-width: 700px;
-  width: 100%;
-  max-height: 85vh;
-  overflow-y: auto;
-  box-shadow: 0 0 60px var(--gold-glow);
+.modal-paper{
+  background:var(--paper);
+  max-width:680px;width:100%;max-height:85vh;overflow-y:auto;
+  box-shadow:0 0 0 3px var(--ink), var(--shadow-deep);
+  position:relative;
 }
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.25rem 1.5rem;
-  border-bottom: 1px solid var(--border);
+.modal-header-bar{
+  background:var(--ink);
+  padding:1rem 1.5rem;
+  display:flex;justify-content:space-between;align-items:center;
 }
-
-.modal-badge {
-  font-family: var(--font-display);
-  font-size: 1.2rem;
-  color: var(--gold);
+.modal-header-title{
+  font-family:var(--font-disp);font-size:1.1rem;color:var(--paper);
+  letter-spacing:1px;
 }
-
-.modal-close {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text-muted);
-  width: 32px; height: 32px;
-  border-radius: 50%;
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: all 0.2s;
+.modal-close{
+  background:transparent;border:1px solid rgba(245,237,216,.3);
+  color:rgba(245,237,216,.6);width:28px;height:28px;
+  cursor:pointer;font-size:.8rem;transition:all .2s;
 }
-.modal-close:hover { border-color: var(--red); color: var(--red); }
+.modal-close:hover{border-color:var(--paper);color:var(--paper)}
 
-.modal-body { padding: 1.5rem; }
-
-.solution-scene {
-  font-size: 0.95rem;
-  color: var(--text-secondary);
-  line-height: 1.9;
+.modal-body-inner{
+  padding:1.5rem;
+  background-image:repeating-linear-gradient(
+    transparent,transparent 27px,rgba(139,105,20,.12) 27px,rgba(139,105,20,.12) 28px
+  );
 }
-
-.solution-scene h3 {
-  font-family: var(--font-display);
-  font-size: 1.3rem;
-  color: var(--gold);
-  margin: 1.25rem 0 0.75rem;
+.solution-scene{font-size:.88rem;color:var(--ink-faded);line-height:1.9}
+.solution-scene h3{
+  font-family:var(--font-disp);font-size:1.15rem;
+  color:var(--ink);margin:1.2rem 0 .6rem;
+  border-bottom:1px solid var(--paper-dark);padding-bottom:.3rem;
 }
-
-.solution-scene .highlight {
-  color: var(--red);
-  font-weight: 700;
+.solution-scene .highlight{color:var(--red-stamp);font-weight:700}
+.solution-scene .proof{
+  background:var(--paper-aged);
+  border-right:3px solid var(--red-stamp);
+  padding:.75rem 1rem;margin:.75rem 0;
+  font-style:italic;font-size:.83rem;
+  white-space:pre-line;
 }
-
-.solution-scene .proof {
-  background: var(--bg-mid);
-  border-right: 3px solid var(--red);
-  padding: 0.75rem 1rem;
-  margin: 0.75rem 0;
-  border-radius: 0 var(--radius) var(--radius) 0;
-  font-style: italic;
+.modal-footer{
+  padding:1rem 1.5rem;
+  border-top:1px solid var(--paper-dark);
+  background:var(--paper-aged);
+  display:flex;justify-content:center;
 }
-
-.modal-footer {
-  padding: 1rem 1.5rem;
-  border-top: 1px solid var(--border);
-  text-align: center;
+.btn-close-modal{
+  background:var(--ink);color:var(--paper);
+  border:none;padding:10px 30px;
+  font-family:var(--font-ar);font-size:.9rem;font-weight:700;
+  cursor:pointer;box-shadow:2px 2px 0 var(--ink-faded);
+  transition:all .15s;
 }
+.btn-close-modal:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink-faded)}
 
-/* =============================================
-   WRONG FLASH
-   ============================================= */
-.wrong-flash {
-  position: fixed;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--red-dim);
-  border: 1px solid var(--red);
-  color: var(--red);
-  padding: 0.75rem 1.5rem;
-  border-radius: 30px;
-  font-size: 0.9rem;
-  z-index: 9999;
-  animation: slideup 0.3s ease;
+/* Wrong flash */
+.wrong-flash{
+  position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);
+  background:var(--paper-aged);
+  border:2px solid var(--red-stamp);
+  color:var(--red-stamp);
+  font-family:var(--font-type);font-size:.75rem;letter-spacing:2px;
+  padding:.6rem 1.5rem;z-index:9999;
+  box-shadow:3px 3px 0 rgba(0,0,0,.5);
+  animation:slideUp .3s ease;
 }
+@keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(15px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+.wrong-flash.hidden{display:none}
 
-@keyframes slideup {
-  from { opacity: 0; transform: translateX(-50%) translateY(20px); }
-  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+/* ══ SCROLLBAR ══ */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:#0d0a06}
+::-webkit-scrollbar-thumb{background:#3A2A0A}
+::-webkit-scrollbar-thumb:hover{background:#6B4F1A}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:900px){
+  .cork-board{grid-template-columns:1fr 1fr;gap:2rem 1.5rem}
+  .notebook-board{grid-template-columns:1fr}
 }
-
-/* =============================================
-   SCROLLBAR
-   ============================================= */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--bg-deep); }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--border-bright); }
-
-/* =============================================
-   RESPONSIVE
-   ============================================= */
-@media (max-width: 768px) {
-  .case-layout { flex-direction: column; }
-  .case-tabs {
-    width: 100%;
-    flex-direction: row;
-    overflow-x: auto;
-    border-left: none;
-    border-bottom: 1px solid var(--border);
-    padding: 0;
-  }
-  .tab-btn {
-    flex-direction: row;
-    white-space: nowrap;
-    border-right: none;
-    border-bottom: 3px solid transparent;
-    padding: 0.75rem 1rem;
-    flex-shrink: 0;
-  }
-  .tab-btn.active {
-    border-right: none;
-    border-bottom-color: var(--gold);
-  }
-  .tab-content-area { padding: 1.25rem; }
-  .cases-grid { grid-template-columns: 1fr; }
-  .dashboard-main { padding: 1.5rem 1rem; }
+@media(max-width:600px){
+  .cork-board{grid-template-columns:1fr;padding:2rem 1rem}
+  .evidence-grid{grid-template-columns:repeat(2,1fr)}
+  .suspects-grid{grid-template-columns:1fr}
+  .folder-tabs{overflow-x:auto}
+  .ftab{padding:.5rem .8rem;font-size:.75rem;white-space:nowrap}
+  .dossier-cover{padding:2rem 1.5rem}
 }
-
-  </style>
+</style>
 </head>
 <body>
 
-<!-- ===== INTRO SCREEN ===== -->
+<!-- ════════════════════════
+     INTRO — DOSSIER COVER
+     ════════════════════════ -->
 <div id="intro-screen" class="screen active">
-  <div class="noise-overlay"></div>
-  <div class="scanlines"></div>
-  <div class="intro-content">
-    <div class="badge-icon">🔍</div>
-    <div class="dept-label">وزارة الداخلية — قسم التحقيقات الجنائية</div>
-    <h1 class="intro-title">مكتب التحقيقات<br/><span>الملفات السرية</span></h1>
-    <p class="intro-sub">ثلاث قضايا. عشرة مشتبه بهم. محقق واحد يكتشف الحقيقة.</p>
-    <div class="classification-badge">سري للغاية — للمحققين المعتمدين فقط</div>
-    <button class="btn-primary" id="enter-btn">دخول المكتب</button>
-    <div class="case-count-preview">
-      <span>🔴 قضية قتل</span>
-      <span>🟡 قضية فساد</span>
-      <span>🔵 جريمة سيبرانية</span>
+  <div class="dossier-cover">
+    <div class="cover-emblem">🗂️</div>
+    <div class="cover-dept">وزارة الداخلية — قسم التحقيقات الجنائية</div>
+    <h1 class="cover-title">ملفات<br/>سرية</h1>
+    <p class="cover-sub">CLASSIFIED INVESTIGATION FILES</p>
+    <hr class="cover-divider"/>
+    <div class="cover-cases-preview">
+      <div class="cover-case-line">
+        <span>🔴</span>
+        <span>ملف #٢٠٢٤-٠٠١ — ليلة الجمعة السوداء</span>
+        <span>مفتوحة</span>
+      </div>
+      <div class="cover-case-line">
+        <span>🟡</span>
+        <span>ملف #٢٠٢٤-٠٠٢ — الصفقة الملوثة</span>
+        <span>مفتوحة</span>
+      </div>
+      <div class="cover-case-line">
+        <span>🔵</span>
+        <span>ملف #٢٠٢٤-٠٠٣ — الشبح الرقمي</span>
+        <span>مفتوحة</span>
+      </div>
     </div>
+    <button class="btn-open-file" id="enter-btn">فتح الملف</button>
+    <div class="cover-stamp">سري للغاية</div>
   </div>
 </div>
 
-<!-- ===== DASHBOARD SCREEN ===== -->
+<!-- ════════════════════════
+     DASHBOARD — CORK BOARD
+     ════════════════════════ -->
 <div id="dashboard-screen" class="screen">
-  <div class="noise-overlay"></div>
-  <div class="scanlines"></div>
-
-  <header class="top-bar">
-    <div class="top-bar-left">
-      <span class="badge-small">🔍</span>
-      <span class="dept-name">مكتب التحقيقات الجنائية</span>
+  <div class="board-header">
+    <div class="board-title">🔍 لوحة القضايا النشطة</div>
+    <div class="board-stats">
+      القضايا المحلولة: <span class="solved-num" id="solved-count">0</span>/3
     </div>
-    <div class="top-bar-right">
-      <span class="investigator-label">المحقق: أنت</span>
-      <div class="solved-counter">
-        القضايا المحلولة: <span id="solved-count">0</span>/3
-      </div>
-    </div>
-  </header>
+  </div>
 
-  <main class="dashboard-main">
-    <h2 class="dashboard-title">لوحة القضايا النشطة</h2>
-    <p class="dashboard-sub">اختر قضية لبدء التحقيق</p>
+  <div class="cork-board">
 
-    <div class="cases-grid">
-
-      <!-- Case 1 -->
-      <div class="case-card" id="card-1" data-case="1">
-        <div class="case-stamp" id="stamp-1">مفتوحة</div>
-        <div class="case-number">ملف #٢٠٢٤-٠٠١</div>
-        <div class="case-icon">🔴</div>
-        <h3 class="case-title">ليلة الجمعة السوداء</h3>
-        <div class="case-type">جريمة قتل</div>
-        <p class="case-desc">وُجد رجل الأعمال <strong>خالد الرشيدي</strong> ميتاً في مكتبه. الباب كان مقفلاً من الداخل. ثلاثة مشتبه بهم، ثلاثة أكاذيب.</p>
-        <div class="case-meta">
+    <!-- Case 1 -->
+    <div class="case-pin-wrap">
+      <div class="pin"></div>
+      <div class="case-paper" id="cp-1" onclick="openCase(1)">
+        <div class="paper-label">ملف #٢٠٢٤-٠٠١</div>
+        <span class="paper-case-type type-murder">جريمة قتل</span>
+        <h2 class="paper-title">ليلة الجمعة السوداء</h2>
+        <hr class="paper-divider"/>
+        <p class="paper-summary">وُجد رجل الأعمال <strong>خالد الرشيدي</strong> ميتاً في مكتبه. الباب مقفل من الداخل. سُمّ في مشروبه. ثلاثة مشتبه بهم — ثلاثة أكاذيب.</p>
+        <div class="paper-meta">
           <span>📍 برج المال، الطابق ٢٢</span>
-          <span>📅 الجمعة ١١ يناير</span>
+          <span>📅 الجمعة ١١ يناير ٢٠٢٤</span>
         </div>
-        <button class="btn-case" onclick="openCase(1)">فتح الملف</button>
+        <button class="btn-open-case">فتح ملف التحقيق</button>
+        <div class="paper-note">مشبوه رئيسي: غير محدد بعد</div>
       </div>
+    </div>
 
-      <!-- Case 2 -->
-      <div class="case-card" id="card-2" data-case="2">
-        <div class="case-stamp" id="stamp-2">مفتوحة</div>
-        <div class="case-number">ملف #٢٠٢٤-٠٠٢</div>
-        <div class="case-icon">🟡</div>
-        <h3 class="case-title">الصفقة الملوثة</h3>
-        <div class="case-type">فساد وغسيل أموال</div>
-        <p class="case-desc">٢٠ مليون ريال اختفت من خزينة بلدية الغرب. المدير يتهم المساعد، والمساعد يتهم المحاسب. الأموال في مكان واحد فقط.</p>
-        <div class="case-meta">
+    <!-- Case 2 -->
+    <div class="case-pin-wrap">
+      <div class="pin"></div>
+      <div class="case-paper" id="cp-2" onclick="openCase(2)">
+        <div class="paper-label">ملف #٢٠٢٤-٠٠٢</div>
+        <span class="paper-case-type type-corrupt">فساد وغسيل أموال</span>
+        <h2 class="paper-title">الصفقة الملوثة</h2>
+        <hr class="paper-divider"/>
+        <p class="paper-summary">٢٠ مليون ريال اختفت من خزينة <strong>بلدية الغرب</strong>. شركة وهمية. ثلاثة موظفين. الأموال في مكان واحد فقط.</p>
+        <div class="paper-meta">
           <span>📍 بلدية الغرب</span>
-          <span>📅 خلال ثلاثة أشهر</span>
+          <span>📅 خلال ثلاثة أشهر ٢٠٢٤</span>
         </div>
-        <button class="btn-case" onclick="openCase(2)">فتح الملف</button>
+        <button class="btn-open-case">فتح ملف التحقيق</button>
+        <div class="paper-note">المبلغ المختلس: ٢٠,٠٠٠,٠٠٠ ريال</div>
       </div>
-
-      <!-- Case 3 -->
-      <div class="case-card" id="card-3" data-case="3">
-        <div class="case-stamp" id="stamp-3">مفتوحة</div>
-        <div class="case-number">ملف #٢٠٢٤-٠٠٣</div>
-        <div class="case-icon">🔵</div>
-        <h3 class="case-title">الشبح الرقمي</h3>
-        <div class="case-type">جريمة سيبرانية</div>
-        <p class="case-desc">اختُرق نظام البنك المركزي. سُرقت بيانات ٥٠٠ ألف عميل. المخترق ترك أثراً واحداً، وارتكب خطأً واحداً كافياً.</p>
-        <div class="case-meta">
-          <span>📍 البنك المركزي — الخوادم</span>
-          <span>📅 ليلة ٣ مارس</span>
-        </div>
-        <button class="btn-case" onclick="openCase(3)">فتح الملف</button>
-      </div>
-
     </div>
-  </main>
-</div>
 
-<!-- ===== CASE SCREEN ===== -->
-<div id="case-screen" class="screen">
-  <div class="noise-overlay"></div>
-  <div class="scanlines"></div>
-
-  <header class="case-header">
-    <button class="btn-back" onclick="goBack()">← العودة للوحة</button>
-    <div class="case-header-title" id="case-header-title">القضية</div>
-    <div class="case-header-type" id="case-header-type"></div>
-  </header>
-
-  <div class="case-layout">
-
-    <!-- Sidebar Tabs -->
-    <nav class="case-tabs">
-      <button class="tab-btn active" data-tab="evidence" onclick="switchTab('evidence', this)">
-        <span class="tab-icon">🔎</span>
-        الأدلة
-      </button>
-      <button class="tab-btn" data-tab="interrogation" onclick="switchTab('interrogation', this)">
-        <span class="tab-icon">👥</span>
-        الاستجواب
-      </button>
-      <button class="tab-btn" data-tab="notebook" onclick="switchTab('notebook', this)">
-        <span class="tab-icon">📓</span>
-        مفكرة المحقق
-      </button>
-      <button class="tab-btn" data-tab="solve" onclick="switchTab('solve', this)">
-        <span class="tab-icon">⚖️</span>
-        الحكم النهائي
-      </button>
-    </nav>
-
-    <!-- Tab Content -->
-    <div class="tab-content-area">
-
-      <!-- Evidence Tab -->
-      <div class="tab-pane active" id="tab-evidence">
-        <h2 class="pane-title">الأدلة المادية</h2>
-        <div class="evidence-grid" id="evidence-grid"></div>
-      </div>
-
-      <!-- Interrogation Tab -->
-      <div class="tab-pane" id="tab-interrogation">
-        <h2 class="pane-title">جلسات الاستجواب</h2>
-        <div class="suspects-list" id="suspects-list"></div>
-      </div>
-
-      <!-- Notebook Tab -->
-      <div class="tab-pane" id="tab-notebook">
-        <h2 class="pane-title">مفكرة المحقق</h2>
-        <div class="notebook-area">
-          <div class="notebook-hints" id="notebook-hints"></div>
-          <div class="notebook-connections" id="notebook-connections">
-            <h3 class="connections-title">ربط الأدلة</h3>
-            <div class="connection-builder" id="connection-builder"></div>
-          </div>
-          <div class="notebook-notes">
-            <h3>ملاحظاتك الشخصية</h3>
-            <textarea id="personal-notes" placeholder="اكتب ملاحظاتك هنا... ما الذي يلفت انتباهك؟ أي التناقضات لاحظتها؟"></textarea>
-          </div>
+    <!-- Case 3 -->
+    <div class="case-pin-wrap">
+      <div class="pin"></div>
+      <div class="case-paper" id="cp-3" onclick="openCase(3)">
+        <div class="paper-label">ملف #٢٠٢٤-٠٠٣</div>
+        <span class="paper-case-type type-cyber">جريمة سيبرانية</span>
+        <h2 class="paper-title">الشبح الرقمي</h2>
+        <hr class="paper-divider"/>
+        <p class="paper-summary">اختُرق <strong>البنك المركزي</strong>. سُرقت بيانات ٥٠٠ ألف عميل. المخترق ترك أثراً واحداً — وارتكب خطأً واحداً كافياً.</p>
+        <div class="paper-meta">
+          <span>📍 خوادم البنك المركزي</span>
+          <span>📅 ليلة ٣ مارس ٢٠٢٤</span>
         </div>
+        <button class="btn-open-case">فتح ملف التحقيق</button>
+        <div class="paper-note">الضحايا: ٥٠٠,٠٠٠ عميل</div>
       </div>
-
-      <!-- Solve Tab -->
-      <div class="tab-pane" id="tab-solve">
-        <h2 class="pane-title">الحكم النهائي</h2>
-        <div class="solve-area">
-          <div class="solve-intro">
-            <p>هل جمعت الأدلة الكافية؟ إذا كنت متأكداً من هوية الجاني، أدخل اسمه كاملاً.</p>
-            <div class="solve-warning">⚠️ التهمة الخاطئة تُدمر مسيرتك — تأكد قبل أن تحكم.</div>
-          </div>
-          <div class="solve-input-area">
-            <label class="solve-label">المتهم الرئيسي:</label>
-            <input type="text" id="culprit-input" class="solve-input" placeholder="أدخل الاسم الكامل..." />
-            <button class="btn-solve" onclick="checkSolution()">إصدار الحكم</button>
-          </div>
-          <div id="solve-result" class="solve-result hidden"></div>
-        </div>
-      </div>
-
     </div>
+
   </div>
 </div>
 
-<!-- ===== SOLUTION MODAL ===== -->
-<div id="solution-modal" class="modal-overlay hidden">
-  <div class="modal-content">
-    <div class="modal-header">
-      <div class="modal-badge">⚖️ مشهد الحل النهائي</div>
+<!-- ════════════════════════
+     CASE SCREEN
+     ════════════════════════ -->
+<div id="case-screen" class="screen">
+  <div class="case-topbar">
+    <button class="btn-back" onclick="goBack()">← رجوع</button>
+    <div class="topbar-case-name" id="topbar-title">—</div>
+    <div class="topbar-type" id="topbar-type"></div>
+  </div>
+
+  <div class="folder-tabs">
+    <div class="ftab active" data-tab="evidence" onclick="switchTab('evidence',this)">🔎 الأدلة</div>
+    <div class="ftab" data-tab="interrogation" onclick="switchTab('interrogation',this)">👥 الاستجواب</div>
+    <div class="ftab" data-tab="notebook" onclick="switchTab('notebook',this)">📌 مفكرة المحقق</div>
+    <div class="ftab" data-tab="solve" onclick="switchTab('solve',this)">⚖️ الحكم النهائي</div>
+  </div>
+
+  <div class="desk-area">
+
+    <!-- Evidence -->
+    <div class="tab-pane active" id="tab-evidence">
+      <div class="section-label">PHYSICAL EVIDENCE — الأدلة المادية</div>
+      <div class="evidence-grid" id="evidence-grid"></div>
+    </div>
+
+    <!-- Interrogation -->
+    <div class="tab-pane" id="tab-interrogation">
+      <div class="section-label">INTERROGATION FILES — ملفات الاستجواب</div>
+      <div class="suspects-grid" id="suspects-grid"></div>
+    </div>
+
+    <!-- Notebook -->
+    <div class="tab-pane" id="tab-notebook">
+      <div class="section-label">DETECTIVE NOTES — مفكرة المحقق</div>
+      <div class="notebook-board">
+        <div class="nb-section">
+          <div class="nb-paper" id="nb-hints">
+            <div class="nb-paper-title">💡 خيوط للتفكير</div>
+          </div>
+        </div>
+        <div class="nb-section">
+          <div class="nb-paper" id="nb-connections">
+            <div class="nb-paper-title">🔗 ربط الأدلة</div>
+          </div>
+        </div>
+        <div class="nb-notes-area nb-section">
+          <div class="nb-paper" style="padding-top:1.5rem">
+            <div class="nb-paper-title">✍️ ملاحظاتك الشخصية</div>
+            <textarea class="nb-textarea" id="personal-notes" placeholder="اكتب ملاحظاتك هنا... ما الذي يلفت انتباهك في أقوال المشتبه بهم؟ أي التناقضات لاحظتها؟"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Solve -->
+    <div class="tab-pane" id="tab-solve">
+      <div class="section-label">FINAL VERDICT — الحكم النهائي</div>
+      <div class="verdict-desk">
+        <div class="verdict-paper">
+          <div class="verdict-title">إصدار أمر الاعتقال</div>
+          <p class="verdict-sub">بعد دراسة الأدلة واستجواب المشتبه بهم، إذا توصّلت لهوية الجاني — أدخل اسمه الكامل لإصدار أمر الاعتقال الرسمي.</p>
+          <div class="verdict-warning">⚠ التهمة الخاطئة تُدمر القضية — تأكد من الأدلة قبل الحكم</div>
+          <label class="verdict-input-label">اسم المتهم الرئيسي:</label>
+          <input type="text" class="verdict-input" id="culprit-input" placeholder="أدخل الاسم الكامل..."/>
+          <button class="btn-verdict" onclick="checkSolution()">إصدار الحكم الرسمي</button>
+          <div class="verdict-result" id="verdict-result"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════════════════════════
+     SOLUTION MODAL
+     ════════════════════════ -->
+<div class="modal-overlay hidden" id="solution-modal">
+  <div class="modal-paper">
+    <div class="modal-header-bar">
+      <div class="modal-header-title">⚖️ مشهد الحل النهائي</div>
       <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
-    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-body-inner" id="modal-body"></div>
     <div class="modal-footer">
-      <button class="btn-primary" onclick="closeModal()">العودة للوحة القضايا</button>
+      <button class="btn-close-modal" onclick="closeModal()">العودة للوحة القضايا</button>
     </div>
   </div>
 </div>
 
-<!-- Wrong Answer Flash -->
-<div id="wrong-flash" class="wrong-flash hidden">
-  <span>❌ الاسم خاطئ — راجع الأدلة مجدداً</span>
-</div>
+<div class="wrong-flash hidden" id="wrong-flash">الاسم خاطئ — راجع الأدلة والاستجوابات مجدداً</div>
 
+<!-- ════ DATA ════ -->
 <script>
-// =============================================
-// DETECTIVE GAME — CASES DATA
-// مكتب التحقيقات الجنائية — بيانات القضايا
-// =============================================
-
-const CASES = {
-
-  // ============================================================
-  // القضية 1: ليلة الجمعة السوداء — جريمة قتل
-  // الجاني: نورة الرشيدي (الزوجة)
-  // الثغرة: ادّعت أنها كانت في المستشفى لزيارة والدتها، لكنها
-  //         ذكرت أنها "شاهدت الفلم في غرفة والدتها"، والمستشفى
-  //         الذي ذكرته يحظر التلفزيون في أقسام العناية المركزة
-  //         حسب الدليل رقم 4. كما أن المفتاح الاحتياطي الذي
-  //         "اختفى من درجها" كان في يدها.
-  // ============================================================
-
-  1: {
-    id: 1,
-    title: "ليلة الجمعة السوداء",
-    type: "جريمة قتل",
-    color: "#c94c4c",
-    summary: "وُجد رجل الأعمال خالد الرشيدي (52 عاماً) ميتاً في مكتبه الخاص بالطابق الثاني والعشرين من برج المال مساء الجمعة. الباب كان مقفلاً من الداخل. وفقاً للطب الشرعي، سُمّ في مشروبه. لا توجد كاميرات في الممر الخاص بمكتبه. ثلاثة أشخاص كانوا في البرج تلك الليلة.",
-    answer: "نورة الرشيدي",
-    answerHints: ["نوره الرشيدي", "نورة"],
-
-    evidence: [
-      {
-        id: "E1-01",
-        icon: "🥃",
-        title: "كأس ويسكي مسمومة",
-        desc: "عُثر على كأس مشروب كحولي تحتوي على جرعة قاتلة من السيانيد. البصمات على الكأس مطابقة لبصمات خالد فقط — يعني أنه سكب لنفسه أو شخص آخر نظّف الكأس.",
-        tag: "أدلة كيميائية"
-      },
-      {
-        id: "E1-02",
-        icon: "🔑",
-        title: "مفتاح احتياطي مفقود",
-        desc: "المكتب كان مقفلاً من الداخل، والمفتاح الأصلي في جيب القتيل. المفتاح الاحتياطي الوحيد كان في درج منزل الرشيدي — غير أن الدرج وُجد مفتوحاً وفارغاً.",
-        tag: "أدلة مادية"
-      },
-      {
-        id: "E1-03",
-        icon: "📱",
-        title: "آخر رسالة نصية",
-        desc: "آخر رسالة وردت لخالد الساعة 10:42 م من رقم مجهول: 'لقد حان الوقت'. الرسالة أُرسلت من هاتف مسبق الدفع لا يمكن تتبعه.",
-        tag: "أدلة رقمية"
-      },
-      {
-        id: "E1-04",
-        icon: "🏥",
-        title: "سجلات مستشفى الرازي",
-        desc: "مستشفى الرازي — قسم العناية المركزة — يُطبّق سياسة صارمة تمنع كلياً وجود أجهزة تلفزيون أو أي شاشات في غرف المرضى، حفاظاً على الهدوء والتعافي.",
-        tag: "وثائق رسمية"
-      },
-      {
-        id: "E1-05",
-        icon: "📋",
-        title: "وثيقة تعديل الوصية",
-        desc: "قُبيل وفاته بأسبوع، قام خالد بتعديل وصيته. النسخة الجديدة تُعطي شريكه التجاري فيصل النمر 40% من الثروة بدلاً من 0%، على حساب حصة الزوجة.",
-        tag: "وثائق قانونية"
-      },
-      {
-        id: "E1-06",
-        icon: "🔬",
-        title: "تقرير الطب الشرعي",
-        desc: "الوفاة بين الساعة 11 م و12:30 ص. السيانيد المستخدم من نوع بوتاسيوم سيانيد — يُباع حصرياً في المستودعات الصناعية ومحلات تحميض الصور القديمة.",
-        tag: "تقارير طبية"
-      }
-    ],
-
-    suspects: [
-      {
-        id: "S1-01",
-        name: "نورة الرشيدي",
-        role: "زوجة الضحية",
-        emoji: "👩",
-        statement: `"كنت بعيدة تماماً تلك الليلة. والدتي دخلت المستشفى صباح الجمعة — مستشفى الرازي، قسم العناية المركزة. ذهبت لزيارتها مباشرة بعد صلاة المغرب وبقيت هناك حتى منتصف الليل تقريباً. والدتي كانت خائفة فلم أرد أن أتركها. شاهدنا فلماً في غرفتها قبل أن تنام. زواجي من خالد كان ممتازاً — لا أفهم لماذا تشكّون فيّ. نعم، عرفت بتعديل الوصية، لكنني لم أكترث بالمال يوماً."`,
-        contradiction: "⚠️ ادّعت مشاهدة التلفزيون في غرفة والدتها بمستشفى الرازي — لكن سجلات المستشفى تُثبت أن قسم العناية المركزة يحظر الشاشات كلياً!",
-        isGuilty: true
-      },
-      {
-        id: "S1-02",
-        name: "فيصل النمر",
-        role: "الشريك التجاري",
-        emoji: "👨‍💼",
-        statement: `"كنت في مكتبي في الطابق السابع طوال الليل — لديّ شهود من الحراسة. صحيح أن خالد أضاف اسمي للوصية، لكن هذا كان مكافأة على نجاح صفقة أجريناها في دبي. علاقتنا كانت مبنية على الثقة. لو أردت الأموال لانتظرت — الشركة ستجني ضعف هذا الرقم العام القادم."`,
-        contradiction: null
-      },
-      {
-        id: "S1-03",
-        name: "سامي القحطاني",
-        role: "السائق الشخصي",
-        emoji: "🚗",
-        statement: `"كنت في الموقف طوال الليل أنتظر. أوصلت السيدة نورة إلى المستشفى الساعة 8 مساءً وعدت لأنتظر. تلقيت اتصالاً منها الساعة 11:45 م لأعود واصطحبها. المفتاح الاحتياطي؟ لا أعلم عنه شيئاً — أنا لا أدخل المكتب أبداً."`,
-        contradiction: null
-      }
-    ],
-
-    notebookHints: [
-      { icon: "🔍", text: "المفتاح الاحتياطي اختفى من منزل الضحية — من كان له صلاحية الوصول للمنزل؟" },
-      { icon: "🏥", text: "الدليل E1-04 يصف سياسة المستشفى بالتفصيل — قارنه بأقوال أحد المشتبه بهم" },
-      { icon: "💰", text: "الوصية الجديدة تضرّ بمصلحة شخص واحد — من هو؟" },
-      { icon: "⏰", text: "السائق قال إنها اتصلت به الساعة 11:45 — الوفاة بين 11 م و12:30 ص. متى بالضبط؟" }
-    ],
-
-    connections: [
-      "المفتاح المفقود + الزوجة صاحبة الوصول للمنزل = الدخول للمكتب",
-      "الوصية المعدّلة + خسارة الزوجة = الدافع",
-      "ادعاء المستشفى + حظر الشاشات = الكذبة الكاشفة"
-    ],
-
-    solution: {
-      title: "المشهد النهائي: اعتراف نورة",
-      scene: `
-        <h3>🎬 مشهد التحقيق الأخير</h3>
-        <p>في غرفة الاستجواب الباردة، يضع المحقق أمام <span class="highlight">نورة الرشيدي</span> ورقة واحدة — لائحة بسياسة مستشفى الرازي.</p>
-        <div class="proof">المحقق: "قلت إنكِ شاهدتِ فلماً مع والدتك في غرفتها. قسم العناية المركزة يحظر الشاشات. كيف شاهدتِ ما لا يُوجد؟"</div>
-        <p>صمتت نورة لحظات طويلة. ثم انهار دفاعها.</p>
-        <h3>⚖️ تفاصيل الجريمة</h3>
-        <p>نورة اكتشفت تعديل الوصية قبل أسبوع وأدركت أنها ستخسر نصف ثروتها. استغلت علمها بعادة خالد في شرب الويسكي ليلاً. حصلت على السيانيد من صديق يعمل في مختبر قديم لتحميض الصور، أخذت المفتاح الاحتياطي من الدرج، دخلت المكتب خلال غيابه للحمام، وأضافت السمّ للزجاجة ثم أعادت إقفال الباب من الداخل عبر خيط رفيع سحبته من تحت الباب — حيلة قرأتها في رواية جريمة قديمة. ثم أعطت السائق موعداً وهمياً لإنشاء شاهد زور.</p>
-        <div class="proof">الثغرة القاتلة: ادّعت مشاهدة التلفزيون في مكان يحظر التلفزيون. كذبة بسيطة كسرت كل بنيان حجتها.</div>
-        <p>صدر الحكم: السجن المؤبد. فيصل النمر ورث الشركة كاملة، وسامي القحطاني وجد عملاً جديداً.</p>
-      `
-    }
-  },
-
-  // ============================================================
-  // القضية 2: الصفقة الملوثة — فساد وغسيل أموال
-  // الجاني: المدير عبدالرحمن الغامدي
-  // الثغرة: ادّعى أنه لم يعلم بالعقود المزورة ولم يوقّع عليها،
-  //         لكن الدليل 3 يُظهر توقيعه الخاص على خطاب "ترحيب بالشركة"
-  //         قبل 3 أشهر من تأسيسها رسمياً حسب السجل التجاري.
-  // ============================================================
-
-  2: {
-    id: 2,
-    title: "الصفقة الملوثة",
-    type: "فساد وغسيل أموال",
-    color: "#c9a84c",
-    summary: "اختفت ٢٠ مليون ريال من ميزانية مشروع إنشاء الطريق الدائري لبلدية الغرب خلال ثلاثة أشهر. تبيّن لاحقاً أن المال حُوّل لشركة وهمية اسمها 'مجموعة الأفق للمقاولات'. ثلاثة موظفين في مواقع مختلفة لكل واحد منهم دافعه.",
-    answer: "عبدالرحمن الغامدي",
-    answerHints: ["عبد الرحمن الغامدي", "الغامدي", "عبدالرحمن"],
-
-    evidence: [
-      {
-        id: "E2-01",
-        icon: "📊",
-        title: "التحويلات البنكية",
-        desc: "سلسلة تحويلات من حساب بلدية الغرب إلى 'مجموعة الأفق' ثم فوراً إلى حسابات خارجية في دول مختلفة. آخر تحويل تمّ قبل 72 ساعة فقط من بدء التحقيق.",
-        tag: "أدلة مالية"
-      },
-      {
-        id: "E2-02",
-        icon: "🏢",
-        title: "السجل التجاري لشركة الأفق",
-        desc: "'مجموعة الأفق للمقاولات' سُجّلت رسمياً في تاريخ 15 مارس 2024. لا يوجد لها مقرّ فعلي أو موظفون. العنوان المسجّل هو شقة سكنية فارغة.",
-        tag: "وثائق تجارية"
-      },
-      {
-        id: "E2-03",
-        icon: "✍️",
-        title: "خطاب ترحيب بالمقاول",
-        desc: "وُجد خطاب رسمي بترويسة البلدية يُرحّب بشركة الأفق كمقاول معتمد، موقّع من المدير عبدالرحمن الغامدي. تاريخ الخطاب: 10 يناير 2024 — قبل 65 يوماً من تأسيس الشركة!",
-        tag: "وثائق رسمية — بالغ الأهمية"
-      },
-      {
-        id: "E2-04",
-        icon: "📧",
-        title: "رسائل إلكترونية مشفّرة",
-        desc: "استُعيدت رسائل بريد إلكتروني محذوفة من جهاز المساعد طارق السلمي تتضمن مناقشة 'تفاصيل التحويل' مع جهة مجهولة. لكن صياغتها تشير لمنفّذ أوامر وليس مخططاً.",
-        tag: "أدلة رقمية"
-      },
-      {
-        id: "E2-05",
-        icon: "💳",
-        title: "حساب مصرفي مجهول",
-        desc: "تمّ اكتشاف حساب بنكي مرتبط برقم هاتف مسجّل بأحد أفراد أسرة المدير الغامدي — الحساب استقبل مبالغ صغيرة منتظمة قبل أن ترتفع فجأة.",
-        tag: "أدلة مالية"
-      },
-      {
-        id: "E2-06",
-        icon: "🖥️",
-        title: "سجلات الدخول للنظام",
-        desc: "نظام البلدية يُسجّل بصمات الدخول. كلا الموظفَين دخلا للنظام في ليالٍ مختلفة، لكن المحاسب رياض قبّاني لم يدخل إطلاقاً خارج ساعات العمل الرسمية.",
-        tag: "أدلة رقمية"
-      }
-    ],
-
-    suspects: [
-      {
-        id: "S2-01",
-        name: "عبدالرحمن الغامدي",
-        role: "مدير بلدية الغرب",
-        emoji: "👔",
-        statement: `"أنا ضحية هذه القضية مثلكم تماماً! طارق السلمي هو من أدار كل شيء — كان هو المسؤول عن المراسلات مع المقاولين. أنا وقّعت ما يُحضره لي دون أن أعلم بالتفاصيل. كيف أعلم أن شركة ما غير حقيقية؟ دوري إداري، والتحقق من الشركات ليس من مهامي. لم أوقّع على أي وثيقة تتعلق بشركة الأفق."`,
-        contradiction: "⚠️ قال إنه لم يوقّع على وثائق شركة الأفق — لكن الدليل E2-03 يُظهر توقيعه الشخصي على خطاب ترحيب بها قبل تأسيسها بشهرين!",
-        isGuilty: true
-      },
-      {
-        id: "S2-02",
-        name: "طارق السلمي",
-        role: "المساعد الإداري",
-        emoji: "👨‍💻",
-        statement: `"نعم، أنا تواصلت مع شركة الأفق عبر البريد الإلكتروني، لكنني كنت أنفّذ أوامر مباشرة من المدير. كل ما فعلته أرسلت رسائل، أضفت الشركة في النظام بعد أن أُعطيت وثيقة رسمية موقّعة. لا أملك صلاحية التحويل المالي وحدي. أنا موظف صغير محاصر."`,
-        contradiction: null
-      },
-      {
-        id: "S2-03",
-        name: "رياض قبّاني",
-        role: "المحاسب الرئيسي",
-        emoji: "🧮",
-        statement: `"وقّعت على أوامر الصرف لأنها جاءت مرفقة بموافقات المدير والمساعد. العملية بدت قانونية من الناحية الشكلية. صحيح أنني لم أتحقق بشكل معمّق — ربما كان يجب عليّ ذلك — لكنني لم أكن أعلم أن الشركة وهمية. وظيفتي التحقق المالي الرقمي وليس التحقق من الوجود الفعلي للشركات."`,
-        contradiction: null
-      }
-    ],
-
-    notebookHints: [
-      { icon: "📅", text: "تاريخان مهمان: تأسيس الشركة (15 مارس) وخطاب الترحيب (10 يناير). قارن الفرق!" },
-      { icon: "✍️", text: "الدليل E2-03 هو الأقوى — من وقّع الخطاب ومتى وقّعه بالضبط؟" },
-      { icon: "🔗", text: "الحساب البنكي المجهول (E2-05) مرتبط بمن؟" },
-      { icon: "👤", text: "من يقول 'لم أوقّع شيئاً' بينما يوجد توقيعه فعلياً؟" }
-    ],
-
-    connections: [
-      "خطاب ترحيب بالشركة (يناير) + تأسيس الشركة (مارس) = الغامدي علم مسبقاً",
-      "توقيع الغامدي على الخطاب + إنكاره التوقيع = الكذبة الكاشفة",
-      "حساب الأسرة البنكي + التحويلات = الدليل المالي"
-    ],
-
-    solution: {
-      title: "المشهد النهائي: الورقة المدمِّرة",
-      scene: `
-        <h3>🎬 لحظة الانهيار</h3>
-        <p>وضع المحقق أمام <span class="highlight">عبدالرحمن الغامدي</span> نسخة مكبّرة من خطاب الترحيب — توقيعه وتاريخ يناير واضحان كالشمس.</p>
-        <div class="proof">المحقق: "قلت إنك لم توقّع أي وثيقة تتعلق بشركة الأفق. هذا توقيعك؟"
-الغامدي (يشحب): "هذا... ربما خطأ إداري..."
-المحقق: "شركة الأفق لم تتأسس إلا بعد 65 يوماً من هذا التاريخ. كيف رحّبت بشركة لم تولد بعد؟"</div>
-        <h3>⚖️ كيف نفّذ الجريمة</h3>
-        <p>الغامدي خطّط للعملية منذ البداية: أسّس شركة الأفق عبر وسيط (قريب له)، ووقّع خطاب الترحيب مسبقاً استعداداً لإضفاء الشرعية على الصفقة. أعطى طارق السلمي تعليمات جزئية دون أن يُعلمه بالصورة الكاملة، مما جعل المساعد شاهداً لا شريكاً. المحاسب رياض كان بحسن نية كما أثبتت سجلات الدخول للنظام.</p>
-        <div class="proof">الثغرة القاتلة: لا يمكن لأحد أن يُرحّب رسمياً بشركة قبل وجودها القانوني، إلا إذا كان يعلم مسبقاً أنها ستُؤسَّس — ولأنه هو من أسّسها.</div>
-        <p>صدر الحكم: السجن 15 سنة وإعادة الأموال. طارق حُكم عليه بالإيقاف عن العمل فقط. رياض بُرّئ.</p>
-      `
-    }
-  },
-
-  // ============================================================
-  // القضية 3: الشبح الرقمي — جريمة سيبرانية
-  // الجاني: يوسف الحمدان (محلل أنظمة)
-  // الثغرة: ادّعى أنه كان في رحلة خارج البلاد ليلة الاختراق،
-  //         لكنه وصف تفاصيل ملموسة عن الطقس في المدينة تلك الليلة
-  //         — تفاصيل لا يمكنه معرفتها لو كان حقاً في الخارج.
-  // ============================================================
-
-  3: {
-    id: 3,
-    title: "الشبح الرقمي",
-    type: "جريمة سيبرانية",
-    color: "#4c7ac9",
-    summary: "في ليلة الثالث من مارس، اخترق شخص مجهول خوادم البنك المركزي واستخرج بيانات 500,000 عميل. الاختراق تمّ من داخل الشبكة الداخلية — يعني أن المهاجم استخدم صلاحيات موظف حقيقي أو كان هو نفسه موظفاً.",
-    answer: "يوسف الحمدان",
-    answerHints: ["يوسف الحمدان", "الحمدان", "يوسف"],
-
-    evidence: [
-      {
-        id: "E3-01",
-        icon: "💻",
-        title: "سجل دخول الخادم",
-        desc: "سجّل النظام دخولاً باستخدام بيانات حساب يوسف الحمدان الساعة 2:17 ص. الدخول جاء من داخل شبكة الـ VPN الخاصة بالبنك، مما يعني استخدام بيانات موظف حقيقي.",
-        tag: "أدلة رقمية"
-      },
-      {
-        id: "E3-02",
-        icon: "🌐",
-        title: "عنوان IP المخترق",
-        desc: "الـ IP المستخدم للاختراق يعود لشبكة VPN تجارية مدفوعة تتخذ من هولندا مقراً. تسجيل الاشتراك بهذه الخدمة تمّ قبل 3 أشهر من الهجوم — تخطيط مسبق.",
-        tag: "أدلة تقنية"
-      },
-      {
-        id: "E3-03",
-        icon: "🗂️",
-        title: "الملف المسرّب على الدارك ويب",
-        desc: "عُرضت البيانات للبيع بعد 6 ساعات من الاختراق. الملف يحتوي على حقول بيانات لا تظهر في الواجهة العامة للنظام — المخترق كان يعرف بنية قاعدة البيانات من الداخل.",
-        tag: "أدلة رقمية"
-      },
-      {
-        id: "E3-04",
-        icon: "🌧️",
-        title: "تقرير الطقس — ليلة 3 مارس",
-        desc: "بحسب تقارير الأرصاد: ليلة الثالث من مارس شهدت عاصفة رعدية نادرة في المدينة بدأت الساعة 11 م تقريباً مع أمطار غزيرة وبرق حتى الفجر. أُغلقت بعض الطرق.",
-        tag: "وثائق رسمية"
-      },
-      {
-        id: "E3-05",
-        icon: "✈️",
-        title: "سجلات جوازات السفر",
-        desc: "يوسف الحمدان لديه طابع دخول لتايلاند بتاريخ 1 مارس. لكن لا يوجد طابع عودة مسجّل في النظام حتى تاريخ 5 مارس — فجوة زمنية مشبوهة.",
-        tag: "وثائق سفر"
-      },
-      {
-        id: "E3-06",
-        icon: "🔧",
-        title: "كود الاستغلال المكتشف",
-        desc: "الأداة المستخدمة للاختراق كُتبت بلغة Python بأسلوب برمجي مميّز. خبراء الجنائيات الرقمية قالوا إن الأسلوب نادر ومتخصص — يدل على شخص يعمل في تحليل الأنظمة الداخلية.",
-        tag: "أدلة تقنية"
-      }
-    ],
-
-    suspects: [
-      {
-        id: "S3-01",
-        name: "يوسف الحمدان",
-        role: "محلل أنظمة — البنك المركزي",
-        emoji: "👨‍💻",
-        statement: `"أنا كنت في بانكوك تلك الليلة — عندي تذكرة الطيران وصور من الرحلة. كيف يمكن أن أخترق البنك وأنا على بعد آلاف الكيلومترات؟ صحيح أن بياناتي الوظيفية استُخدمت، لكن شخصاً ما سرق كلمة مروري! وليلة 3 مارس كانت ليلة هادئة — أتذكرها جيداً، جلست في فندقي أشاهد التلفزيون، كان الطقس لطيفاً والأجواء ممتعة في المدينة."`,
-        contradiction: "⚠️ قال إن ليلة 3 مارس 'كانت هادئة وطقسها لطيف في المدينة' — لكن الدليل E3-04 يُثبت أن المدينة شهدت عاصفة رعدية شديدة تلك الليلة! كيف يعرف الطقس لو كان في بانكوك؟",
-        isGuilty: true
-      },
-      {
-        id: "S3-02",
-        name: "هند الزهراني",
-        role: "مديرة أمن المعلومات",
-        emoji: "👩‍💻",
-        statement: `"أنا أديرت التحقيق الداخلي فور اكتشاف الاختراق. صلاحياتي أعلى من يوسف ولو أردت الاختراق لما احتجت لبياناته. كنت في مكتبي ليلة الحادثة — عندي سجل دخول للمبنى يؤكد ذلك. الأنظمة الأمنية تسجّل كل تحركاتي."`,
-        contradiction: null
-      },
-      {
-        id: "S3-03",
-        name: "نبيل العتيبي",
-        role: "مطوّر قواعد البيانات",
-        emoji: "🗄️",
-        statement: `"أنا صممت جزءاً من قاعدة البيانات، نعم. لكنني استقلت قبل 4 أشهر ولا تصاريح وصول لي الآن. كلمة المرور القديمة أُلغيت فور استقالتي — هذا إجراء تلقائي في النظام. أقسم أنني لم أكن متورطاً."`,
-        contradiction: null
-      }
-    ],
-
-    notebookHints: [
-      { icon: "🌧️", text: "الدليل E3-04 يصف ليلة محددة في المدينة — قارنه بأقوال المشتبه بهم" },
-      { icon: "✈️", text: "وجود طابع دخول لا يعني الإقامة — فجوة العودة مشبوهة في E3-05" },
-      { icon: "🔑", text: "من يعرف بنية قاعدة البيانات الداخلية كما يصفها E3-03؟" },
-      { icon: "🗣️", text: "من تحدّث عن تفاصيل لا يمكنه معرفتها لو كان بعيداً فعلاً؟" }
-    ],
-
-    connections: [
-      "وصف الطقس 'اللطيف' + تقرير العاصفة الرعدية = يوسف كان في المدينة",
-      "بيانات الدخول باسمه + VPN مدفوع مسبقاً = تخطيط مسبق بيده",
-      "معرفة بنية قاعدة البيانات + عمله في تحليل الأنظمة = الشخص المناسب"
-    ],
-
-    solution: {
-      title: "المشهد النهائي: العاصفة التي كشفت السر",
-      scene: `
-        <h3>🎬 الفخ الذي نصبه لنفسه</h3>
-        <p>في جلسة الاستجواب، بدا <span class="highlight">يوسف الحمدان</span> هادئاً واثقاً — حتى سأله المحقق سؤالاً واحداً:</p>
-        <div class="proof">المحقق: "صفت لنا ليلة 3 مارس في المدينة بأنها كانت هادئة ولطيفة. من أين جاءت هذه المعلومة؟"
-يوسف: "أنا... قصدت في بانكوك..."
-المحقق: "قلت 'في المدينة'. وتقرير الأرصاد يقول عاصفة رعدية. لو كنت في بانكوك لقلت 'الطقس كان جيداً هناك' — لكنك تحدثت عن هنا."</div>
-        <h3>⚖️ كيف نفّذ الجريمة</h3>
-        <p>يوسف استخدم تذكرة ذهاب فقط — دخل تايلاند وعاد بجواز سفر ثانٍ حصل عليه بطريقة ملتوية (أو عبر عملاء). أعدّ VPN هولندياً من قبل، وفي ليلة الاختراق كان جسدياً في شقته يستغل معرفته العميقة ببنية أنظمة البنك. بعد الاختراق، باع البيانات على الدارك ويب مقابل مبلغ كبير بالعملات الرقمية.</p>
-        <div class="proof">الثغرة القاتلة: تحدّث عن الطقس "في المدينة" تلك الليلة بصياغة شاهد عيان، بينما كانت المدينة تشهد عاصفة رعدية نادرة. لا يمكن لغائب أن يصف طقس مكان ليس فيه.</div>
-        <p>صدر الحكم: السجن 10 سنوات وتعويض ضحايا الاختراق. هند الزهراني رُقّيت بعد تعاونها في التحقيق.</p>
-      `
-    }
-  }
-
-};
-
+const CASES={1:{id:1,title:"ليلة الجمعة السوداء",type:"جريمة قتل",answer:"نورة الرشيدي",answerHints:["نوره الرشيدي","نورة"],evidence:[{id:"E1-01",icon:"🥃",title:"كأس ويسكي مسمومة",desc:"عُثر على كأس مشروب كحولي تحتوي على جرعة قاتلة من السيانيد. البصمات على الكأس مطابقة لبصمات خالد فقط — يعني أنه سكب لنفسه أو شخص آخر نظّف الكأس.",tag:"أدلة كيميائية"},{id:"E1-02",icon:"🔑",title:"مفتاح احتياطي مفقود",desc:"المكتب كان مقفلاً من الداخل، والمفتاح الأصلي في جيب القتيل. المفتاح الاحتياطي الوحيد كان في درج منزل الرشيدي — غير أن الدرج وُجد مفتوحاً وفارغاً.",tag:"أدلة مادية"},{id:"E1-03",icon:"📱",title:"آخر رسالة نصية",desc:"آخر رسالة وردت لخالد الساعة 10:42 م من رقم مجهول: 'لقد حان الوقت'. الرسالة أُرسلت من هاتف مسبق الدفع لا يمكن تتبعه.",tag:"أدلة رقمية"},{id:"E1-04",icon:"🏥",title:"سجلات مستشفى الرازي",desc:"مستشفى الرازي — قسم العناية المركزة — يُطبّق سياسة صارمة تمنع كلياً وجود أجهزة تلفزيون أو أي شاشات في غرف المرضى، حفاظاً على الهدوء والتعافي.",tag:"وثائق رسمية"},{id:"E1-05",icon:"📋",title:"وثيقة تعديل الوصية",desc:"قُبيل وفاته بأسبوع، قام خالد بتعديل وصيته. النسخة الجديدة تُعطي شريكه التجاري فيصل النمر 40% من الثروة بدلاً من 0%، على حساب حصة الزوجة.",tag:"وثائق قانونية"},{id:"E1-06",icon:"🔬",title:"تقرير الطب الشرعي",desc:"الوفاة بين الساعة 11 م و12:30 ص. السيانيد المستخدم من نوع بوتاسيوم سيانيد — يُباع حصرياً في المستودعات الصناعية ومحلات تحميض الصور القديمة.",tag:"تقارير طبية"}],suspects:[{id:"S1-01",name:"نورة الرشيدي",role:"زوجة الضحية",emoji:"👩",statement:`"كنت بعيدة تماماً تلك الليلة. والدتي دخلت المستشفى صباح الجمعة — مستشفى الرازي، قسم العناية المركزة. ذهبت لزيارتها مباشرة بعد صلاة المغرب وبقيت هناك حتى منتصف الليل تقريباً. والدتي كانت خائفة فلم أرد أن أتركها. شاهدنا فلماً في غرفتها قبل أن تنام. زواجي من خالد كان ممتازاً — لا أفهم لماذا تشكّون فيّ. نعم، عرفت بتعديل الوصية، لكنني لم أكترث بالمال يوماً."`,contradiction:"ادّعت مشاهدة التلفزيون في غرفة والدتها بمستشفى الرازي — لكن سجلات المستشفى تُثبت أن قسم العناية المركزة يحظر الشاشات كلياً!"},{id:"S1-02",name:"فيصل النمر",role:"الشريك التجاري",emoji:"👨‍💼",statement:`"كنت في مكتبي في الطابق السابع طوال الليل — لديّ شهود من الحراسة. صحيح أن خالد أضاف اسمي للوصية، لكن هذا كان مكافأة على نجاح صفقة أجريناها في دبي. علاقتنا كانت مبنية على الثقة. لو أردت الأموال لانتظرت — الشركة ستجني ضعف هذا الرقم العام القادم."`,contradiction:null},{id:"S1-03",name:"سامي القحطاني",role:"السائق الشخصي",emoji:"🚗",statement:`"كنت في الموقف طوال الليل أنتظر. أوصلت السيدة نورة إلى المستشفى الساعة 8 مساءً وعدت لأنتظر. تلقيت اتصالاً منها الساعة 11:45 م لأعود واصطحبها. المفتاح الاحتياطي؟ لا أعلم عنه شيئاً — أنا لا أدخل المكتب أبداً."`,contradiction:null}],notebookHints:[{icon:"🔍",text:"المفتاح الاحتياطي اختفى من منزل الضحية — من كان له صلاحية الوصول للمنزل؟"},{icon:"🏥",text:"الدليل E1-04 يصف سياسة المستشفى بالتفصيل — قارنه بأقوال أحد المشتبه بهم"},{icon:"💰",text:"الوصية الجديدة تضرّ بمصلحة شخص واحد — من هو؟"},{icon:"⏰",text:"السائق قال إنها اتصلت به الساعة 11:45 — الوفاة بين 11 م و12:30 ص"}],connections:["المفتاح المفقود + الزوجة صاحبة الوصول للمنزل = الدخول للمكتب","الوصية المعدّلة + خسارة الزوجة = الدافع","ادعاء المستشفى + حظر الشاشات = الكذبة الكاشفة"],solution:{scene:`<h3>🎬 مشهد التحقيق الأخير</h3><p>في غرفة الاستجواب الباردة، يضع المحقق أمام <span class="highlight">نورة الرشيدي</span> ورقة واحدة — لائحة بسياسة مستشفى الرازي.</p><div class="proof">المحقق: "قلت إنكِ شاهدتِ فلماً مع والدتك في غرفتها. قسم العناية المركزة يحظر الشاشات. كيف شاهدتِ ما لا يُوجد؟"\n\nصمتت نورة لحظات طويلة. ثم انهار دفاعها.</div><h3>⚖️ تفاصيل الجريمة</h3><p>نورة اكتشفت تعديل الوصية قبل أسبوع وأدركت أنها ستخسر نصف ثروتها. حصلت على السيانيد، أخذت المفتاح الاحتياطي، دخلت المكتب وأضافت السمّ للزجاجة ثم أعادت إقفال الباب من الداخل عبر خيط رفيع سحبته من تحت الباب — حيلة قرأتها في رواية جريمة قديمة.</p><div class="proof">الثغرة القاتلة: ادّعت مشاهدة التلفزيون في مكان يحظر التلفزيون. كذبة بسيطة كسرت كل بنيان حجتها.</div><p>صدر الحكم: السجن المؤبد.</p>`}},2:{id:2,title:"الصفقة الملوثة",type:"فساد وغسيل أموال",answer:"عبدالرحمن الغامدي",answerHints:["عبد الرحمن الغامدي","الغامدي","عبدالرحمن"],evidence:[{id:"E2-01",icon:"📊",title:"التحويلات البنكية",desc:"سلسلة تحويلات من حساب بلدية الغرب إلى 'مجموعة الأفق' ثم فوراً إلى حسابات خارجية. آخر تحويل تمّ قبل 72 ساعة فقط من بدء التحقيق.",tag:"أدلة مالية"},{id:"E2-02",icon:"🏢",title:"السجل التجاري لشركة الأفق",desc:"'مجموعة الأفق للمقاولات' سُجّلت رسمياً في 15 مارس 2024. لا يوجد لها مقرّ فعلي أو موظفون. العنوان المسجّل هو شقة سكنية فارغة.",tag:"وثائق تجارية"},{id:"E2-03",icon:"✍️",title:"خطاب ترحيب بالمقاول",desc:"وُجد خطاب رسمي بترويسة البلدية يُرحّب بشركة الأفق كمقاول معتمد، موقّع من المدير عبدالرحمن الغامدي. تاريخ الخطاب: 10 يناير 2024 — قبل 65 يوماً من تأسيس الشركة!",tag:"وثائق رسمية — بالغ الأهمية"},{id:"E2-04",icon:"📧",title:"رسائل إلكترونية مشفّرة",desc:"استُعيدت رسائل بريد إلكتروني محذوفة من جهاز المساعد طارق السلمي تتضمن مناقشة 'تفاصيل التحويل'. صياغتها تشير لمنفّذ أوامر وليس مخططاً.",tag:"أدلة رقمية"},{id:"E2-05",icon:"💳",title:"حساب مصرفي مجهول",desc:"حساب بنكي مرتبط برقم هاتف مسجّل بأحد أفراد أسرة المدير الغامدي — الحساب استقبل مبالغ صغيرة منتظمة قبل أن ترتفع فجأة.",tag:"أدلة مالية"},{id:"E2-06",icon:"🖥️",title:"سجلات الدخول للنظام",desc:"نظام البلدية يُسجّل بصمات الدخول. كلا الموظفَين دخلا للنظام في ليالٍ مختلفة، لكن المحاسب رياض قبّاني لم يدخل إطلاقاً خارج ساعات العمل الرسمية.",tag:"أدلة رقمية"}],suspects:[{id:"S2-01",name:"عبدالرحمن الغامدي",role:"مدير بلدية الغرب",emoji:"👔",statement:`"أنا ضحية هذه القضية مثلكم! طارق السلمي هو من أدار كل شيء. أنا وقّعت ما يُحضره لي دون أن أعلم بالتفاصيل. كيف أعلم أن شركة ما غير حقيقية؟ دوري إداري والتحقق ليس من مهامي. لم أوقّع على أي وثيقة تتعلق بشركة الأفق."`,contradiction:"قال إنه لم يوقّع على وثائق شركة الأفق — لكن الدليل E2-03 يُظهر توقيعه الشخصي على خطاب ترحيب بها قبل تأسيسها بشهرين!"},{id:"S2-02",name:"طارق السلمي",role:"المساعد الإداري",emoji:"👨‍💻",statement:`"نعم، أنا تواصلت مع شركة الأفق عبر البريد الإلكتروني، لكنني كنت أنفّذ أوامر مباشرة من المدير. كل ما فعلته أرسلت رسائل، أضفت الشركة في النظام بعد أن أُعطيت وثيقة رسمية موقّعة. لا أملك صلاحية التحويل المالي وحدي. أنا موظف صغير محاصر."`,contradiction:null},{id:"S2-03",name:"رياض قبّاني",role:"المحاسب الرئيسي",emoji:"🧮",statement:`"وقّعت على أوامر الصرف لأنها جاءت مرفقة بموافقات المدير والمساعد. العملية بدت قانونية من الناحية الشكلية. صحيح أنني لم أتحقق بشكل معمّق — لكنني لم أكن أعلم أن الشركة وهمية."`,contradiction:null}],notebookHints:[{icon:"📅",text:"تاريخان مهمان: تأسيس الشركة (15 مارس) وخطاب الترحيب (10 يناير). قارن الفرق!"},{icon:"✍️",text:"الدليل E2-03 هو الأقوى — من وقّع الخطاب ومتى وقّعه بالضبط؟"},{icon:"🔗",text:"الحساب البنكي المجهول (E2-05) مرتبط بمن؟"},{icon:"👤",text:"من يقول 'لم أوقّع شيئاً' بينما يوجد توقيعه فعلياً؟"}],connections:["خطاب ترحيب بالشركة (يناير) + تأسيس الشركة (مارس) = الغامدي علم مسبقاً","توقيع الغامدي على الخطاب + إنكاره التوقيع = الكذبة الكاشفة","حساب الأسرة البنكي + التحويلات = الدليل المالي"],solution:{scene:`<h3>🎬 لحظة الانهيار</h3><p>وضع المحقق أمام <span class="highlight">عبدالرحمن الغامدي</span> نسخة مكبّرة من خطاب الترحيب — توقيعه وتاريخ يناير واضحان.</p><div class="proof">المحقق: "قلت إنك لم توقّع أي وثيقة تتعلق بشركة الأفق. هذا توقيعك؟"\nالغامدي: "هذا... ربما خطأ إداري..."\nالمحقق: "شركة الأفق لم تتأسس إلا بعد 65 يوماً من هذا التاريخ. كيف رحّبت بشركة لم تولد بعد؟"</div><h3>⚖️ كيف نفّذ الجريمة</h3><p>الغامدي أسّس شركة الأفق عبر وسيط، ووقّع خطاب الترحيب مسبقاً. أعطى طارق تعليمات جزئية دون أن يُعلمه بالصورة الكاملة، مما جعل المساعد شاهداً لا شريكاً.</p><div class="proof">الثغرة القاتلة: لا يمكن لأحد أن يُرحّب رسمياً بشركة قبل وجودها القانوني، إلا إذا كان هو من أسّسها.</div><p>صدر الحكم: السجن 15 سنة وإعادة الأموال.</p>`}},3:{id:3,title:"الشبح الرقمي",type:"جريمة سيبرانية",answer:"يوسف الحمدان",answerHints:["يوسف الحمدان","الحمدان","يوسف"],evidence:[{id:"E3-01",icon:"💻",title:"سجل دخول الخادم",desc:"سجّل النظام دخولاً باستخدام بيانات حساب يوسف الحمدان الساعة 2:17 ص. الدخول جاء من داخل شبكة الـ VPN الخاصة بالبنك.",tag:"أدلة رقمية"},{id:"E3-02",icon:"🌐",title:"عنوان IP المخترق",desc:"الـ IP يعود لشبكة VPN تجارية مدفوعة من هولندا. تسجيل الاشتراك تمّ قبل 3 أشهر من الهجوم — تخطيط مسبق.",tag:"أدلة تقنية"},{id:"E3-03",icon:"🗂️",title:"الملف المسرّب على الدارك ويب",desc:"الملف يحتوي على حقول بيانات لا تظهر في الواجهة العامة للنظام — المخترق كان يعرف بنية قاعدة البيانات من الداخل.",tag:"أدلة رقمية"},{id:"E3-04",icon:"🌧️",title:"تقرير الطقس — ليلة 3 مارس",desc:"ليلة الثالث من مارس شهدت عاصفة رعدية نادرة في المدينة بدأت الساعة 11 م مع أمطار غزيرة وبرق حتى الفجر. أُغلقت بعض الطرق.",tag:"وثائق رسمية"},{id:"E3-05",icon:"✈️",title:"سجلات جوازات السفر",desc:"يوسف الحمدان لديه طابع دخول لتايلاند بتاريخ 1 مارس. لكن لا يوجد طابع عودة مسجّل في النظام حتى 5 مارس — فجوة زمنية مشبوهة.",tag:"وثائق سفر"},{id:"E3-06",icon:"🔧",title:"كود الاستغلال المكتشف",desc:"الأداة المستخدمة كُتبت بأسلوب برمجي نادر ومتخصص — يدل على شخص يعمل في تحليل الأنظمة الداخلية.",tag:"أدلة تقنية"}],suspects:[{id:"S3-01",name:"يوسف الحمدان",role:"محلل أنظمة — البنك المركزي",emoji:"👨‍💻",statement:`"أنا كنت في بانكوك تلك الليلة — عندي تذكرة الطيران وصور من الرحلة. كيف أخترق البنك وأنا على بعد آلاف الكيلومترات؟ صحيح أن بياناتي استُخدمت، لكن شخصاً ما سرق كلمة مروري! وليلة 3 مارس كانت ليلة هادئة — أتذكرها جيداً، جلست في فندقي أشاهد التلفزيون، كان الطقس لطيفاً والأجواء ممتعة في المدينة."`,contradiction:"قال إن ليلة 3 مارس 'كانت هادئة وطقسها لطيف في المدينة' — لكن تقرير الأرصاد يُثبت أن المدينة شهدت عاصفة رعدية شديدة! كيف يعرف الطقس لو كان في بانكوك؟"},{id:"S3-02",name:"هند الزهراني",role:"مديرة أمن المعلومات",emoji:"👩‍💻",statement:`"أنا أديرت التحقيق الداخلي فور اكتشاف الاختراق. صلاحياتي أعلى من يوسف ولو أردت الاختراق لما احتجت لبياناته. كنت في مكتبي ليلة الحادثة — عندي سجل دخول للمبنى يؤكد ذلك."`,contradiction:null},{id:"S3-03",name:"نبيل العتيبي",role:"مطوّر قواعد البيانات",emoji:"🗄️",statement:`"أنا صممت جزءاً من قاعدة البيانات، نعم. لكنني استقلت قبل 4 أشهر ولا تصاريح وصول لي الآن. كلمة المرور القديمة أُلغيت فور استقالتي — هذا إجراء تلقائي في النظام."`,contradiction:null}],notebookHints:[{icon:"🌧️",text:"الدليل E3-04 يصف ليلة محددة في المدينة — قارنه بأقوال المشتبه بهم"},{icon:"✈️",text:"وجود طابع دخول لا يعني الإقامة — فجوة العودة مشبوهة في E3-05"},{icon:"🔑",text:"من يعرف بنية قاعدة البيانات الداخلية كما يصفها E3-03؟"},{icon:"🗣️",text:"من تحدّث عن تفاصيل لا يمكنه معرفتها لو كان بعيداً فعلاً؟"}],connections:["وصف الطقس 'اللطيف' + تقرير العاصفة الرعدية = يوسف كان في المدينة","بيانات الدخول باسمه + VPN مدفوع مسبقاً = تخطيط مسبق بيده","معرفة بنية قاعدة البيانات + عمله في تحليل الأنظمة = الشخص المناسب"],solution:{scene:`<h3>🎬 الفخ الذي نصبه لنفسه</h3><p>في جلسة الاستجواب، بدا <span class="highlight">يوسف الحمدان</span> هادئاً واثقاً — حتى سأله المحقق سؤالاً واحداً:</p><div class="proof">المحقق: "صفت لنا ليلة 3 مارس في المدينة بأنها كانت هادئة ولطيفة. من أين جاءت هذه المعلومة؟"\nيوسف: "أنا... قصدت في بانكوك..."\nالمحقق: "قلت 'في المدينة'. وتقرير الأرصاد يقول عاصفة رعدية. لو كنت في بانكوك لقلت 'الطقس كان جيداً هناك'."</div><h3>⚖️ كيف نفّذ الجريمة</h3><p>يوسف استخدم تذكرة ذهاب فقط وعاد سراً. أعدّ VPN هولندياً من قبل، وفي ليلة الاختراق كان في شقته يستغل معرفته العميقة ببنية أنظمة البنك. باع البيانات على الدارك ويب بالعملات الرقمية.</p><div class="proof">الثغرة القاتلة: تحدّث عن الطقس "في المدينة" بصياغة شاهد عيان، بينما المدينة كانت تشهد عاصفة رعدية نادرة.</div><p>صدر الحكم: السجن 10 سنوات.</p>`}}};
 </script>
+
+<!-- ════ APP LOGIC ════ -->
 <script>
-// =============================================
-// DETECTIVE GAME — APP LOGIC
-// مكتب التحقيقات الجنائية
-// =============================================
+let currentCase=null;
+let solvedCases=JSON.parse(localStorage.getItem('sc2')||'[]');
 
-// State
-let currentCase = null;
-let solvedCases = JSON.parse(localStorage.getItem('solvedCases') || '[]');
-
-// ---- SCREEN MANAGEMENT ----
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  const screen = document.getElementById(id);
-  screen.classList.add('active');
-  window.scrollTo(0, 0);
+// ── screens
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
 }
 
-// ---- INTRO ----
-document.getElementById('enter-btn').addEventListener('click', () => {
+// ── intro
+document.getElementById('enter-btn').addEventListener('click',()=>{
   showScreen('dashboard-screen');
   updateDashboard();
 });
 
-// ---- DASHBOARD ----
-function updateDashboard() {
-  document.getElementById('solved-count').textContent = solvedCases.length;
-
-  solvedCases.forEach(caseId => {
-    const card = document.getElementById(`card-${caseId}`);
-    const stamp = document.getElementById(`stamp-${caseId}`);
-    if (card) {
-      card.classList.add('solved');
-      card.querySelector('.case-stamp').textContent = '✔ محلولة';
-    }
+// ── dashboard
+function updateDashboard(){
+  document.getElementById('solved-count').textContent=solvedCases.length;
+  solvedCases.forEach(id=>{
+    const el=document.getElementById('cp-'+id);
+    if(el)el.classList.add('solved');
   });
 }
 
-// ---- OPEN CASE ----
-function openCase(caseId) {
-  currentCase = CASES[caseId];
-  if (!currentCase) return;
-
-  // Set header
-  document.getElementById('case-header-title').textContent = currentCase.title;
-  document.getElementById('case-header-type').textContent = currentCase.type;
-
-  // Render tabs
+// ── open case
+function openCase(id){
+  currentCase=CASES[id];
+  document.getElementById('topbar-title').textContent=currentCase.title;
+  document.getElementById('topbar-type').textContent=currentCase.type;
   renderEvidence();
   renderSuspects();
   renderNotebook();
-  resetSolveTab();
-
-  // Switch to case screen
+  resetSolve();
   showScreen('case-screen');
-  switchTab('evidence', document.querySelector('.tab-btn[data-tab="evidence"]'));
+  // reset tabs
+  document.querySelectorAll('.ftab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelector('.ftab[data-tab="evidence"]').classList.add('active');
+  document.getElementById('tab-evidence').classList.add('active');
 }
 
-// ---- EVIDENCE ----
-function renderEvidence() {
-  const grid = document.getElementById('evidence-grid');
-  grid.innerHTML = currentCase.evidence.map(e => `
-    <div class="evidence-card">
-      <div class="evidence-img">${e.icon}</div>
-      <div class="evidence-body">
-        <div class="evidence-num">${e.id}</div>
-        <div class="evidence-title">${e.title}</div>
-        <div class="evidence-desc">${e.desc}</div>
-        <span class="evidence-tag">${e.tag}</span>
+// ── evidence — flippable cards
+function renderEvidence(){
+  document.getElementById('evidence-grid').innerHTML=currentCase.evidence.map(e=>`
+    <div class="ev-card-wrap" onclick="this.classList.toggle('flipped')">
+      <div class="ev-card-inner">
+        <div class="ev-front">
+          <div class="ev-num">${e.id}</div>
+          <div class="ev-icon">${e.icon}</div>
+          <div class="ev-title">${e.title}</div>
+          <div class="ev-flip-hint">اضغط للكشف</div>
+          <div class="ev-tag-label">${e.tag}</div>
+        </div>
+        <div class="ev-back">
+          <div class="ev-back-header">EVIDENCE — ${e.id}</div>
+          <div class="ev-back-title">${e.title}</div>
+          <div class="ev-back-desc">${e.desc}</div>
+        </div>
       </div>
     </div>
   `).join('');
 }
 
-// ---- SUSPECTS ----
-function renderSuspects() {
-  const list = document.getElementById('suspects-list');
-  list.innerHTML = currentCase.suspects.map(s => `
-    <div class="suspect-card">
-      <div class="suspect-header" onclick="toggleSuspect('${s.id}', this)">
-        <div class="suspect-avatar">${s.emoji}</div>
-        <div class="suspect-info">
-          <div class="suspect-name">${s.name}</div>
-          <div class="suspect-role">${s.role}</div>
-        </div>
-        <div class="suspect-toggle">▼</div>
+// ── suspects
+function renderSuspects(){
+  document.getElementById('suspects-grid').innerHTML=currentCase.suspects.map(s=>`
+    <div class="suspect-file">
+      <div class="suspect-file-header">
+        <span class="sf-label">SUSPECT FILE</span>
+        <span class="sf-status">ملف مشتبه به</span>
       </div>
-      <div class="suspect-body" id="body-${s.id}">
-        <div class="suspect-audio">
-          <button class="audio-btn" onclick="playAudio('${s.id}')">▶ تشغيل التسجيل الصوتي</button>
-          <span class="audio-note">ملف صوتي — محاكاة (لا يوجد تسجيل حقيقي)</span>
-        </div>
-        <div class="statement-label">STATEMENT — إفادة الاستجواب</div>
-        <div class="statement-text">"${s.statement}"</div>
-        ${s.contradiction ? `
-          <div class="suspect-contradiction">
-            <span>${s.contradiction}</span>
+      <div class="suspect-file-body">
+        <div class="sf-photo-row">
+          <div class="sf-photo">${s.emoji}</div>
+          <div class="sf-info">
+            <div class="sf-name">${s.name}</div>
+            <div class="sf-role">${s.role}</div>
+            <span class="sf-toggle" onclick="toggleStatement('stmt-${s.id}',this)">▶ عرض الإفادة</span>
           </div>
-        ` : ''}
+        </div>
+        <div class="sf-statement" id="stmt-${s.id}">
+          <div class="sf-stmt-label">STATEMENT — الإفادة الرسمية</div>
+          <div class="sf-stmt-text">${s.statement}</div>
+          ${s.contradiction?`<div class="sf-contradiction">${s.contradiction}</div>`:''}
+        </div>
       </div>
     </div>
   `).join('');
 }
 
-function toggleSuspect(id, header) {
-  const body = document.getElementById(`body-${id}`);
-  const isOpen = body.classList.contains('open');
-
-  // Close all
-  document.querySelectorAll('.suspect-body').forEach(b => b.classList.remove('open'));
-  document.querySelectorAll('.suspect-header').forEach(h => h.classList.remove('open'));
-
-  if (!isOpen) {
-    body.classList.add('open');
-    header.classList.add('open');
-  }
+function toggleStatement(id,btn){
+  const el=document.getElementById(id);
+  const open=el.classList.toggle('open');
+  btn.textContent=open?'▼ إخفاء الإفادة':'▶ عرض الإفادة';
 }
 
-function playAudio(id) {
-  // Simulate audio playback (no real audio)
-  const btn = event.target;
-  const origText = btn.textContent;
-  btn.textContent = '⏹ يُشغَّل... (محاكاة)';
-  btn.style.color = 'var(--gold)';
-  btn.style.borderColor = 'var(--gold-dim)';
-  setTimeout(() => {
-    btn.textContent = origText;
-    btn.style.color = '';
-    btn.style.borderColor = '';
-  }, 2500);
+// ── notebook
+function renderNotebook(){
+  const hintsEl=document.getElementById('nb-hints');
+  hintsEl.innerHTML=`<div class="nb-paper-title">💡 خيوط للتفكير</div>`+
+    currentCase.notebookHints.map(h=>`<div class="hint-row"><span class="hi">${h.icon}</span><span>${h.text}</span></div>`).join('');
+
+  const connEl=document.getElementById('nb-connections');
+  connEl.innerHTML=`<div class="nb-paper-title">🔗 ربط الأدلة</div>`+
+    currentCase.connections.map(c=>`<div class="conn-row"><span class="conn-dot">—</span><span>${c}</span></div>`).join('');
+
+  document.getElementById('personal-notes').value='';
 }
 
-// ---- NOTEBOOK ----
-function renderNotebook() {
-  // Hints
-  const hintsEl = document.getElementById('notebook-hints');
-  hintsEl.innerHTML = `
-    <div style="font-weight:700; color: var(--gold); margin-bottom: 0.75rem; font-size:0.9rem;">💡 أدلة للتفكير</div>
-    ${currentCase.notebookHints.map(h => `
-      <div class="hint-item">
-        <span class="hint-icon">${h.icon}</span>
-        <span>${h.text}</span>
-      </div>
-    `).join('')}
-  `;
-
-  // Connections
-  const connEl = document.getElementById('connection-builder');
-  connEl.innerHTML = currentCase.connections.map(c => `
-    <div class="connection-item">
-      <span class="conn-dot">🔗</span>
-      <span>${c}</span>
-    </div>
-  `).join('');
-
-  // Clear notes
-  document.getElementById('personal-notes').value = '';
+// ── solve
+function resetSolve(){
+  document.getElementById('culprit-input').value='';
+  const r=document.getElementById('verdict-result');
+  r.style.display='none';r.className='verdict-result';
 }
 
-// ---- SOLVE ----
-function resetSolveTab() {
-  document.getElementById('culprit-input').value = '';
-  document.getElementById('solve-result').className = 'solve-result hidden';
-  document.getElementById('solve-result').innerHTML = '';
-}
-
-function checkSolution() {
-  const input = document.getElementById('culprit-input').value.trim();
-  if (!input) return;
-
-  const correctAnswer = currentCase.answer.toLowerCase().trim();
-  const inputLower = input.toLowerCase().trim();
-
-  // Check against main answer and hints
-  const allAnswers = [correctAnswer, ...(currentCase.answerHints || []).map(a => a.toLowerCase())];
-  const isCorrect = allAnswers.some(ans => inputLower.includes(ans) || ans.includes(inputLower) || inputLower === ans);
-
-  if (isCorrect) {
-    // Show result
-    const resultEl = document.getElementById('solve-result');
-    resultEl.className = 'solve-result correct';
-    resultEl.innerHTML = `
-      <h3>✅ صحيح — الجاني هو: ${currentCase.answer}</h3>
-      <p>ممتاز! لقد كشفت الحقيقة. شاهد مشهد الحل الكامل الآن.</p>
-    `;
-
-    // Mark solved
-    if (!solvedCases.includes(currentCase.id)) {
+function checkSolution(){
+  const input=document.getElementById('culprit-input').value.trim();
+  if(!input)return;
+  const correct=currentCase.answer.toLowerCase();
+  const hints=(currentCase.answerHints||[]).map(h=>h.toLowerCase());
+  const all=[correct,...hints];
+  const inp=input.toLowerCase();
+  const ok=all.some(a=>inp.includes(a)||a.includes(inp)||inp===a);
+  const r=document.getElementById('verdict-result');
+  r.style.display='block';
+  if(ok){
+    r.className='verdict-result correct';
+    r.innerHTML=`<strong>✅ صحيح — الجاني: ${currentCase.answer}</strong><br/>تم إصدار أمر الاعتقال. شاهد مشهد الحل الآن.`;
+    if(!solvedCases.includes(currentCase.id)){
       solvedCases.push(currentCase.id);
-      localStorage.setItem('solvedCases', JSON.stringify(solvedCases));
+      localStorage.setItem('sc2',JSON.stringify(solvedCases));
     }
-
-    // Show modal after brief delay
-    setTimeout(() => showSolutionModal(), 800);
-  } else {
-    // Wrong
+    setTimeout(()=>showModal(),700);
+  }else{
+    r.className='verdict-result wrong';
+    r.innerHTML='❌ اسم خاطئ — راجع الأدلة والاستجوابات مجدداً';
     showWrongFlash();
-    const resultEl = document.getElementById('solve-result');
-    resultEl.className = 'solve-result wrong';
-    resultEl.innerHTML = `
-      <h3>❌ اسم خاطئ</h3>
-      <p>راجع الأدلة والاستجوابات مجدداً. هناك تناقض واضح لم تكتشفه بعد.</p>
-    `;
   }
 }
 
-// Allow Enter key in solve input
-document.getElementById('culprit-input').addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') checkSolution();
-});
+document.getElementById('culprit-input').addEventListener('keydown',e=>{if(e.key==='Enter')checkSolution()});
 
-// ---- WRONG FLASH ----
-function showWrongFlash() {
-  const flash = document.getElementById('wrong-flash');
-  flash.classList.remove('hidden');
-  setTimeout(() => flash.classList.add('hidden'), 2500);
+// ── modal
+function showModal(){
+  document.getElementById('modal-body').innerHTML=`<div class="solution-scene">${currentCase.solution.scene}</div>`;
+  document.getElementById('solution-modal').classList.remove('hidden');
+  document.body.style.overflow='hidden';
 }
-
-// ---- SOLUTION MODAL ----
-function showSolutionModal() {
-  const modal = document.getElementById('solution-modal');
-  const body = document.getElementById('modal-body');
-
-  body.innerHTML = `
-    <div class="solution-scene">
-      ${currentCase.solution.scene}
-    </div>
-  `;
-
-  modal.classList.remove('hidden');
-  document.body.style.overflow = 'hidden';
-}
-
-function closeModal() {
+function closeModal(){
   document.getElementById('solution-modal').classList.add('hidden');
-  document.body.style.overflow = '';
+  document.body.style.overflow='';
   goBack();
 }
 
-// ---- TAB SWITCHING ----
-function switchTab(tabName, btn) {
-  // Deactivate all
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-
-  // Activate selected
-  if (btn) btn.classList.add('active');
-  const pane = document.getElementById(`tab-${tabName}`);
-  if (pane) pane.classList.add('active');
+// ── tab switch
+function switchTab(name,btn){
+  document.querySelectorAll('.ftab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
 }
 
-// ---- BACK ----
-function goBack() {
+// ── back
+function goBack(){
   showScreen('dashboard-screen');
   updateDashboard();
-  currentCase = null;
+  currentCase=null;
 }
 
-// ---- INIT ----
-updateDashboard();
+// ── wrong flash
+function showWrongFlash(){
+  const f=document.getElementById('wrong-flash');
+  f.classList.remove('hidden');
+  setTimeout(()=>f.classList.add('hidden'),2500);
+}
 
+updateDashboard();
 </script>
 </body>
 </html>
