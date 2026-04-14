@@ -3,378 +3,301 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>ملفات التحقيق السرية — المستوى الصعب</title>
+<title>ملفات التحقيق السرية</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --navy:#050810;
-  --navy2:#0a0f1e;
-  --navy3:#0d1528;
-  --navy4:#111d35;
-  --blue:#1a6fb5;
-  --blue2:#2484d4;
-  --blue3:#4da3e8;
-  --white:#ffffff;
-  --off-white:#f4f6fa;
-  --gray:#8a9ab5;
-  --gray2:#c5cedd;
-  --border:#1a2640;
-  --border2:#253860;
-  --red:#c0392b;
-  --red2:#e74c3c;
-  --red-pale:#fff0ef;
-  --red-mid:#fad7d4;
-  --gold:#b8860b;
-  --gold2:#d4a017;
-  --gold-pale:#fffaed;
-  --gold-mid:#faeab5;
-  --cyan:#0e7c8e;
-  --cyan2:#17a2b8;
-  --cyan-pale:#eafafc;
-  --cyan-mid:#b2ecf3;
-  --purple:#7c3aed;
-  --purple2:#a855f7;
-  --purple-pale:#f5f3ff;
-  --green:#16a34a;
-  --green2:#22c55e;
-  --orange:#c2410c;
-  --orange2:#f97316;
-  --fcairo:'Cairo',sans-serif;
-  --fmono:'IBM Plex Mono',monospace;
+  --navy:#0a0f1e;--navy2:#0d1528;--navy3:#111d35;--navy4:#162040;
+  --blue:#1a6fb5;--blue2:#2484d4;--blue3:#4da3e8;--blue-pale:#daeeff;
+  --white:#ffffff;--off-white:#f4f6fa;--gray:#8a9ab5;--gray2:#c5cedd;
+  --border:#1e2d4a;--border2:#253860;
+  --red:#c0392b;--red2:#e74c3c;--red-pale:#fff0ef;--red-mid:#fad7d4;
+  --gold:#b8860b;--gold2:#d4a017;--gold-pale:#fffaed;--gold-mid:#faeab5;
+  --cyan:#0e7c8e;--cyan2:#17a2b8;--cyan-pale:#eafafc;--cyan-mid:#b2ecf3;
+  --purple:#6c3483;--purple2:#8e44ad;--purple-pale:#f5eef8;--purple-mid:#d7bde2;
+  --green:#1e8449;--green2:#27ae60;--green-pale:#eafaf1;--green-mid:#a9dfbf;
+  --fcairo:'Cairo',sans-serif;--fmono:'IBM Plex Mono',monospace;
 }
 html,body{min-height:100%;background:var(--navy);color:var(--white);font-family:var(--fcairo);-webkit-font-smoothing:antialiased;direction:rtl}
 
-/* ── screens ── */
+/* ══ PIN LOCK ══ */
+#pin-screen{position:fixed;inset:0;background:#060912;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0}
+#pin-screen.off{display:none}
+.pin-bg-lines{position:absolute;inset:0;overflow:hidden;pointer-events:none;opacity:.04}
+.pin-bg-lines::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 40px,rgba(77,163,232,.5) 40px,rgba(77,163,232,.5) 41px),repeating-linear-gradient(90deg,transparent,transparent 40px,rgba(77,163,232,.5) 40px,rgba(77,163,232,.5) 41px)}
+.pin-logo{position:relative;margin-bottom:2.5rem;text-align:center}
+.pin-shield{font-size:3.5rem;filter:drop-shadow(0 0 20px rgba(77,163,232,.4));animation:shieldPulse 3s ease-in-out infinite}
+@keyframes shieldPulse{0%,100%{filter:drop-shadow(0 0 15px rgba(77,163,232,.3))}50%{filter:drop-shadow(0 0 35px rgba(77,163,232,.7))}}
+.pin-title{font-size:1.1rem;font-weight:700;color:var(--white);letter-spacing:2px;margin-top:.5rem}
+.pin-sub{font-family:var(--fmono);font-size:.6rem;color:var(--gray);letter-spacing:4px;margin-top:.3rem;opacity:.6}
+.pin-box{background:rgba(13,21,40,.9);border:1px solid var(--border2);padding:2.2rem 2.5rem;display:flex;flex-direction:column;align-items:center;gap:1.6rem;width:320px;position:relative;z-index:1}
+.pin-box::before{content:'';position:absolute;top:0;right:0;left:0;height:2px;background:linear-gradient(90deg,transparent,var(--blue2),transparent)}
+.pin-prompt{font-family:var(--fmono);font-size:.62rem;letter-spacing:3px;color:var(--gray);text-align:center}
+.pin-dots{display:flex;gap:16px;align-items:center}
+.pin-dot{width:16px;height:16px;border-radius:50%;border:2px solid var(--border2);background:transparent;transition:all .25s}
+.pin-dot.filled{background:var(--blue2);border-color:var(--blue2);box-shadow:0 0 12px rgba(36,132,212,.7)}
+.pin-dot.error{background:var(--red2);border-color:var(--red2);box-shadow:0 0 12px rgba(231,76,60,.7)}
+.numpad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%}
+.num-btn{background:var(--navy3);border:1px solid var(--border);color:var(--white);font-family:var(--fmono);font-size:1.1rem;font-weight:600;padding:14px;cursor:pointer;transition:all .15s;text-align:center;border-radius:3px}
+.num-btn:hover{background:var(--navy4);border-color:var(--border2)}
+.num-btn:active{transform:scale(.93);background:var(--blue);border-color:var(--blue2)}
+.num-btn.del{font-size:.75rem;color:var(--gray);letter-spacing:1px}
+.num-btn.enter{background:rgba(36,132,212,.12);border-color:rgba(36,132,212,.4);color:var(--blue3);font-size:.7rem;letter-spacing:2px}
+.num-btn.enter:hover{background:var(--blue2);color:var(--white)}
+.pin-err{font-family:var(--fmono);font-size:.6rem;color:var(--red2);letter-spacing:2px;height:14px;transition:opacity .2s;opacity:0;text-align:center}
+.pin-err.show{opacity:1}
+.pin-shake{animation:pinShake .4s ease}
+@keyframes pinShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-10px)}40%{transform:translateX(10px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+
+/* ══ SCREENS ══ */
 .screen{display:none}
 .screen.active{display:block}
-#pin-screen.active{display:flex;min-height:100vh;flex-direction:column;align-items:center;justify-content:center}
 #intro-screen.active{display:flex;min-height:100vh;flex-direction:column}
 #dashboard-screen.active{display:flex;min-height:100vh;flex-direction:column}
 #case-screen.active{display:flex;min-height:100vh;flex-direction:column}
-#scenario-screen.active{display:flex;min-height:100vh;flex-direction:column}
 
-/* ── PIN ── */
-.pin-wrap{text-align:center;padding:2rem;max-width:360px;width:100%}
-.pin-logo{font-family:var(--fmono);font-size:.6rem;letter-spacing:5px;color:var(--blue3);margin-bottom:2rem;opacity:.7}
-.pin-title{font-size:1.8rem;font-weight:900;color:var(--white);margin-bottom:.5rem}
-.pin-sub{font-size:.78rem;color:var(--gray);margin-bottom:2.5rem;font-family:var(--fmono);letter-spacing:1px}
-.pin-dots{display:flex;gap:.8rem;justify-content:center;margin-bottom:2rem}
-.pdot{width:14px;height:14px;border-radius:50%;border:2px solid var(--border2);background:transparent;transition:all .2s}
-.pdot.filled{background:var(--blue3);border-color:var(--blue3);box-shadow:0 0 10px rgba(77,163,232,.5)}
-.pin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;max-width:220px;margin:0 auto 1.5rem}
-.pkey{background:var(--navy3);border:1px solid var(--border2);color:var(--white);font-family:var(--fmono);font-size:1.1rem;padding:1rem;cursor:pointer;transition:all .15s;border-radius:4px}
-.pkey:hover{background:var(--navy4);border-color:var(--blue2);color:var(--blue3)}
-.pkey:active{transform:scale(.95)}
-.pkey.del{font-size:.8rem;color:var(--gray)}
-.pkey.del:hover{color:var(--red2);border-color:var(--red2)}
-.pin-err{font-family:var(--fmono);font-size:.62rem;color:var(--red2);letter-spacing:2px;height:1.2rem;transition:opacity .2s}
-.pin-err.hidden{opacity:0}
-
-/* ── INTRO ── */
+/* ══ INTRO ══ */
 .intro-nav{display:flex;align-items:center;justify-content:space-between;padding:1.2rem 2rem;border-bottom:1px solid var(--border);background:var(--navy2)}
 .intro-nav-brand{font-family:var(--fmono);font-size:.7rem;color:var(--blue3);letter-spacing:3px}
 .intro-nav-badge{font-family:var(--fmono);font-size:.6rem;color:var(--gray);letter-spacing:2px;border:1px solid var(--border2);padding:3px 10px}
 .intro-hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3rem 2rem;text-align:center;position:relative;overflow:hidden}
-.intro-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 50%,rgba(26,111,181,.07) 0%,transparent 70%)}
+.intro-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 50%,rgba(26,111,181,.08) 0%,transparent 70%)}
 .hero-label{font-family:var(--fmono);font-size:.65rem;letter-spacing:5px;color:var(--blue3);margin-bottom:1.4rem;opacity:.7}
-.hero-title{font-size:3rem;font-weight:900;color:var(--white);line-height:1.1;margin-bottom:.8rem;letter-spacing:-1px}
-.hero-title span{color:var(--red2)}
-.hero-sub{font-size:.95rem;color:var(--gray);font-weight:300;margin-bottom:3rem;max-width:420px;line-height:1.8}
-.hero-warn{background:rgba(231,76,60,.07);border:1px solid rgba(231,76,60,.2);padding:.8rem 1.5rem;font-family:var(--fmono);font-size:.65rem;color:var(--red2);letter-spacing:1px;margin-bottom:2rem;max-width:420px;line-height:1.8}
+.hero-title{font-size:3.2rem;font-weight:900;color:var(--white);line-height:1.1;margin-bottom:.8rem;letter-spacing:-1px}
+.hero-title span{color:var(--blue3)}
+.hero-sub{font-size:1rem;color:var(--gray);font-weight:300;margin-bottom:3rem;max-width:380px;line-height:1.7}
 .hero-stats{display:flex;gap:2.5rem;margin-bottom:3rem;justify-content:center}
-.hstat{text-align:center}
-.hstat-n{font-size:1.8rem;font-weight:700;color:var(--white)}
-.hstat-l{font-size:.72rem;color:var(--gray);margin-top:2px}
-.btn-start{background:var(--red2);color:var(--white);border:none;padding:14px 40px;font-family:var(--fcairo);font-size:.95rem;font-weight:700;cursor:pointer;border-radius:3px;letter-spacing:.5px;transition:all .2s}
-.btn-start:hover{background:#c0392b;transform:translateY(-1px)}
+.hstat{text-align:center}.hstat-n{font-size:1.8rem;font-weight:700;color:var(--white)}.hstat-l{font-size:.72rem;color:var(--gray);margin-top:2px}
+.btn-start{background:var(--blue2);color:var(--white);border:none;padding:14px 40px;font-family:var(--fcairo);font-size:.95rem;font-weight:600;cursor:pointer;border-radius:4px;letter-spacing:.5px;transition:all .2s}
+.btn-start:hover{background:var(--blue3);transform:translateY(-1px)}
+.intro-scroll-hint{font-family:var(--fmono);font-size:.58rem;color:var(--gray);letter-spacing:2px;opacity:.5;margin-top:2rem}
 
-/* ── SCENARIO ── */
-.scenario-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;position:relative;overflow:hidden}
-.scenario-wrap::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 50% 40% at 50% 50%,rgba(231,76,60,.05) 0%,transparent 70%)}
-.scenario-box{max-width:700px;width:100%;background:var(--navy2);border:1px solid var(--border2)}
-.scenario-top{background:var(--navy3);padding:1rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.scenario-top-label{font-family:var(--fmono);font-size:.55rem;letter-spacing:3px;color:var(--gray)}
-.scenario-classification{font-family:var(--fmono);font-size:.55rem;color:var(--red2);border:1px solid rgba(231,76,60,.3);padding:2px 8px;letter-spacing:2px}
-.scenario-body{padding:2rem}
-.scenario-case-id{font-family:var(--fmono);font-size:.6rem;letter-spacing:4px;color:var(--blue3);margin-bottom:.5rem}
-.scenario-title{font-size:1.6rem;font-weight:900;color:var(--white);margin-bottom:.4rem}
-.scenario-type-row{display:flex;align-items:center;gap:.8rem;margin-bottom:1.5rem}
-.scenario-text{font-size:.88rem;color:var(--gray2);line-height:2;margin-bottom:1.5rem;border-right:2px solid var(--red2);padding-right:1rem}
-.scenario-meta{display:flex;gap:2rem;margin-bottom:1.5rem;padding:.9rem 1.2rem;background:var(--navy3);border:1px solid var(--border)}
-.smeta-item{}
-.smeta-label{font-family:var(--fmono);font-size:.5rem;letter-spacing:3px;color:var(--gray);margin-bottom:.25rem}
-.smeta-val{font-size:.82rem;font-weight:700;color:var(--white)}
-.scenario-warn{font-family:var(--fmono);font-size:.62rem;color:var(--gold2);background:rgba(184,134,11,.06);border:1px solid rgba(184,134,11,.2);padding:.7rem 1rem;margin-bottom:1.5rem;line-height:1.8}
-.btn-enter-case{background:var(--blue2);color:var(--white);border:none;padding:13px 32px;font-family:var(--fcairo);font-size:.9rem;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.5px;border-radius:3px}
-.btn-enter-case:hover{background:var(--blue3)}
-.btn-back-dash{background:transparent;border:1px solid var(--border2);color:var(--gray);padding:12px 24px;font-family:var(--fmono);font-size:.65rem;cursor:pointer;transition:all .15s;letter-spacing:1px}
-.btn-back-dash:hover{border-color:var(--gray2);color:var(--white)}
-.scenario-footer{display:flex;gap:1rem;margin-top:.5rem}
-
-/* ── DASHBOARD ── */
+/* ══ DASHBOARD ══ */
 .dash-nav{background:var(--navy2);border-bottom:1px solid var(--border);padding:.85rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:40}
 .dnav-brand{display:flex;align-items:center;gap:.8rem}
-.dnav-logo{width:28px;height:28px;border:1.5px solid var(--red2);border-radius:3px;display:flex;align-items:center;justify-content:center}
-.dnav-logo svg{width:14px;height:14px;fill:var(--red2)}
+.dnav-logo{width:28px;height:28px;border:1.5px solid var(--blue2);border-radius:3px;display:flex;align-items:center;justify-content:center}
+.dnav-logo svg{width:14px;height:14px;fill:var(--blue3)}
 .dnav-title{font-size:.88rem;font-weight:700;color:var(--white)}
 .dnav-sub{font-family:var(--fmono);font-size:.55rem;color:var(--gray);letter-spacing:2px}
 .dnav-right{display:flex;align-items:center;gap:1.5rem}
 .dnav-stat{font-family:var(--fmono);font-size:.62rem;color:var(--gray)}
-.dnav-stat strong{color:var(--green2)}
+.dnav-stat strong{color:var(--blue3)}
 .dnav-clock{font-family:var(--fmono);font-size:.65rem;color:var(--gray2);background:var(--navy3);padding:4px 10px;border:1px solid var(--border)}
 .dash-body{flex:1;padding:2rem}
 .dash-section-label{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem}
 .dash-section-label span{font-family:var(--fmono);font-size:.6rem;letter-spacing:4px;color:var(--gray);white-space:nowrap}
 .dash-section-label::after{content:'';flex:1;height:1px;background:var(--border)}
-.files-list{display:flex;flex-direction:column;gap:.9rem}
+.files-list{display:flex;flex-direction:column;gap:1rem}
 .file-item{background:var(--navy2);border:1px solid var(--border);border-right:4px solid transparent;cursor:pointer;transition:all .22s;position:relative;overflow:hidden;display:flex;align-items:stretch}
 .file-item:hover{border-color:var(--border2);transform:translateX(-3px)}
-.file-item.case-red{border-right-color:var(--red2)}
-.file-item.case-gold{border-right-color:var(--gold2)}
-.file-item.case-cyan{border-right-color:var(--cyan2)}
-.file-item.case-purple{border-right-color:var(--purple2)}
-.file-item.case-orange{border-right-color:var(--orange2)}
-.file-item.case-green{border-right-color:var(--green2)}
-.file-item.case-red:hover{box-shadow:-4px 0 20px rgba(231,76,60,.15)}
-.file-item.case-gold:hover{box-shadow:-4px 0 20px rgba(212,160,23,.15)}
-.file-item.case-cyan:hover{box-shadow:-4px 0 20px rgba(23,162,184,.15)}
-.file-item.case-purple:hover{box-shadow:-4px 0 20px rgba(168,85,247,.15)}
-.file-item.case-orange:hover{box-shadow:-4px 0 20px rgba(249,115,22,.15)}
-.file-item.case-green:hover{box-shadow:-4px 0 20px rgba(34,197,94,.12)}
-.file-item.solved-case{opacity:.55}
-.fi-stripe{width:5px;flex-shrink:0}
-.fi-body{flex:1;padding:1rem 1.4rem;display:flex;align-items:center;gap:1.3rem}
-.fi-icon{width:46px;height:56px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.8rem;position:relative}
-.fi-icon::after{content:'';position:absolute;bottom:0;right:0;width:10px;height:10px;border-bottom:2px solid;border-right:2px solid}
-.case-red .fi-icon::after{border-color:var(--red2)}
-.case-gold .fi-icon::after{border-color:var(--gold2)}
-.case-cyan .fi-icon::after{border-color:var(--cyan2)}
-.case-purple .fi-icon::after{border-color:var(--purple2)}
-.case-orange .fi-icon::after{border-color:var(--orange2)}
-.case-green .fi-icon::after{border-color:var(--green2)}
+.file-item.case-red{border-right-color:var(--red2)}.file-item.case-gold{border-right-color:var(--gold2)}.file-item.case-cyan{border-right-color:var(--cyan2)}.file-item.case-purple{border-right-color:var(--purple2)}.file-item.case-green{border-right-color:var(--green2)}
+.file-item.case-red:hover{box-shadow:-4px 0 20px rgba(231,76,60,.15)}.file-item.case-gold:hover{box-shadow:-4px 0 20px rgba(212,160,23,.15)}.file-item.case-cyan:hover{box-shadow:-4px 0 20px rgba(23,162,184,.15)}.file-item.case-purple:hover{box-shadow:-4px 0 20px rgba(142,68,173,.15)}.file-item.case-green:hover{box-shadow:-4px 0 20px rgba(39,174,96,.15)}
+.file-item.solved-case{opacity:.65}
+.fi-stripe{width:6px;flex-shrink:0}
+.fi-body{flex:1;padding:1.2rem 1.5rem;display:flex;align-items:center;gap:1.5rem}
+.fi-icon{width:52px;height:64px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:2rem;position:relative}
+.fi-icon::after{content:'';position:absolute;bottom:0;right:0;width:12px;height:12px;border-bottom:2px solid;border-right:2px solid}
+.case-red .fi-icon::after{border-color:var(--red2)}.case-gold .fi-icon::after{border-color:var(--gold2)}.case-cyan .fi-icon::after{border-color:var(--cyan2)}.case-purple .fi-icon::after{border-color:var(--purple2)}.case-green .fi-icon::after{border-color:var(--green2)}
 .fi-content{flex:1}
-.fi-meta{display:flex;align-items:center;gap:.7rem;margin-bottom:.3rem;flex-wrap:wrap}
-.fi-id{font-family:var(--fmono);font-size:.58rem;color:var(--gray);letter-spacing:2px}
-.fi-type-badge{font-family:var(--fmono);font-size:.5rem;padding:2px 7px;border-radius:2px;letter-spacing:1px}
-.badge-red{background:var(--red-pale);color:var(--red);border:1px solid var(--red-mid)}
-.badge-gold{background:var(--gold-pale);color:var(--gold);border:1px solid var(--gold-mid)}
-.badge-cyan{background:var(--cyan-pale);color:var(--cyan);border:1px solid var(--cyan-mid)}
-.badge-purple{background:#f5f3ff;color:var(--purple);border:1px solid #ddd6fe}
-.badge-orange{background:#fff7ed;color:var(--orange);border:1px solid #fed7aa}
-.badge-green{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0}
-.fi-title{font-size:1rem;font-weight:700;color:var(--white);margin-bottom:.25rem}
-.fi-desc{font-size:.77rem;color:var(--gray);line-height:1.6}
+.fi-meta{display:flex;align-items:center;gap:.8rem;margin-bottom:.4rem}
+.fi-id{font-family:var(--fmono);font-size:.6rem;color:var(--gray);letter-spacing:2px}
+.fi-type-badge{font-family:var(--fmono);font-size:.52rem;padding:2px 8px;border-radius:2px;letter-spacing:1px}
+.badge-red{background:var(--red-pale);color:var(--red);border:1px solid var(--red-mid)}.badge-gold{background:var(--gold-pale);color:var(--gold);border:1px solid var(--gold-mid)}.badge-cyan{background:var(--cyan-pale);color:var(--cyan);border:1px solid var(--cyan-mid)}.badge-purple{background:var(--purple-pale);color:var(--purple);border:1px solid var(--purple-mid)}.badge-green{background:var(--green-pale);color:var(--green);border:1px solid var(--green-mid)}
+.fi-title{font-size:1.1rem;font-weight:700;color:var(--white);margin-bottom:.3rem}
+.fi-desc{font-size:.8rem;color:var(--gray);line-height:1.65}
 .fi-desc strong{color:var(--gray2);font-weight:600}
-.fi-right{display:flex;flex-direction:column;align-items:flex-end;gap:.5rem;flex-shrink:0;padding:.2rem 0}
-.fi-status{display:flex;align-items:center;gap:.4rem;font-family:var(--fmono);font-size:.56rem}
+.fi-right{display:flex;flex-direction:column;align-items:flex-end;gap:.6rem;flex-shrink:0;padding:.3rem 0}
+.fi-status{display:flex;align-items:center;gap:.4rem;font-family:var(--fmono);font-size:.58rem}
 .status-dot{width:6px;height:6px;border-radius:50%}
-.dot-open{background:var(--red2);box-shadow:0 0 6px var(--red2)}
-.dot-solved{background:var(--green2);box-shadow:0 0 6px var(--green2)}
-.fi-btn{background:transparent;border:1px solid var(--border2);color:var(--gray2);padding:6px 16px;font-family:var(--fcairo);font-size:.72rem;cursor:pointer;transition:all .18s;white-space:nowrap;border-radius:3px}
+.dot-open{background:var(--red2);box-shadow:0 0 6px var(--red2)}.dot-solved{background:#27ae60;box-shadow:0 0 6px #27ae60}
+.fi-btn{background:transparent;border:1px solid var(--border2);color:var(--gray2);padding:7px 18px;font-family:var(--fcairo);font-size:.75rem;cursor:pointer;transition:all .18s;white-space:nowrap}
 .fi-btn:hover{border-color:var(--blue2);color:var(--white);background:rgba(36,132,212,.08)}
-.fi-date{font-family:var(--fmono);font-size:.56rem;color:var(--gray);opacity:.7}
-.fi-killers-count{font-family:var(--fmono);font-size:.52rem;color:var(--gold2);border:1px solid rgba(212,160,23,.3);padding:2px 6px;background:rgba(212,160,23,.05)}
-.solved-stamp{position:absolute;top:50%;left:28%;transform:translate(-50%,-50%) rotate(-8deg);font-family:var(--fmono);font-size:.7rem;letter-spacing:3px;color:var(--green2);border:1.5px solid var(--green2);padding:4px 12px;background:rgba(5,8,16,.92);pointer-events:none;z-index:5}
+.fi-date{font-family:var(--fmono);font-size:.58rem;color:var(--gray);opacity:.7}
+.solved-stamp{position:absolute;top:50%;left:30%;transform:translate(-50%,-50%) rotate(-8deg);font-family:var(--fmono);font-size:.72rem;letter-spacing:3px;color:#27ae60;border:1.5px solid #27ae60;padding:4px 14px;background:rgba(10,15,30,.9);pointer-events:none;z-index:5}
 
-/* ── CASE SCREEN ── */
+/* ══ CASE SCREEN ══ */
 .case-topbar{display:flex;align-items:center;gap:1rem;padding:.7rem 1.5rem;border-bottom:1px solid var(--border);background:var(--navy2);position:sticky;top:0;z-index:40}
-.btn-back{background:transparent;border:1px solid var(--border2);color:var(--gray);padding:6px 14px;font-family:var(--fmono);font-size:.63rem;cursor:pointer;transition:all .18s;letter-spacing:1px;border-radius:3px}
+.btn-back{background:transparent;border:1px solid var(--border2);color:var(--gray);padding:6px 16px;font-family:var(--fmono);font-size:.65rem;cursor:pointer;transition:all .18s;letter-spacing:1px}
 .btn-back:hover{border-color:var(--blue2);color:var(--white)}
-.ctb-info{flex:1}
-.ctb-name{font-size:.92rem;font-weight:700;color:var(--white)}
-.ctb-id{font-family:var(--fmono);font-size:.56rem;color:var(--gray);letter-spacing:2px}
-.ctb-badge{font-family:var(--fmono);font-size:.52rem;padding:3px 9px;letter-spacing:1px;border-radius:2px}
+.ctb-info{flex:1}.ctb-name{font-size:.95rem;font-weight:700;color:var(--white)}.ctb-id{font-family:var(--fmono);font-size:.58rem;color:var(--gray);letter-spacing:2px}
+.ctb-badge{font-family:var(--fmono);font-size:.55rem;padding:3px 10px;letter-spacing:1px}
+
+/* ══ SCENARIO POPUP ══ */
+.scenario-overlay{position:fixed;inset:0;background:rgba(5,8,18,.95);z-index:9998;display:flex;align-items:center;justify-content:center;padding:1.5rem;backdrop-filter:blur(6px)}
+.scenario-overlay.off{display:none}
+.scenario-box{background:var(--navy2);border:1px solid var(--border2);max-width:580px;width:100%;position:relative}
+.scenario-box::before{content:'';position:absolute;top:0;right:0;left:0;height:2px;background:linear-gradient(90deg,transparent,var(--red2),transparent)}
+.scenario-head{background:var(--navy3);padding:1rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.scenario-head-title{font-family:var(--fmono);font-size:.65rem;letter-spacing:3px;color:var(--red2)}
+.scenario-head-id{font-family:var(--fmono);font-size:.6rem;color:var(--gray);letter-spacing:2px}
+.scenario-body{padding:2rem}
+.scenario-case-title{font-size:1.3rem;font-weight:700;color:var(--white);margin-bottom:1.2rem;padding-bottom:.8rem;border-bottom:1px solid var(--border)}
+.scenario-text{font-size:.88rem;color:var(--gray2);line-height:2;margin-bottom:1.5rem}
+.scenario-meta{display:flex;gap:1.5rem;flex-wrap:wrap;padding:.9rem;background:var(--navy3);border:1px solid var(--border);margin-bottom:1.5rem;border-radius:2px}
+.smeta-item{display:flex;flex-direction:column;gap:.2rem}
+.smeta-label{font-family:var(--fmono);font-size:.5rem;letter-spacing:3px;color:var(--gray)}
+.smeta-val{font-size:.8rem;font-weight:600;color:var(--white)}
+.smeta-val.warn{color:var(--gold2)}.smeta-val.danger{color:var(--red2)}
+.scenario-suspects-count{background:rgba(231,76,60,.07);border:1px solid rgba(231,76,60,.2);padding:.7rem 1rem;font-size:.75rem;color:var(--red2);border-radius:2px;text-align:center;font-family:var(--fmono);letter-spacing:1px;margin-bottom:1.2rem}
+.btn-enter-case{width:100%;background:var(--blue2);color:var(--white);border:none;padding:13px;font-family:var(--fcairo);font-size:.9rem;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.5px}
+.btn-enter-case:hover{background:var(--blue3)}
+
+/* ══ TABS ══ */
 .case-tabs{display:flex;background:var(--navy2);border-bottom:1px solid var(--border);padding:0 1.5rem;overflow-x:auto}
-.ctab{background:transparent;border:none;border-bottom:2px solid transparent;color:var(--gray);padding:.65rem 1.1rem;font-family:var(--fcairo);font-size:.78rem;font-weight:600;cursor:pointer;transition:all .18s;white-space:nowrap;flex-shrink:0}
-.ctab:hover{color:var(--gray2)}
-.ctab.active{color:var(--white);border-bottom-color:var(--blue2)}
-.case-desk{flex:1;padding:1.6rem 1.5rem;background:var(--navy)}
-.cpane{display:none}
-.cpane.active{display:block;animation:fadeUp .2s ease both}
+.ctab{background:transparent;border:none;border-bottom:2px solid transparent;color:var(--gray);padding:.7rem 1.2rem;font-family:var(--fcairo);font-size:.8rem;font-weight:600;cursor:pointer;transition:all .18s;white-space:nowrap;flex-shrink:0}
+.ctab:hover{color:var(--gray2)}.ctab.active{color:var(--white);border-bottom-color:var(--blue2)}
+.case-desk{flex:1;padding:1.8rem 1.5rem;background:var(--navy)}
+.cpane{display:none}.cpane.active{display:block;animation:fadeUp .2s ease both}
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.pane-label{font-family:var(--fmono);font-size:.56rem;letter-spacing:4px;color:var(--gray);margin-bottom:1.3rem;display:flex;align-items:center;gap:.8rem}
+.pane-label{font-family:var(--fmono);font-size:.58rem;letter-spacing:4px;color:var(--gray);margin-bottom:1.4rem;display:flex;align-items:center;gap:.8rem}
 .pane-label::after{content:'';flex:1;height:1px;background:var(--border)}
 
-/* ── EVIDENCE ── */
-.ev-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:.9rem}
-.ev-card{background:var(--navy2);border:1px solid var(--border);cursor:pointer;transition:all .25s;height:195px;perspective:800px}
+/* ══ EVIDENCE ══ */
+.ev-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem}
+.ev-card{background:var(--navy2);border:1px solid var(--border);cursor:pointer;transition:all .25s;height:200px;perspective:800px}
 .ev-card:hover{border-color:var(--border2)}
 .ev-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .45s cubic-bezier(.4,0,.2,1)}
 .ev-card.flipped .ev-inner{transform:rotateY(180deg)}
-.ev-front,.ev-back{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;padding:1.1rem}
-.ev-front{background:var(--navy2);border:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.6rem;text-align:center}
-.ev-front-tag{position:absolute;top:.55rem;right:.65rem;font-family:var(--fmono);font-size:.48rem;color:var(--gray);letter-spacing:1px;opacity:.6}
-.ev-front-ico{font-size:1.9rem}
-.ev-front-name{font-size:.8rem;font-weight:700;color:var(--white);line-height:1.3}
-.ev-front-hint{font-family:var(--fmono);font-size:.5rem;color:var(--gray);letter-spacing:1px;opacity:.6}
+.ev-front,.ev-back{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;padding:1.2rem}
+.ev-front{background:var(--navy2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.7rem;text-align:center}
+.ev-front-tag{position:absolute;top:.6rem;right:.7rem;font-family:var(--fmono);font-size:.5rem;color:var(--gray);letter-spacing:1px;opacity:.6}
+.ev-front-ico{font-size:2rem}.ev-front-name{font-size:.82rem;font-weight:700;color:var(--white);line-height:1.3}
+.ev-front-hint{font-family:var(--fmono);font-size:.52rem;color:var(--gray);letter-spacing:1px;opacity:.7}
 .ev-back{background:var(--navy3);border:1px solid var(--border2);transform:rotateY(180deg);display:flex;flex-direction:column;overflow:hidden}
-.ev-back-id{font-family:var(--fmono);font-size:.5rem;color:var(--blue3);letter-spacing:2px;margin-bottom:.35rem;padding-bottom:.35rem;border-bottom:1px solid var(--border)}
-.ev-back-name{font-size:.76rem;font-weight:700;color:var(--white);margin-bottom:.45rem}
-.ev-back-desc{font-size:.7rem;color:var(--gray);line-height:1.7;flex:1;overflow:hidden}
+.ev-back-id{font-family:var(--fmono);font-size:.52rem;color:var(--blue3);letter-spacing:2px;margin-bottom:.4rem;padding-bottom:.4rem;border-bottom:1px solid var(--border)}
+.ev-back-name{font-size:.78rem;font-weight:700;color:var(--white);margin-bottom:.5rem}
+.ev-back-desc{font-size:.72rem;color:var(--gray);line-height:1.7;flex:1;overflow:auto}
 
-/* ── SUSPECTS ── */
-.sus-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:1rem}
+/* ══ SUSPECTS ══ */
+.sus-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.1rem}
 .sus-card{background:var(--navy2);border:1px solid var(--border);overflow:hidden}
-.sus-card-head{display:flex;align-items:center;gap:.9rem;padding:.9rem 1.1rem;border-bottom:1px solid var(--border)}
-.sus-avatar{width:46px;height:56px;flex-shrink:0;background:var(--navy3);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:1.5rem;position:relative}
-.sus-avatar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px}
-.sus-info{flex:1}
-.sus-name{font-size:.9rem;font-weight:700;color:var(--white);margin-bottom:.12rem}
-.sus-role{font-family:var(--fmono);font-size:.56rem;color:var(--gray);letter-spacing:1px}
-.sus-card-actions{padding:.65rem 1.1rem;border-bottom:1px solid var(--border);display:flex;gap:.5rem}
-.btn-stmt{background:transparent;border:1px solid var(--border2);color:var(--gray);padding:6px 12px;font-family:var(--fcairo);font-size:.7rem;font-weight:600;cursor:pointer;transition:all .15s;flex:1;text-align:center;border-radius:3px}
+.sus-card-head{display:flex;align-items:center;gap:.9rem;padding:1rem 1.2rem;border-bottom:1px solid var(--border)}
+.sus-avatar{width:50px;height:60px;flex-shrink:0;background:var(--navy3);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:1.6rem;position:relative}
+.sus-info{flex:1}.sus-name{font-size:.95rem;font-weight:700;color:var(--white);margin-bottom:.15rem}
+.sus-role{font-family:var(--fmono);font-size:.58rem;color:var(--gray);letter-spacing:1px}
+.sus-card-actions{padding:.7rem 1.2rem;border-bottom:1px solid var(--border);display:flex;gap:.6rem}
+.btn-stmt{background:transparent;border:1px solid var(--border2);color:var(--gray);padding:6px 14px;font-family:var(--fcairo);font-size:.72rem;font-weight:600;cursor:pointer;transition:all .15s;flex:1;text-align:center}
 .btn-stmt:hover{border-color:var(--blue2);color:var(--white)}
-.sus-stmt{display:none;padding:.85rem 1.1rem}
-.sus-stmt.open{display:block;animation:fadeUp .18s ease both}
-.sus-stmt-label{font-family:var(--fmono);font-size:.5rem;letter-spacing:3px;color:var(--gray);margin-bottom:.45rem}
-.sus-stmt-text{font-size:.76rem;color:var(--gray2);line-height:1.9;font-style:italic;border-right:2px solid var(--border2);padding-right:.85rem}
+.sus-stmt{display:none;padding:.9rem 1.2rem}.sus-stmt.open{display:block;animation:fadeUp .18s ease both}
+.sus-stmt-label{font-family:var(--fmono);font-size:.52rem;letter-spacing:3px;color:var(--gray);margin-bottom:.5rem}
+.sus-stmt-text{font-size:.78rem;color:var(--gray2);line-height:1.85;font-style:italic;border-right:2px solid var(--border2);padding-right:.9rem}
 
-/* ── NOTEBOOK ── */
-.nb-grid{display:grid;grid-template-columns:1fr;gap:1.1rem}
+/* ══ NOTEBOOK ══ */
+.nb-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
 .nb-card{background:var(--navy2);border:1px solid var(--border);padding:1.1rem}
-.nb-card-head{font-family:var(--fmono);font-size:.56rem;letter-spacing:3px;color:var(--gray);margin-bottom:.8rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
-.nb-ta{width:100%;min-height:200px;background:var(--navy);border:1px solid var(--border);font-family:var(--fmono);font-size:.72rem;padding:.8rem;color:var(--gray2);resize:vertical;line-height:1.9;outline:none;transition:border-color .18s;direction:rtl}
+.nb-card-head{font-family:var(--fmono);font-size:.58rem;letter-spacing:3px;color:var(--gray);margin-bottom:.9rem;padding-bottom:.6rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.5rem}
+.nb-card-head::before{content:'';display:inline-block;width:5px;height:5px;background:var(--blue3);border-radius:50%;flex-shrink:0}
+.nb-conn{display:flex;gap:.6rem;padding:.38rem 0;border-bottom:1px solid var(--border);font-size:.73rem;color:var(--gray);line-height:1.55;font-family:var(--fmono)}
+.nb-conn:last-child{border-bottom:none}
+.nb-conn-arrow{color:var(--blue3);flex-shrink:0}
+.nb-full{grid-column:1/-1}
+.nb-ta{width:100%;min-height:120px;background:var(--navy);border:1px solid var(--border);font-family:var(--fmono);font-size:.72rem;padding:.8rem;color:var(--gray2);resize:vertical;line-height:1.9;outline:none;transition:border-color .18s;direction:rtl}
 .nb-ta:focus{border-color:var(--blue2)}
-.nb-ta::placeholder{color:var(--gray);opacity:.45;font-size:.65rem}
+.nb-ta::placeholder{color:var(--gray);opacity:.5;font-size:.65rem}
 
-/* ── VERDICT ── */
-.vwrap{max-width:500px;margin:0 auto}
+/* ══ VERDICT ══ */
+.vwrap{max-width:520px;margin:0 auto}
 .vdoc{background:var(--navy2);border:1px solid var(--border2)}
-.vdoc-top{background:var(--navy3);padding:.85rem 1.3rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.vdoc-top-label{font-family:var(--fmono);font-size:.53rem;letter-spacing:3px;color:var(--gray)}
-.vdoc-top-stamp{font-family:var(--fmono);font-size:.52rem;color:var(--red2);border:1px solid rgba(231,76,60,.3);padding:2px 8px;letter-spacing:2px}
-.vdoc-body{padding:1.6rem}
-.vdoc-title{font-size:1.15rem;font-weight:700;color:var(--white);text-align:center;margin-bottom:.3rem}
-.vdoc-sub{font-size:.75rem;color:var(--gray);text-align:center;line-height:1.7;margin-bottom:1.3rem;font-family:var(--fmono);font-size:.6rem}
-.vdoc-killers-info{background:rgba(212,160,23,.06);border:1px solid rgba(212,160,23,.2);padding:.6rem 1rem;font-size:.68rem;color:var(--gold2);text-align:center;margin-bottom:1.4rem;border-radius:3px;font-family:var(--fmono);letter-spacing:1px}
-.vlabel{display:block;font-family:var(--fmono);font-size:.56rem;letter-spacing:3px;color:var(--gray);margin-bottom:.45rem}
-.vinp{width:100%;background:var(--navy);border:none;border-bottom:2px solid var(--border2);font-family:var(--fcairo);font-size:.95rem;padding:.65rem .5rem;color:var(--white);margin-bottom:1.2rem;outline:none;transition:border-color .2s;direction:rtl;border-radius:0}
+.vdoc-top{background:var(--navy3);padding:.9rem 1.4rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.vdoc-top-label{font-family:var(--fmono);font-size:.55rem;letter-spacing:3px;color:var(--gray)}
+.vdoc-top-stamp{font-family:var(--fmono);font-size:.55rem;color:var(--red2);border:1px solid rgba(231,76,60,.3);padding:2px 8px;letter-spacing:2px}
+.vdoc-body{padding:1.8rem}
+.vdoc-title{font-size:1.2rem;font-weight:700;color:var(--white);text-align:center;margin-bottom:.3rem}
+.vdoc-sub{font-size:.78rem;color:var(--gray);text-align:center;line-height:1.7;margin-bottom:1.4rem;font-family:var(--fmono);font-size:.62rem}
+.vdoc-warn{background:rgba(184,134,11,.06);border:1px solid rgba(184,134,11,.2);padding:.6rem 1rem;font-size:.68rem;color:var(--gold2);text-align:center;margin-bottom:1.5rem;border-radius:3px}
+.vlabel{display:block;font-family:var(--fmono);font-size:.58rem;letter-spacing:3px;color:var(--gray);margin-bottom:.5rem}
+.vinp{width:100%;background:var(--navy);border:none;border-bottom:2px solid var(--border2);font-family:var(--fcairo);font-size:1rem;padding:.7rem .5rem;color:var(--white);margin-bottom:.6rem;outline:none;transition:border-color .2s;direction:rtl}
 .vinp:focus{border-bottom-color:var(--blue2)}
-.vinp::placeholder{color:var(--gray);font-size:.82rem;opacity:.55}
-.multi-inputs{margin-bottom:1.4rem}
-.btn-verdict{width:100%;background:var(--blue2);color:var(--white);border:none;padding:13px;font-family:var(--fcairo);font-size:.88rem;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.5px;border-radius:3px}
+.vinp::placeholder{color:var(--gray);font-size:.85rem;opacity:.6}
+.vinp-note{font-family:var(--fmono);font-size:.58rem;color:var(--gray);opacity:.7;margin-bottom:1.4rem;display:block}
+.btn-verdict{width:100%;background:var(--blue2);color:var(--white);border:none;padding:13px;font-family:var(--fcairo);font-size:.9rem;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.5px}
 .btn-verdict:hover{background:var(--blue3)}
-.vres{margin-top:1rem;padding:.85rem;text-align:center;display:none;font-family:var(--fmono);font-size:.68rem;line-height:1.9;border-radius:3px}
-.vres.ok{background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.25);color:var(--green2)}
-.vres.partial{background:rgba(212,160,23,.07);border:1px solid rgba(212,160,23,.25);color:var(--gold2)}
+.vres{margin-top:1rem;padding:.9rem;text-align:center;display:none;font-family:var(--fmono);font-size:.7rem;line-height:1.9;border-radius:3px}
+.vres.ok{background:rgba(39,174,96,.07);border:1px solid rgba(39,174,96,.25);color:#27ae60}
 .vres.fail{background:rgba(231,76,60,.07);border:1px solid rgba(231,76,60,.25);color:var(--red2)}
 
-/* ── MODAL ── */
-.modal-bg{position:fixed;inset:0;background:rgba(5,8,16,.96);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1.5rem;backdrop-filter:blur(8px)}
+/* ══ MODAL ══ */
+.modal-bg{position:fixed;inset:0;background:rgba(5,8,18,.94);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1.5rem;backdrop-filter:blur(6px)}
 .modal-bg.off{display:none}
-.modal-box{background:var(--navy2);border:1px solid var(--border2);max-width:660px;width:100%;max-height:87vh;overflow-y:auto}
+.modal-box{background:var(--navy2);border:1px solid var(--border2);max-width:640px;width:100%;max-height:85vh;overflow-y:auto}
 .modal-head{background:var(--navy3);padding:1rem 1.4rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);position:sticky;top:0}
-.modal-head-title{font-size:.88rem;font-weight:700;color:var(--white);display:flex;align-items:center;gap:.6rem}
-.modal-head-title::before{content:'';display:inline-block;width:8px;height:8px;background:var(--green2);border-radius:50%}
-.btn-mclose{background:transparent;border:1px solid var(--border2);color:var(--gray);width:28px;height:28px;cursor:pointer;font-size:.75rem;transition:all .15s;border-radius:3px}
+.modal-head-title{font-size:.9rem;font-weight:700;color:var(--white);display:flex;align-items:center;gap:.6rem}
+.modal-head-title::before{content:'';display:inline-block;width:8px;height:8px;background:#27ae60;border-radius:50%}
+.btn-mclose{background:transparent;border:1px solid var(--border2);color:var(--gray);width:28px;height:28px;cursor:pointer;font-size:.75rem;transition:all .15s}
 .btn-mclose:hover{border-color:var(--red2);color:var(--red2)}
 .modal-body{padding:1.5rem}
-.sol-scene{font-size:.82rem;color:var(--gray2);line-height:1.95}
-.sol-scene h3{font-size:.68rem;font-family:var(--fmono);letter-spacing:3px;color:var(--blue3);margin:1.2rem 0 .55rem;display:flex;align-items:center;gap:.6rem}
+.sol-scene{font-size:.83rem;color:var(--gray2);line-height:1.95}
+.sol-scene h3{font-size:.72rem;font-family:var(--fmono);letter-spacing:3px;color:var(--blue3);margin:1.2rem 0 .6rem;display:flex;align-items:center;gap:.6rem}
 .sol-scene h3::after{content:'';flex:1;height:1px;background:var(--border)}
 .sol-highlight{color:var(--white);font-weight:700}
-.sol-proof{background:var(--navy);border-right:2px solid var(--blue2);padding:.8rem 1.1rem;margin:.65rem 0;font-family:var(--fmono);font-size:.68rem;color:var(--gray2);line-height:1.9;white-space:pre-line}
-.modal-foot{padding:.85rem 1.4rem;border-top:1px solid var(--border);display:flex;justify-content:flex-end}
-.btn-mok{background:transparent;border:1px solid var(--border2);color:var(--gray2);padding:8px 20px;font-family:var(--fcairo);font-size:.76rem;cursor:pointer;transition:all .15s;border-radius:3px}
+.sol-proof{background:var(--navy);border-right:2px solid var(--blue2);padding:.8rem 1.1rem;margin:.7rem 0;font-family:var(--fmono);font-size:.7rem;color:var(--gray2);line-height:1.9;white-space:pre-line}
+.modal-foot{padding:.9rem 1.4rem;border-top:1px solid var(--border);display:flex;justify-content:flex-end}
+.btn-mok{background:transparent;border:1px solid var(--border2);color:var(--gray2);padding:8px 22px;font-family:var(--fcairo);font-size:.78rem;cursor:pointer;transition:all .15s}
 .btn-mok:hover{border-color:var(--blue2);color:var(--white)}
 
-/* ── FLASH ── */
-.flash-msg{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:var(--navy2);border:1px solid var(--red2);color:var(--red2);font-family:var(--fmono);font-size:.63rem;letter-spacing:2px;padding:.6rem 1.4rem;z-index:9999;pointer-events:none;box-shadow:0 4px 20px rgba(0,0,0,.5);border-radius:3px}
+/* ══ FLASH ══ */
+.flash-msg{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:var(--navy2);border:1px solid var(--red2);color:var(--red2);font-family:var(--fmono);font-size:.65rem;letter-spacing:2px;padding:.6rem 1.5rem;z-index:9999;pointer-events:none;box-shadow:0 4px 20px rgba(0,0,0,.4)}
 .flash-msg.off{display:none}
 
-::-webkit-scrollbar{width:4px}
-::-webkit-scrollbar-track{background:var(--navy)}
-::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
-
-@media(max-width:700px){.sus-grid{grid-template-columns:1fr}.ev-grid{grid-template-columns:repeat(2,1fr)}.fi-body{flex-wrap:wrap}.fi-right{flex-direction:row;align-items:center}.hero-stats{gap:1.5rem}.hero-title{font-size:2.2rem}}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--navy)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+@media(max-width:700px){.nb-grid{grid-template-columns:1fr}.sus-grid{grid-template-columns:1fr}.ev-grid{grid-template-columns:repeat(2,1fr)}.fi-body{flex-wrap:wrap}.fi-right{flex-direction:row;align-items:center}}
 </style>
 </head>
 <body>
 
-<!-- ══ PIN ══ -->
-<div id="pin-screen" class="screen active">
-  <div class="pin-wrap">
-    <div class="pin-logo">FORENSIC_INVESTIGATION_SYSTEM // CLASSIFIED</div>
-    <div class="pin-title">🔐 رمز الدخول</div>
-    <div class="pin-sub">أدخل الرمز السري للوصول</div>
-    <div class="pin-dots">
-      <div class="pdot" id="pd0"></div>
-      <div class="pdot" id="pd1"></div>
-      <div class="pdot" id="pd2"></div>
-      <div class="pdot" id="pd3"></div>
+<!-- ══ PIN LOCK ══ -->
+<div id="pin-screen">
+  <div class="pin-bg-lines"></div>
+  <div class="pin-logo">
+    <div class="pin-shield">🛡️</div>
+    <div class="pin-title">وحدة التحقيقات الجنائية</div>
+    <div class="pin-sub">FORENSIC INVESTIGATION UNIT</div>
+  </div>
+  <div class="pin-box" id="pin-box">
+    <div class="pin-prompt">أدخل رمز الوصول السري</div>
+    <div class="pin-dots" id="pin-dots">
+      <div class="pin-dot" id="pd0"></div>
+      <div class="pin-dot" id="pd1"></div>
+      <div class="pin-dot" id="pd2"></div>
+      <div class="pin-dot" id="pd3"></div>
     </div>
-    <div class="pin-grid">
-      <button class="pkey" onclick="pinKey('1')">1</button>
-      <button class="pkey" onclick="pinKey('2')">2</button>
-      <button class="pkey" onclick="pinKey('3')">3</button>
-      <button class="pkey" onclick="pinKey('4')">4</button>
-      <button class="pkey" onclick="pinKey('5')">5</button>
-      <button class="pkey" onclick="pinKey('6')">6</button>
-      <button class="pkey" onclick="pinKey('7')">7</button>
-      <button class="pkey" onclick="pinKey('8')">8</button>
-      <button class="pkey" onclick="pinKey('9')">9</button>
-      <button class="pkey del" onclick="pinKey('clr')">مسح</button>
-      <button class="pkey" onclick="pinKey('0')">0</button>
-      <button class="pkey del" onclick="pinKey('del')">⌫</button>
+    <div class="numpad">
+      <button class="num-btn" onclick="pinPress('1')">1</button>
+      <button class="num-btn" onclick="pinPress('2')">2</button>
+      <button class="num-btn" onclick="pinPress('3')">3</button>
+      <button class="num-btn" onclick="pinPress('4')">4</button>
+      <button class="num-btn" onclick="pinPress('5')">5</button>
+      <button class="num-btn" onclick="pinPress('6')">6</button>
+      <button class="num-btn" onclick="pinPress('7')">7</button>
+      <button class="num-btn" onclick="pinPress('8')">8</button>
+      <button class="num-btn" onclick="pinPress('9')">9</button>
+      <button class="num-btn del" onclick="pinDel()">مسح</button>
+      <button class="num-btn" onclick="pinPress('0')">0</button>
+      <button class="num-btn enter" onclick="pinEnter()">دخول</button>
     </div>
-    <div class="pin-err hidden" id="pin-err">رمز خاطئ — حاول مجدداً</div>
+    <div class="pin-err" id="pin-err">رمز خاطئ — حاول مجدداً</div>
   </div>
 </div>
 
 <!-- ══ INTRO ══ -->
 <div id="intro-screen" class="screen">
   <nav class="intro-nav">
-    <div class="intro-nav-brand">FORENSIC_INVESTIGATION_SYSTEM // v4.0</div>
+    <div class="intro-nav-brand">FORENSIC_INVESTIGATION_SYSTEM</div>
     <div class="intro-nav-badge">سري للغاية</div>
   </nav>
   <div class="intro-hero">
-    <div class="hero-label">وزارة الداخلية — وحدة التحقيقات الجنائية المتقدمة</div>
-    <h1 class="hero-title">ملفات <span>المستوى</span><br/>الأسود</h1>
-    <p class="hero-sub">عشر قضايا مصنّفة سرية. لا تلميحات. لا خيوط مباشرة. المجرمون يكذبون بذكاء والأدلة متناثرة — ستجمعها بنفسك.</p>
-    <div class="hero-warn">
-      ⚠ تحذير — المستوى: صعب جداً<br/>
-      بعض القضايا تتضمن أكثر من جانٍ واحد. عدد الجناة مذكور في كل قضية.<br/>
-      ادرس كل دليل وكل إفادة بعناية قبل إصدار الحكم.
-    </div>
+    <div class="hero-label">وزارة الداخلية — وحدة التحقيقات الجنائية</div>
+    <h1 class="hero-title">ملفات <span>التحقيق</span><br/>السرية</h1>
+    <p class="hero-sub">عشر قضايا معقدة. لا تلميحات. لا سهولة. فقط الأدلة وعقلك.</p>
     <div class="hero-stats">
-      <div class="hstat"><div class="hstat-n">10</div><div class="hstat-l">قضايا سرية</div></div>
-      <div class="hstat"><div class="hstat-n">34</div><div class="hstat-l">مشتبه بهم</div></div>
+      <div class="hstat"><div class="hstat-n">10</div><div class="hstat-l">قضايا نشطة</div></div>
+      <div class="hstat"><div class="hstat-n">37</div><div class="hstat-l">مشتبه بهم</div></div>
       <div class="hstat"><div class="hstat-n">60</div><div class="hstat-l">قطعة دليل</div></div>
     </div>
-    <button class="btn-start" id="btn-start">دخول غرفة العمليات</button>
-  </div>
-</div>
-
-<!-- ══ SCENARIO ══ -->
-<div id="scenario-screen" class="screen">
-  <div class="scenario-wrap">
-    <div class="scenario-box">
-      <div class="scenario-top">
-        <span class="scenario-top-label">وزارة الداخلية — ملف رسمي</span>
-        <span class="scenario-classification" id="sc-class">سري للغاية</span>
-      </div>
-      <div class="scenario-body">
-        <div class="scenario-case-id" id="sc-id"></div>
-        <div class="scenario-title" id="sc-title"></div>
-        <div class="scenario-type-row">
-          <span class="fi-type-badge" id="sc-badge"></span>
-          <span class="fi-killers-count" id="sc-killers-label"></span>
-        </div>
-        <div class="scenario-text" id="sc-text"></div>
-        <div class="scenario-meta">
-          <div class="smeta-item"><div class="smeta-label">تاريخ الحادثة</div><div class="smeta-val" id="sc-date"></div></div>
-          <div class="smeta-item"><div class="smeta-label">عدد المشتبه بهم</div><div class="smeta-val" id="sc-sus-count"></div></div>
-          <div class="smeta-item"><div class="smeta-label">عدد الأدلة</div><div class="smeta-val" id="sc-ev-count"></div></div>
-        </div>
-        <div class="scenario-warn">⚠ لا توجد تلميحات في هذه القضية — كل شيء يعتمد على قراءتك للأدلة والإفادات</div>
-        <div class="scenario-footer">
-          <button class="btn-back-dash" onclick="goBackDash()">← العودة للملفات</button>
-          <button class="btn-enter-case" id="btn-enter-case">فتح الملف والبدء</button>
-        </div>
-      </div>
-    </div>
+    <button class="btn-start" id="btn-start">فتح الملفات</button>
+    <div class="intro-scroll-hint">حقوق النشر © 2026 'Sal</div>
   </div>
 </div>
 
@@ -382,13 +305,8 @@ html,body{min-height:100%;background:var(--navy);color:var(--white);font-family:
 <div id="dashboard-screen" class="screen">
   <nav class="dash-nav">
     <div class="dnav-brand">
-      <div class="dnav-logo">
-        <svg viewBox="0 0 16 16"><path d="M8 1L1 4v4c0 4 3 6 7 7 4-1 7-3 7-7V4L8 1z"/></svg>
-      </div>
-      <div>
-        <div class="dnav-title">ملفات التحقيق — المستوى الأسود</div>
-        <div class="dnav-sub">وحدة الجرائم الجنائية المتقدمة</div>
-      </div>
+      <div class="dnav-logo"><svg viewBox="0 0 16 16"><path d="M8 1L1 4v4c0 4 3 6 7 7 4-1 7-3 7-7V4L8 1z"/></svg></div>
+      <div><div class="dnav-title">ملفات التحقيق</div><div class="dnav-sub">وحدة الجرائم الجنائية</div></div>
     </div>
     <div class="dnav-right">
       <div class="dnav-stat">محلولة: <strong id="solved-count">0</strong>/10</div>
@@ -396,7 +314,7 @@ html,body{min-height:100%;background:var(--navy);color:var(--white);font-family:
     </div>
   </nav>
   <div class="dash-body">
-    <div class="dash-section-label"><span>الملفات السرية</span></div>
+    <div class="dash-section-label"><span>القضايا النشطة</span></div>
     <div class="files-list" id="files-list"></div>
   </div>
 </div>
@@ -405,16 +323,13 @@ html,body{min-height:100%;background:var(--navy);color:var(--white);font-family:
 <div id="case-screen" class="screen">
   <div class="case-topbar">
     <button class="btn-back" id="btn-back">← رجوع</button>
-    <div class="ctb-info">
-      <div class="ctb-name" id="ctb-name">—</div>
-      <div class="ctb-id" id="ctb-id"></div>
-    </div>
+    <div class="ctb-info"><div class="ctb-name" id="ctb-name">—</div><div class="ctb-id" id="ctb-id"></div></div>
     <span class="ctb-badge" id="ctb-badge"></span>
   </div>
   <div class="case-tabs">
     <div class="ctab active" data-tab="evidence">الأدلة</div>
     <div class="ctab" data-tab="interrogation">المشتبه بهم</div>
-    <div class="ctab" data-tab="notebook">مفكرة المحقق</div>
+    <div class="ctab" data-tab="notebook">الملاحظات</div>
     <div class="ctab" data-tab="solve">الحكم النهائي</div>
   </div>
   <div class="case-desk">
@@ -427,11 +342,19 @@ html,body{min-height:100%;background:var(--navy);color:var(--white);font-family:
       <div class="sus-grid" id="sus-grid"></div>
     </div>
     <div class="cpane" id="tab-notebook">
-      <div class="pane-label">مفكرة المحقق الشخصية</div>
+      <div class="pane-label">مفكرة المحقق</div>
       <div class="nb-grid">
         <div class="nb-card">
-          <div class="nb-card-head">ملاحظاتك الشخصية — دوّن كل ما تلاحظه</div>
-          <textarea class="nb-ta" id="nb-ta" placeholder="لا توجد تلميحات هنا. ما الذي لاحظته في الأدلة؟ من يكذب؟ من له دافع؟ دوّن تحليلك..."></textarea>
+          <div class="nb-card-head">ربط الأدلة</div>
+          <div id="nb-conns"></div>
+        </div>
+        <div class="nb-card">
+          <div class="nb-card-head">تسلسل الأحداث المحتمل</div>
+          <div id="nb-timeline"></div>
+        </div>
+        <div class="nb-card nb-full">
+          <div class="nb-card-head">ملاحظاتك الشخصية</div>
+          <textarea class="nb-ta" id="nb-ta" placeholder="اكتب ملاحظاتك... من تشتبه به ولماذا؟ ما التناقضات التي رصدتها؟"></textarea>
         </div>
       </div>
     </div>
@@ -441,13 +364,17 @@ html,body{min-height:100%;background:var(--navy);color:var(--white);font-family:
         <div class="vdoc">
           <div class="vdoc-top">
             <span class="vdoc-top-label">وزارة الداخلية — أمر اعتقال رسمي</span>
-            <span class="vdoc-top-stamp">سري للغاية</span>
+            <span class="vdoc-top-stamp">سري</span>
           </div>
           <div class="vdoc-body">
             <div class="vdoc-title">إصدار أمر الاعتقال</div>
-            <p class="vdoc-sub">أدخل أسماء المتهمين لإصدار الحكم الرسمي</p>
-            <div class="vdoc-killers-info" id="v-killers-info"></div>
-            <div class="multi-inputs" id="multi-inputs"></div>
+            <p class="vdoc-sub">بعد مراجعة جميع الأدلة، أدخل أسماء المتورطين بالجريمة</p>
+            <div class="vdoc-warn" id="vdoc-suspects-hint">⚠ تحقق من عدد المتورطين الفعلي قبل الحكم</div>
+            <label class="vlabel" for="cinp">الجاني الأول:</label>
+            <input type="text" class="vinp" id="cinp" placeholder="أدخل الاسم الكامل..."/>
+            <label class="vlabel" for="cinp2" id="cinp2-label" style="display:none">الجاني الثاني:</label>
+            <input type="text" class="vinp" id="cinp2" placeholder="أدخل الاسم الكامل..." style="display:none"/>
+            <span class="vinp-note" id="vinp-note"></span>
             <button class="btn-verdict" id="btn-verdict">إصدار الحكم الرسمي</button>
             <div class="vres" id="vres"></div>
           </div>
@@ -457,569 +384,671 @@ html,body{min-height:100%;background:var(--navy);color:var(--white);font-family:
   </div>
 </div>
 
-<!-- ══ MODAL ══ -->
-<div class="modal-bg off" id="modal">
-  <div class="modal-box">
-    <div class="modal-head">
-      <div class="modal-head-title">حل القضية الرسمي</div>
-      <button class="btn-mclose" id="btn-mclose">✕</button>
+<!-- ══ SCENARIO POPUP ══ -->
+<div class="scenario-overlay off" id="scenario-overlay">
+  <div class="scenario-box">
+    <div class="scenario-head">
+      <div class="scenario-head-title">ملف قضية جديدة — تقرير أولي</div>
+      <div class="scenario-head-id" id="sc-id"></div>
     </div>
-    <div class="modal-body" id="modal-body"></div>
-    <div class="modal-foot">
-      <button class="btn-mok" id="btn-mok">إغلاق</button>
+    <div class="scenario-body">
+      <div class="scenario-case-title" id="sc-title"></div>
+      <div class="scenario-text" id="sc-text"></div>
+      <div class="scenario-meta" id="sc-meta"></div>
+      <div class="scenario-suspects-count" id="sc-sus-count"></div>
+      <button class="btn-enter-case" id="btn-enter-case">بدء التحقيق ←</button>
     </div>
   </div>
 </div>
-<div class="flash-msg off" id="flash">❌ خطأ — راجع أسماء المتهمين</div>
+
+<!-- ══ SOLUTION MODAL ══ -->
+<div class="modal-bg off" id="modal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-head-title">حل القضية</div>
+      <button class="btn-mclose" id="btn-mclose">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-foot"><button class="btn-mok" id="btn-mok">إغلاق</button></div>
+  </div>
+</div>
+
+<!-- ══ FLASH MESSAGE ══ -->
+<div class="flash-msg off" id="flash">خطأ — اسم المشتبه به غير صحيح</div>
 
 <script>
-// ════════════════════════════════════════════════════════════
-// PIN
-// ════════════════════════════════════════════════════════════
-var SECRET_PIN="7743";
-var pinBuf="";
-function pinKey(k){
-  if(k==='clr'){pinBuf=""}
-  else if(k==='del'){pinBuf=pinBuf.slice(0,-1)}
-  else if(pinBuf.length<4){pinBuf+=k}
-  renderDots();
-  if(pinBuf.length===4){
-    if(pinBuf===SECRET_PIN){
-      document.getElementById('pin-err').classList.add('hidden');
-      show('intro-screen');
-    }else{
-      document.getElementById('pin-err').classList.remove('hidden');
-      pinBuf="";
-      renderDots();
+/* ══════════════════════════════════
+   UTILITY: show a screen
+══════════════════════════════════ */
+function show(id) {
+  document.querySelectorAll('.screen').forEach(function(s) {
+    s.classList.remove('active');
+  });
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+/* ══════════════════════════════════
+   PIN SYSTEM
+══════════════════════════════════ */
+var PIN_CORRECT = '7749';
+var pinCurrent = '';
+
+function pinPress(d) {
+  if (pinCurrent.length >= 4) return;
+  pinCurrent += d;
+  updateDots();
+}
+
+function pinDel() {
+  pinCurrent = pinCurrent.slice(0, -1);
+  updateDots();
+  document.getElementById('pin-err').classList.remove('show');
+}
+
+function pinEnter() {
+  if (pinCurrent.length < 4) return;
+  if (pinCurrent === PIN_CORRECT) {
+    document.getElementById('pin-screen').classList.add('off');
+    show('intro-screen'); /* ← FIX: show intro after PIN unlocked */
+  } else {
+    pinCurrent = '';
+    updateDots(true);
+    var e = document.getElementById('pin-err');
+    e.classList.add('show');
+    var b = document.getElementById('pin-box');
+    b.classList.add('pin-shake');
+    setTimeout(function() {
+      b.classList.remove('pin-shake');
+      for (var i = 0; i < 4; i++) {
+        document.getElementById('pd' + i).classList.remove('error');
+      }
+    }, 400);
+  }
+}
+
+function updateDots(err) {
+  for (var i = 0; i < 4; i++) {
+    var dot = document.getElementById('pd' + i);
+    dot.classList.remove('filled', 'error');
+    if (err) {
+      dot.classList.add('error');
+    } else if (i < pinCurrent.length) {
+      dot.classList.add('filled');
     }
   }
 }
-function renderDots(){
-  for(var i=0;i<4;i++){
-    var d=document.getElementById('pd'+i);
-    if(i<pinBuf.length)d.classList.add('filled');
-    else d.classList.remove('filled');
-  }
-}
 
-// ════════════════════════════════════════════════════════════
-// CASES DATA
-// ════════════════════════════════════════════════════════════
-var C={
+document.addEventListener('keydown', function(e) {
+  if (document.getElementById('pin-screen').classList.contains('off')) return;
+  if (e.key >= '0' && e.key <= '9') pinPress(e.key);
+  else if (e.key === 'Backspace') pinDel();
+  else if (e.key === 'Enter') pinEnter();
+});
 
-// ─── CASE 1 ───
-1:{id:1,title:"الغرفة المظلمة",caseId:"#2025-001",type:"جريمة قتل",colorCls:"case-red",badgeCls:"badge-red",icon:"🔪",date:"14/02/2025",
-killers:["ريم الطاهر","منصور الطاهر"],
-killersAliases:[["ريم","ريم طاهر"],["منصور","منصور طاهر"]],
-killersCount:2,
-scenario:"في صباح الرابع عشر من فبراير، وُجد المصوّر الشهير <strong>كريم الناصر</strong> ميتاً في الاستوديو السفلي لمنزله. الغرفة مغلقة من الخارج. لا آثار اقتحام. المميت: جرعة زائدة من مخدر التخدير الطبي. الحضور في الليلة الأخيرة ثلاثة أشخاص — أحدهم أو أكثر يخفي الحقيقة.",
+/* ══════════════════════════════════
+   CASE DATA
+══════════════════════════════════ */
+var C = {
+4:{id:4,title:"العشاء الأخير",caseId:"#2025-004",type:"جريمة قتل",color:"red",badgeCls:"badge-red",icon:"🍽️",
+date:"14/02/2025",location:"فيلا عائلة الدوسري — حي النخيل",
+scenario:"وُجدت السيدة <strong>لطيفة الدوسري</strong> ميتة في غرفتها بعد عشاء عائلي احتفالي. وفاة دون ضجيج ودون علامات عنف خارجية. الطبيب الشرعي يؤكد: سُمّ قاتل خُلط في طعامها. ثلاثة أشخاص فقط تواجدوا في المنزل تلك الليلة — وثلاثتهم يُنكرون أي صلة.",
+victims:"لطيفة الدوسري، ٦٢ عاماً",crime:"تسميم متعمد",culpritsCount:2,
+culpritsNote:"المحقق يؤكد تورط اثنين — اكتشف كيف تعاونا",
+answers:[["ريم الدوسري","ريم"],["منصور القحطاني","منصور القحطاني","القحطاني"]],
 ev:[
-{id:"E1-01",ic:"💉",nm:"حقنة مخدر تخدير",desc:"عُثر على حقنة فارغة تحت الطاولة. يحتوي المخدر على Propofol — يستخدم حصراً في غرف العمليات الطبية. لا يُباع للعموم. التصنيع: مستشفى الملك سعود.",tag:"جنائي"},
-{id:"E1-02",ic:"📷",nm:"آخر صورة بالكاميرا",desc:"آخر صورة التقطت في الاستوديو 11:23 مساءً. في الخلفية: ظل شخصين بوضوح. لكن الميت كان يصوّر بمفرده وفق الجدول الرسمي.",tag:"بصري"},
-{id:"E1-03",ic:"🗝️",nm:"مفتاح إضافي مكرّر",desc:"في درج مكتب المنزل: نسختان من مفتاح الاستوديو — لا يملك كريم سوى نسخة واحدة رسمياً. الثانية مكررة حديثاً وفق أثر الطلاء.",tag:"مادي"},
-{id:"E1-04",ic:"📋",nm:"وثيقة التأمين المعدّلة",desc:"قبل أسبوعين، عدّل كريم وثيقة تأمين حياته. المستفيد الأول: زوجته ريم. لكن الوثيقة تتضمن بنداً يُلغي التعويض في حالات الانتحار أو الجرعة الزائدة المتعمدة.",tag:"قانوني"},
-{id:"E1-05",ic:"📱",nm:"سجل مكالمات مشفوف",desc:"في ساعات الليل الأخيرة: مكالمتان بين رقمين مجهولين من خارج البلاد. تحليل الصوت الذكي يُشير إلى صوتَي أنثى وذكر من نفس الفئة العمرية.",tag:"رقمي"},
-{id:"E1-06",ic:"🩺",nm:"سجل العمل الطبي",desc:"ريم الطاهر، زوجة الضحية، عملت لمدة 4 سنوات في قسم التخدير بمستشفى الملك سعود قبل تركها العمل قبل 8 أشهر.",tag:"شخصي"},
-{id:"E1-07",ic:"🔦",nm:"آثار أقدام في الغبار",desc:"في الغرفة المؤدية للاستوديو: آثار حذاءَي شخصين لا يتطابقان مع حذاء الضحية. مقاس الأول: 37 نسائي. الثاني: 42 رجالي.",tag:"جنائي"},
-{id:"E1-08",ic:"📓",nm:"مذكرة كريم الأخيرة",desc:"في المذكرة: 'اكتشفت الاتفاقية. منصور كان هنا مرتين هذا الأسبوع دون علمي. ريم تعرفه منذ سنوات. لن أصمت بعد اليوم.' — كُتبت قبل 6 ساعات من الوفاة.",tag:"مهم"}
+{id:"E4-01",ic:"🧪",nm:"تقرير السموم",desc:"سم الأرسنيك وُجد في دم الضحية بتركيز عالٍ. يحتاج لأكثر من ١٢ ساعة ليؤثر تدريجياً — مما يعني أنه أُضيف للطعام قبل العشاء بساعات في وقت إعداد الوجبة."},
+{id:"E4-02",ic:"📋",nm:"وثيقة الوصية",desc:"لطيفة كانت تملك شقتين في حي الملقا قيمتهما ١.٨ مليون. وفقاً للوصية، تذهبان لابنتها ريم كاملاً — بشرط أن تبقى متزوجة من فهد. إن طلّقت، تعود الشقق للوقف."},
+{id:"E4-03",ic:"📱",nm:"سجل المكالمات",desc:"منصور القحطاني، صيدلاني وصديق قديم للعائلة، اتصل بريم ١١ مرة خلال الأسبوعين الأخيرين. آخر مكالمة: يوم العشاء الساعة ١:١٤ ظهراً — أي بعد ساعتين من بدء إعداد الطعام."},
+{id:"E4-04",ic:"🔍",nm:"بقايا في المطبخ",desc:"وُجد كيس بلاستيكي صغير في سلة المهملات بالمطبخ يحتوي على آثار بودرة بيضاء. البصمات الموجودة عليه: بصمة جانبية واحدة غير مكتملة لأصبع سبابة — غير كافية للتحليل المباشر."},
+{id:"E4-05",ic:"💊",nm:"سجل صيدلية الأمل",desc:"قبل ثلاثة أيام من الجريمة، اشترى شخص ما من صيدلية الأمل مادة مخبرية نادراً ما تُباع للأفراد. صاحب الصيدلية لا يتذكر الوجه بوضوح، لكنه يؤكد أن المشتري كان يعرف الاسم الكيميائي الدقيق."},
+{id:"E4-06",ic:"📞",nm:"رسالة واتساب محذوفة",desc:"رسالة استُرجعت من هاتف ريم بعد الحذف: 'تم. سأكون في الخارج يوم الجمعة.' أُرسلت لرقم غير محفوظ — تبيّن لاحقاً أنه رقم تطابق مع خط ثانٍ غير مسجل باسم منصور."}
 ],
 sus:[
-{id:"S1-01",nm:"ريم الطاهر",rl:"زوجة الضحية",em:"👩",st:"كنت نائمة في الطابق العلوي من التاسعة مساءً. لم أسمع أي شيء. لا أعرف منصور شخصياً — التقينا مرة في حفلة منذ سنوات فقط. نعم عملت في التخدير لكنني تركت المجال. Propofol موجود في كل مستشفى — أي طبيب يستطيع الحصول عليه."},
-{id:"S1-02",nm:"منصور الطاهر",rl:"شقيق الزوجة",em:"👨",st:"زرت كريم مرة هذا الأسبوع فقط — لأنه طلب مساعدة قانونية. لا علاقة لي بالاستوديو. مغادرتي البيت كانت الساعة التاسعة وعندي كاميرا الجيران كدليل على ذلك."},
-{id:"S1-03",nm:"دلال النعيمي",rl:"مساعدة المصوّر",em:"👩‍💼",st:"أنهيت العمل الساعة الثامنة وخرجت. لم أعد للمنزل. لدي فاتورة مطعم باسمي الساعة 9:15 مساءً وشهود. لا أعرف ريم ومنصور إلا كأسرة صاحب العمل."}
+{id:"S4-01",nm:"ريم الدوسري",rl:"ابنة الضحية",em:"👩",st:"كنت في المطبخ لكنني أعددت طعاماً مختلفاً. أمي طلبت وجبتها الخاصة ودخلت لغرفتها مبكراً. لم أفكر في الوصية يوماً — زواجي بخير ولا أحتاج لشقق.",con:null},
+{id:"S4-02",nm:"فهد الدوسري",rl:"زوج ريم وابن الضحية بالتبني",em:"👨",st:"كنت في الصالة طوال الليل أشاهد مباراة. لا علاقة لي بالمطبخ. علاقتي بأم ريم ممتازة — هي من أقنعت ريم بالزواج مني في الأصل.",con:null},
+{id:"S4-03",nm:"منصور القحطاني",rl:"صيدلاني وصديق العائلة",em:"💊",st:"لم أكن في الفيلا تلك الليلة. اتصالاتي بريم طبيعية — نحن أصدقاء قدامى. أعرف الأدوية لكنني لا أبيع سموماً ولم أشترِ شيئاً غير معتاد.",con:"أكد أنه لم يشترِ أي مواد غير معتادة — لكن سجل الصيدلية (E4-05) يُثبت أن شخصاً يعرف الاسم الكيميائي الدقيق اشترى المادة قبل ٣ أيام، وهو تخصص صيدلاني بامتياز. وسجل المكالمات يضعه في اتصال مباشر مع ريم وقت الإعداد."}
 ],
-sol:`<h3>الدليل القاتل</h3><p>المذكرة ووثيقة التأمين والخلفية الطبية كلها تشير لنفس الاتجاه.</p><div class="sol-proof">كريم كتب: "ريم تعرفه منذ سنوات" — لكنها ادّعت أنهما التقيا مرة فقط في حفلة.\nالوثيقة: ريم تستفيد مالياً — لكن فقط إذا لم تظهر الجريمة.\nريم تعمل في التخدير + المخدر من مستشفيات = وصول.\nأثار قدمين: 37 نسائي و42 رجالي = اثنان في الجريمة.</div><h3>كيف نُفّذت الجريمة</h3><p>ريم أحضرت Propofol من مخزونها القديم. منصور أشغل كريم بينما حقنته ريم. المفتاح المكرر مكّن منصور من الدخول والخروج دون أثر.</p><div class="sol-proof">// الأدلة الحاسمة:\n1. المخدر الطبي الحصري + خلفية ريم الطبية\n2. المذكرة تكذّب إفادتها عن عدم معرفة منصور\n3. أثرا قدمين مختلفين = شريكان\n4. المفتاح المكرر حديثاً</div><p>الحكم: <strong>ريم الطاهر ومنصور الطاهر — السجن المؤبد.</strong></p>`
+conns:["وصول للمطبخ + الوصية المشروطة = دافع ريم","معرفة كيميائية + سجل صيدلية = منصور المورّد","الرسالة المحذوفة 'تم' + المكالمة وقت الطبخ = تنسيق مسبق","فهد يربح بقاء الزواج = لا دافع له للقتل"],
+timeline:["ظهر اليوم: مكالمة منصور لريم بعد بدء الطبخ بـ ٢ ساعة","طوال اليوم: أُعدّ السُّم ووُضع في طعام الضحية","مساء: العشاء العائلي — الضحية تأكل بلا شك","ليلاً: تدهور حالة الضحية وتوفيها"],
+sol:`<h3>التخطيط المشترك</h3><p>لم يكن القتل عفوياً. <span class="sol-highlight">ريم الدوسري</span> أرادت الشقتين دون خطر فقدانهما بالطلاق — وكانت علاقتها بمنصور القحطاني تجاوزت حدود الصداقة.<br/>منصور وفّر السُّم من خلال معرفته الصيدلانية، وريم أضافته لطعام والدتها.</p><div class="sol-proof">الدليل الحاسم:\nالرسالة المحذوفة "تم" أُرسلت لرقم منصور\nبعد مكالمته أثناء تحضير الطعام مباشرة.\nلا يوجد تفسير آخر لهذا التسلسل.</div><h3>الحكم</h3><p>ريم الدوسري: <strong>السجن المؤبد</strong><br/>منصور القحطاني: <strong>السجن ٢٠ سنة</strong></p>`
 },
 
-// ─── CASE 2 ───
-2:{id:2,title:"الورثة الأربعة",caseId:"#2025-002",type:"جريمة قتل",colorCls:"case-red",badgeCls:"badge-red",icon:"🏛️",date:"28/03/2025",
-killers:["غانم الوليد"],
-killersAliases:[["غانم","الوليد","غانم وليد"]],
-killersCount:1,
-scenario:"توفّي المليونير <strong>حمد الوليد</strong> في قصره خلال حفل عشاء عائلي. الأطباء أعلنوا نوبة قلبية — لكن المحقق طلب فتح باب التحقيق بعد أن لاحظ تفصيلاً غريباً في المشهد. الورثة الأربعة جميعهم حاضرون تلك الليلة.",
+5:{id:5,title:"صمت الشاهد",caseId:"#2025-005",type:"اغتيال",color:"purple",badgeCls:"badge-purple",icon:"🔫",
+date:"03/03/2025",location:"حي الزيتون — شارع الأمير سلطان",
+scenario:"وُجد المحامي <strong>بدر العتيبي</strong> مقتولاً بطلق ناري في سيارته المتوقفة أمام مكتبه. لا شهود. لا كاميرات. لكن بدر كان يعرف سراً يمكنه أن يُودي بشخصية نافذة. ثلاثة أشخاص كانوا يعرفون بوجود هذا السر — وواحد منهم لم ينتظر.",
+victims:"بدر العتيبي، ٤٤ عاماً",crime:"اغتيال متعمد",culpritsCount:1,
+culpritsNote:"الجاني واحد — اكتشف من أرسل القاتل",
+answers:[["طارق المنصوري","طارق","المنصوري"]],
 ev:[
-{id:"E2-01",ic:"🍷",nm:"كأس نبيذ الضحية",desc:"في قاع الكأس الخاص بحمد: بقايا مسحوق أبيض نادر الاكتشاف. تحليل الـMassSpec يُشير إلى Digoxin تركيز عالٍ — يُحاكي أعراض النوبة القلبية إذا أُعطي بجرعة مرتفعة.",tag:"كيميائي"},
-{id:"E2-02",ic:"📜",nm:"الوصية الأصلية",desc:"وصية حمد الرسمية المؤرخة 2020 تقسّم الثروة بالتساوي بين أبنائه الأربعة: غانم، سلمى، فيصل، ونورا.",tag:"قانوني"},
-{id:"E2-03",ic:"📝",nm:"مسودة وصية معدّلة",desc:"وُجدت في مكتب حمد مسودة غير مُوقَّعة بعد تعديل جوهري: يُعطى غانم حصة 70% ويتقاسم الباقون 30%. المسودة بخط يد حمد لكن خبير التوثيق يرى تشابهاً مع خط آخر.",tag:"قانوني"},
-{id:"E2-04",ic:"💊",nm:"سجل وصفات الدواء",desc:"غانم الوليد يتلقى علاجاً مستمراً لمشاكل قلبية — وصفته تتضمن Digoxin. الجرعة الموصوفة له: 0.25 ملغ يومياً.",tag:"طبي"},
-{id:"E2-05",ic:"📹",nm:"تسجيل كاميرا المطبخ",desc:"الكاميرا الداخلية تُظهر غانم وحده في المطبخ لمدة 4 دقائق قبل الحفل بساعة. تفاصيل الصورة واضحة لكن الزاوية لا تغطي طاولة التحضير.",tag:"بصري"},
-{id:"E2-06",ic:"🧪",nm:"بصمات على زجاجة الدواء",desc:"زجاجة Digoxin في خزانة الأدوية: ثلاث بصمات واضحة — اثنتان لحمد كما هو متوقع، الثالثة لشخص آخر لم يُعرف بعد.",tag:"جنائي"},
-{id:"E2-07",ic:"📱",nm:"رسالة خاصة محذوفة",desc:"في هاتف حمد: رسالة محذوفة تمّ استعادتها: 'أبي، تحدثنا عن تعديل الوصية. قرارك سيُغيّر حياتي. أرجوك فكّر مجدداً.' — الرقم مسجّل باسم غانم.",tag:"رقمي"},
-{id:"E2-08",ic:"👔",nm:"شهادة طاهي القصر",desc:"الطاهي: 'السيد غانم طلب مني الخروج لجلب التوابل من المخزن الخارجي لمدة ربع ساعة. لم يطلب أحد ذلك من قبل. عندما عدت كانت الأطباق جاهزة.'",tag:"شهادة"}
+{id:"E5-01",ic:"🔫",nm:"طلقة الرصاص",desc:"طلقة واحدة من مسدس كاتم للصوت عيار ٩ ملم. زاوية الإطلاق من المقعد الأمامي الأيمن — يعني الضحية فتحت الباب وسمحت للقاتل بالجلوس بجانبه. يعرفه ولم يخشَ منه."},
+{id:"E5-02",ic:"🗂️",nm:"ملف بدر السري",desc:"وُجد في مكتب بدر ملف يحتوي على وثائق تثبت اختلاس ٤٢ مليون ريال من صندوق استثماري نافذ. الملف موجّه لهيئة مكافحة الفساد وكان بدر ينتظر موعد تسليمه خلال أسبوع."},
+{id:"E5-03",ic:"📍",nm:"تتبع الهاتف",desc:"قبل ساعة من الجريمة، كان هاتف بدر يتبادل رسائل مع رقم مسجل باسم 'م.ع' — وهي الأحرف الأولى لمساعد شخص متورط في ملف الاختلاس. الرسائل: 'اللقاء كالمعتاد'."},
+{id:"E5-04",ic:"🚗",nm:"تسجيل كاميرا بعيدة",desc:"كاميرا محل على بُعد ٣٠٠ متر التقطت سيارة رباعية سوداء مرّت مرتين قبل الحادثة ثم توقفت لفترة وجيزة. لوحة السيارة غير واضحة بالكامل — تبدأ بـ 'ب ق م'."},
+{id:"E5-05",ic:"💼",nm:"سجل اجتماعات بدر",desc:"آخر اجتماع في دفتر بدر: 'ط.م — الملف الأخير.' ط.م هي الأحرف الأولى لاسم واحد من المشتبه بهم."},
+{id:"E5-06",ic:"🏦",nm:"حسابات مالية مجمّدة",desc:"بعد الاغتيال بـ٢٤ ساعة، حاول شخص ما تحويل ١.٢ مليون لحساب خارجي — الحوالة تمت من خلال وسيط يعمل في شركة تعود ملكيتها لطارق المنصوري."}
 ],
 sus:[
-{id:"S2-01",nm:"غانم الوليد",rl:"الابن الأكبر — رجل أعمال",em:"👨‍💼",st:"كنت أساعد في التحضير كما اعتدنا دائماً. دخلت المطبخ لإحضار الكأس. مشاكلي القلبية تتطلب دواء منتظماً لكنني لا أخلطه مع الطعام أبداً. أبي أخبرني أن الوصية ستُعدَّل لصالحي لأنني الأكثر إدارةً للأعمال — لا داعي لأن أتعجل."},
-{id:"S2-02",nm:"سلمى الوليد",rl:"الابنة الثانية — طبيبة",em:"👩‍⚕️",st:"كنت بجانب أبي طوال الوقت في الصالة. لا علم لي بأي تعديل للوصية. أبي كان بصحة جيدة. النوبة القلبية مفاجئة لكن ليست مستحيلة في عمره."},
-{id:"S2-03",nm:"فيصل الوليد",rl:"الابن الثالث — مهندس",em:"👨‍🔧",st:"وصلت الساعة السابعة مساءً مباشرة من السفر — عندي بطاقة الطيران. لم أدخل المطبخ أبداً. لا أعلم بوجود وصية معدّلة."},
-{id:"S2-04",nm:"نورا الوليد",rl:"الابنة الصغرى — طالبة دكتوراه",em:"👩‍🎓",st:"كنت في غرفتي حتى موعد العشاء. قلقة من تعديل الوصية لأنني أحتاج دعماً مالياً لإكمال دراستي — لكن لم أفعل شيئاً."}
+{id:"S5-01",nm:"طارق المنصوري",rl:"رجل أعمال — متورط في ملف الاختلاس",em:"👔",st:"لم أرَ بدر منذ أسابيع. الملف الذي يتحدث عنه الناس مجرد إشاعات — ليس لدي أي علاقة بأي صندوق استثماري بهذا الحجم.",con:"أنكر أي صلة بالملف — لكن الشركة الوسيطة في الحوالة المريبة (E5-06) تعود ملكيتها له مباشرة. وأحرف ط.م في دفتر بدر (E5-05) تتطابق مع اسمه."},
+{id:"S5-02",nm:"وليد الشمري",rl:"محامٍ شريك في مكتب بدر",em:"⚖️",st:"بدر كان يعمل على ملف كبير لكنه لم يخبرني بالتفاصيل. الليلة التي اغتيل فيها كنت في مؤتمر في الرياض — عندي فندق وإيصالات عشاء.",con:null},
+{id:"S5-03",nm:"سلمى الحربي",rl:"سكرتيرة بدر",em:"👩‍💼",st:"كنت آخر من يراه قبل خروجه. قال إنه 'سيلتقي شخصاً مهماً'. بدا هادئاً. لم يكن خائفاً — كأنه يثق في من سيقابله.",con:null}
 ],
-sol:`<h3>الخيط الذي ربط كل شيء</h3><p><span class="sol-highlight">غانم الوليد</span> كان الوحيد الذي لديه الثلاثة عوامل معاً: الوصول للدواء، الوصول للمطبخ منفرداً، والدافع.</p><div class="sol-proof">غانم قال: "أبي أخبرني بالتعديل" — لكن المسودة غير موقعة ولم يعلم الباقون.\nالبصمة الثالثة على زجاجة Digoxin لم تُشرح.\nطرد الطاهي = فترة خصوصية في المطبخ.\nالرسالة المحذوفة: "قرارك سيُغير حياتي" = ضغط على الأب.</div><h3>كيف نفّذ الجريمة</h3><p>أضاف كمية من دوائه إلى كأس أبيه. جرعة مضاعفة من Digoxin في رجل مسنّ كافية لإحداث نوبة قلبية تبدو طبيعية. طرد الطاهي أعطاه الفرصة.</p><div class="sol-proof">// الثغرة القاتلة:\nادّعى أن أباه أخبره بتغيير الوصية لصالحه —\nلو كان الأب سيغيّرها فعلاً، لماذا يُسرّع الأمر؟</div><p>الحكم: <strong>السجن 20 سنة.</strong></p>`
+conns:["الملف + موعد التسليم = الدافع لطارق","'ط.م' + دفتر بدر = طارق المنصوري باسمه","زاوية الطلق + الثقة = شخص يعرفه بدر","الحوالة المريبة + شركة طارق = تحريك مال بعد القتل"],
+timeline:["قبل أسبوع: بدر يُكمل ملف الاختلاس وينتظر الموعد","يوم الجريمة صباحاً: رسائل مع م.ع لترتيب اللقاء","المساء: بدر يجلس في سيارته وينتظر","تمام الساعة ٨:٤٠ م: طلقة واحدة — القاتل يغادر هادئاً"],
+sol:`<h3>من أرسل القاتل</h3><p><span class="sol-highlight">طارق المنصوري</span> لم يضغط الزناد بنفسه — لكنه هو من رتّب الاغتيال وأرسل قاتلاً محترفاً.</p><div class="sol-proof">الربط الحاسم:\n- ملف الاختلاس يدينه بـ ٤٢ مليون\n- "ط.م" في دفتر بدر = طارق المنصوري\n- شركته وراء الحوالة بعد الاغتيال\n- الضحية فتحت الباب طوعاً = شخص موثوق أرسله</div><h3>الحكم</h3><p>طارق المنصوري: <strong>الإعدام بتهمة الاغتيال العمد والفساد المالي</strong></p>`
 },
 
-// ─── CASE 3 ───
-3:{id:3,title:"الجثة الباردة",caseId:"#2025-003",type:"اغتيال",colorCls:"case-gold",badgeCls:"badge-gold",icon:"🏔️",date:"05/01/2025",
-killers:["ليلى دحلان","سعد المنصوري"],
-killersAliases:[["ليلى","دحلان","ليلى منصوري"],["سعد","المنصوري","سعد منصوري"]],
-killersCount:2,
-scenario:"في رحلة تخييم لخمسة أشخاص في الجبال الشمالية، وُجد المرشد السياحي <strong>وائل الشريف</strong> مستلقياً خارج خيمته في الصباح. درجة الحرارة ليلاً: -8 مئوية. الوفاة: نزيف داخلي ناتج عن طعنة بأداة حادة لم تُعثر عليها. الموقع: بعيد عن أي طريق.",
+6:{id:6,title:"الغرفة ٣١٢",caseId:"#2025-006",type:"جريمة قتل",color:"red",badgeCls:"badge-red",icon:"🏨",
+date:"20/03/2025",location:"فندق ريجنسي — الدور الثالث",
+scenario:"السائح الأجنبي <strong>كارلوس ميرا</strong> وُجد مختنقاً في غرفة فندقية مقفلة. لا آثار اقتحام. التحقيق يكشف أن كارلوس لم يكن مجرد سائح — بل كان يحمل معلومات حساسة عن صفقة مخدرات دولية. أربعة مشتبه بهم — ثلاثة موظفين في الفندق وشخص زاره في الغرفة.",
+victims:"كارلوس ميرا، ٣٨ عاماً",crime:"قتل عمد بالخنق",culpritsCount:2,
+culpritsNote:"اثنان تعاونا — موظف داخل وشخص من الخارج",
+answers:[["نايف الزهراني","نايف"],["دييغو فيغا","دييغو"]],
 ev:[
-{id:"E3-01",ic:"🩸",nm:"تقرير الطب الشرعي",desc:"الطعنة من الخلف الأيسر. زاوية الإصابة تشير لشخص أقصر من الضحية. وقت الوفاة: بين 1:00-3:00 صباحاً. لا آثار دفاع — الهجوم مباغت.",tag:"جنائي"},
-{id:"E3-02",ic:"⛺",nm:"ترتيب الخيام",desc:"خيمة وائل في المنتصف. ليلى وسعد في خيمة مشتركة يميناً. باقي المجموعة (رامي وحنان) في خيمة يساراً. المسافة: 12 متر بين الخيام.",tag:"مكاني"},
-{id:"E3-03",ic:"🔦",nm:"بطارية مصباح مفرّغة",desc:"المصباح الرئيسي للمخيم عُثر عليه مطفأً وبطاريته مفرّغة تماماً — في حين أُحضر بطاريات جديدة يوم الرحلة. التفريغ: بضع ساعات فقط.",tag:"مادي"},
-{id:"E3-04",ic:"📖",nm:"دفتر يوميات المرشد",desc:"آخر سطر كتبه وائل: 'ليلى تسألني كثيراً عن عقد التوريث الجبلي وملكية المخيم. لا أعرف هدفها. سأتحدث مع سعد عن هذا لاحقاً. شيء ما غير طبيعي.'",tag:"مهم"},
-{id:"E3-05",ic:"👟",nm:"آثار أقدام في الثلج",desc:"حول خيمة وائل: آثار قدمَين — مقاس 36 وآخر 44. وائل مقاسه 43. لا يوجد مقاس 44 في المجموعة رسمياً... إلا أن سعد يرتدي نعلاً مبطّناً.",tag:"جنائي"},
-{id:"E3-06",ic:"💼",nm:"عقد قانوني",desc:"في حقيبة ليلى: نسخة من عقد شراء أرض مخيم الشريف — يحمل توقيعاً مزوّراً يُنسب لوائل. تاريخ العقد: قبل 3 أيام من الرحلة.",tag:"قانوني"},
-{id:"E3-07",ic:"🧤",nm:"قفاز مرمي في الثلج",desc:"على بُعد 40 متراً من الجثة: قفاز رجالي أسود بأثر بني محمر. التحليل: بقايا دم بنفس فصيلة دم الضحية. الحجم يناسب يد كبيرة.",tag:"جنائي"},
-{id:"E3-08",ic:"📞",nm:"سجل اتصالات في المدينة",desc:"قبل الرحلة بيومين: 7 مكالمات بين هاتفَي ليلى وسعد تجاوز مجموعها 90 دقيقة — بينما لم يتواصلا أبداً في الأشهر الستة السابقة.",tag:"رقمي"}
+{id:"E6-01",ic:"🗝️",nm:"سجل البطاقة الإلكترونية",desc:"الغرفة فُتحت ثلاث مرات تلك الليلة. مرتين بالبطاقة الأصلية لكارلوس، ومرة ثالثة الساعة ٢:٢٣ صباحاً ببطاقة طوارئ مسجلة باسم موظف الصيانة نايف الزهراني."},
+{id:"E6-02",ic:"🎥",nm:"تسجيل كاميرا الممر",desc:"كاميرا الممر تُظهر رجلاً بملابس داكنة يدخل الغرفة الساعة ٢:٢١ صباحاً ويخرج الساعة ٢:٣٨ صباحاً. الوجه غير ظاهر. البنية الجسدية والحذاء تتطابق مع شخص زار كارلوس في المساء."},
+{id:"E6-03",ic:"💻",nm:"اللابتوب المسروق",desc:"لابتوب كارلوس الذي سجّله عند تسجيل الدخول الفندقي غير موجود في الغرفة. المعلومات التي كانت عليه — حسب جهات الاتصال — تتعلق بشبكة تهريب دولية."},
+{id:"E6-04",ic:"🤝",nm:"سجل الزوار",desc:"كارلوس استقبل زائراً واحداً الساعة ٩ مساءً — سجّل اسمه 'دييغو فيغا'. المقيم في غرفة ٣٠٨ — في نفس الطابق. دييغو ادّعى أنه يعرف كارلوس كصديق قديم."},
+{id:"E6-05",ic:"🧤",nm:"آثار القفازات",desc:"وُجدت ألياف قفاز جراحي على رقبة الضحية وعلى الوسادة. هذا النوع من القفازات متاح فقط لموظفي الفندق في قسم الصيانة والنظافة — لا تُباع للزوار."},
+{id:"E6-06",ic:"📞",nm:"مكالمات دييغو",desc:"دييغو أجرى ٤ مكالمات لرقم خارجي بعد مغادرة غرفة كارلوس مساءً. نفس الرقم اتصل بنايف الزهراني صباح اليوم التالي. الرقم مسجّل بهوية مزيّفة."}
 ],
 sus:[
-{id:"S3-01",nm:"ليلى دحلان",rl:"مصممة داخلي — عميلة السياحة",em:"👩",st:"نمت مبكراً مع سعد في الخيمة. لم أخرج الليل كله. عقد الشراء في حقيبتي لأن وائل أرسله لي قبل الرحلة وطلب مراجعته — لم أوقّع شيئاً بدون علمه. لا أعرف سعد إلا كصديق مشترك."},
-{id:"S3-02",nm:"سعد المنصوري",rl:"مقاول بناء",em:"👨",st:"نمت طوال الليل. ليلى شاهدة. المخيم كان هادئاً. لا علاقة لي بأعمال وائل ولا بملكية أي أرض. القفاز المُعثر عليه ليس قفازي."},
-{id:"S3-03",nm:"رامي الحربي",rl:"مصوّر رحلات",em:"📷",st:"استيقظت عند الفجر وأول ما رأيته وائل على الأرض. صرخت وأيقظت الجميع. لم أسمع شيئاً أثناء الليل — أنا نائم نوماً ثقيلاً دائماً."},
-{id:"S3-04",nm:"حنان صالح",rl:"موظفة سياحة",em:"👩‍💼",st:"رأيت ضوءاً خافتاً حوالي الساعة الثانية فجراً لكنني ظننته من هواتف أحدهم. لا أعرف ليلى وسعد إلا من خلال هذه الرحلة. وائل كان مرشداً رائعاً."}
+{id:"S6-01",nm:"نايف الزهراني",rl:"موظف صيانة في الفندق",em:"🔧",st:"بطاقتي الطوارئ موجودة في جيبي دائماً. لكنني لم أذهب للغرفة ٣١٢ تلك الليلة أبداً. ربما استُخدمت بطاقتي دون علمي — الخزانة ليست مقفلة جيداً.",con:"ادّعى أن بطاقته لم تُستخدم — لكن سجل النظام يُظهر بوضوح أن بطاقته هي التي فتحت الغرفة الساعة ٢:٢٣ صباحاً. والقفازات الجراحية من نوع حصري لموظفي الصيانة."},
+{id:"S6-02",nm:"دييغو فيغا",rl:"نزيل الغرفة ٣٠٨ — صديق الضحية",em:"🕵️",st:"نعم زرته مساءً — حديث عادي. أعرفه من سنوات. تركته بخير الساعة ١٠:٣٠. نمت مبكراً ولم أخرج من غرفتي.",con:"أكد أنه نام مبكراً — لكن كاميرا الممر تُظهر شخصاً بنفس بنيته ونفس حذائه يدخل الغرفة الساعة ٢:٢١. ومكالماته لرقم تواصل مع نايف تربطهما معاً."},
+{id:"S6-03",nm:"رانيا السبيعي",rl:"مديرة استقبال الفندق",em:"👩‍💼",st:"سجّلت كارلوس بنفسي. دييغو نزيل عادي. لا شيء مثير للريبة في أي منهما. نايف موظف موثوق لم تكن هناك مشاكل في سجله.",con:null},
+{id:"S6-04",nm:"حمد العمري",rl:"مشرف الأمن — الفندق",em:"🛡️",st:"راجعت الكاميرات كلها بعد الحادثة. الشخص في الممر غير محدد الهوية. لم يكن هناك اختراق أمني واضح في سجلاتي.",con:null}
 ],
-sol:`<h3>الجريمة المخطط لها بدقة</h3><p>العقد المزوّر والمكالمات المفاجئة تكشف أن <span class="sol-highlight">ليلى دحلان وسعد المنصوري</span> خططا لهذا قبل الرحلة.</p><div class="sol-proof">ليلى قالت: "وائل أرسل لها العقد" — لكن دفتر وائل يقول إنها هي من تسأل عن الأراضي وإنه لم يعطِها شيئاً.\nسعد قال: "لا يعرف ليلى إلا كصديق مشترك" — 7 مكالمات بـ90 دقيقة تكذّب ذلك.\nالقفاز بدم الضحية + مقاس 44 = سعد هو من طعن.\nليلى أقصر من وائل = تطابق زاوية الطعنة = شاركت أيضاً.</div><h3>التسلسل الزمني</h3><p>أطفآ المصباح الرئيسي عمداً. ليلى شتّت وائل من الأمام بينما طعنه سعد من الخلف. القفاز رُمي بعيداً في الثلج خطأً.</p><div class="sol-proof">// الثغرة القاتلة:\nالمكالمات 7 في يومين بعد أشهر من الصمت = تنسيق.\nالعقد المزوّر = الدافع المالي الواضح.</div><p>الحكم: <strong>ليلى دحلان وسعد المنصوري — الإعدام.</strong></p>`
+conns:["بطاقة نايف + ألياف قفاز صيانة = نايف داخل الغرفة","بنية الشخص في الكاميرا + حذاء دييغو = دييغو هو القاتل الفعلي","مكالمات دييغو + اتصال بنايف = تنسيق مسبق","لابتوب مسروق + معلومات تهريب = الدافع واضح"],
+timeline:["٩ مساءً: دييغو يزور كارلوس ويفحص الوضع","١٠:٣٠ م: دييغو يغادر ويتصل بالرقم الخارجي ٤ مرات","٢:٢١ ص: دييغو يعود للممر، نايف يفتح الباب ببطاقته","٢:٢٣-٢:٣٨ ص: الجريمة — اللابتوب يُسرق والغرفة تُغلق"],
+sol:`<h3>اللحظة الحاسمة</h3><p>كارلوس لم يكن يعرف أن صديقه القديم <span class="sol-highlight">دييغو فيغا</span> يعمل ضده. دييغو جاء لمعرفة ما يملكه كارلوس — ثم قرر إسكاته نهائياً بمساعدة <span class="sol-highlight">نايف الزهراني</span> الذي أتاح الوصول للغرفة.</p><div class="sol-proof">الدليل المزدوج:\n- بطاقة نايف + قفازات الصيانة = دخول مُرتّب\n- كاميرا الممر + بنية دييغو = القاتل الفعلي\n- مكالمات تربط الاثنين = جريمة منسّقة</div><h3>الحكم</h3><p>دييغو فيغا: <strong>السجن المؤبد</strong><br/>نايف الزهراني: <strong>السجن ١٥ سنة</strong></p>`
 },
 
-// ─── CASE 4 ───
-4:{id:4,title:"الشاهد الصامت",caseId:"#2025-004",type:"جريمة قتل",colorCls:"case-red",badgeCls:"badge-red",icon:"🧪",date:"22/04/2025",
-killers:["دانيال حجازي"],
-killersAliases:[["دانيال","حجازي","دانيال حجازي"]],
-killersCount:1,
-scenario:"في مختبر شركة الأبحاث البيوتقنية، وُجدت العالمة <strong>د. رنا السيد</strong> ميتة على مقعدها. الشركة تطوّر دواءً للسرطان يساوي مليارات. الوفاة: سكتة دماغية مُفاجئة — لكن تحليل الدم كشف عن تركيز غير طبيعي من مادة ترفع ضغط الدم لمستويات خطرة. الوصول للمختبر يتطلب بصمة إصبع.",
+7:{id:7,title:"الإرث الملعون",caseId:"#2025-007",type:"جريمة قتل",color:"gold",badgeCls:"badge-gold",icon:"🏚️",
+date:"07/04/2025",location:"مزرعة العائلة — محافظة الخرج",
+scenario:"وُجد <strong>جاسم العجمي</strong>، ٧٥ عاماً، ميتاً في غرفة نومه في المزرعة العائلية المعزولة. الطبيب الشرعي يؤكد: حقن متعمدة بجرعة أنسولين قاتلة. جاسم كان يملك مزرعة بمليوني ريال وأراضي قيمتها لا تُحصى. خمسة من أفراد عائلته كانوا في المزرعة تلك الليلة.",
+victims:"جاسم العجمي، ٧٥ عاماً",crime:"قتل بحقن متعمدة",culpritsCount:1,
+culpritsNote:"الجاني واحد فقط — لكن خمسة مشتبه بهم",
+answers:[["سلوى العجمي","سلوى"]],
 ev:[
-{id:"E4-01",ic:"🧬",nm:"تحليل الدم الكامل",desc:"تركيز مرتفع جداً من Phenylephrine في الدم — يُستخدم في بعض قطرات الأنف والأدوية الطبية. بجرعة عالية يرفع الضغط لمستويات قاتلة. لا يُكتشف في الفحوصات الروتينية.",tag:"كيميائي"},
-{id:"E4-02",ic:"🚪",nm:"سجل الدخول بالبصمة",desc:"من دخل المختبر في الـ12 ساعة الأخيرة: د. رنا السيد (8:02 ص)، دانيال حجازي (9:47 ص)، هند باشير (11:30 ص)، زياد كمال (1:15 م)، دانيال حجازي مجدداً (3:22 م).",tag:"رقمي"},
-{id:"E4-03",ic:"☕",nm:"كوب قهوة الضحية",desc:"بقايا قهوة في كوب د. رنا: بقايا مسحوق يشبه Phenylephrine. الكوب لا بصمات واضحة — مُنظَّف بعناية في الداخل فقط.",tag:"جنائي"},
-{id:"E4-04",ic:"💻",nm:"ملف بحثي محذوف",desc:"استُعيد ملف محذوف من جهاز رنا يُثبت أنها اكتشفت تلاعباً في نتائج التجارب — التلاعب يُنسب لنظام دخول دانيال حجازي.",tag:"رقمي"},
-{id:"E4-05",ic:"🏆",nm:"وثيقة حقوق الملكية",desc:"الشركة تعمل على نظام حقوق اختراع معقد. إذا توفيت رنا قبل تسجيل براءة الاختراع باسمها، تنتقل الحقوق تلقائياً للباحث الرئيسي الثاني — وهو دانيال حجازي.",tag:"قانوني"},
-{id:"E4-06",ic:"🧴",nm:"محتوى حقيبة دانيال",desc:"بمُفتّشة حقيبته: علبة قطرات أنف تحتوي Phenylephrine 0.5% — العلبة ناقصة بنسبة 30% رغم أنه يقول إنه اشتراها أمس.",tag:"مادي"},
-{id:"E4-07",ic:"📧",nm:"بريد إلكتروني مسرّب",desc:"رسالة أرسلتها رنا قبل 48 ساعة لمحامٍ: 'أحتاج مشورة قانونية عاجلة حول الحماية من التلاعب في نتائج الأبحاث. الأمر خطير وشخص ما يحاول سرقة عملي.'",tag:"مهم"},
-{id:"E4-08",ic:"🎥",nm:"كاميرا زاوية المطبخ",desc:"كاميرا مطبخ المختبر: دانيال وحده عند آلة القهوة لمدة 3 دقائق الساعة 9:51 ص. زاوية الكاميرا لا تغطي يديه.",tag:"بصري"}
+{id:"E7-01",ic:"💉",nm:"تقرير التشريح",desc:"وُجدت إبرة حقن مكسورة في سلة المهملات بالمطبخ. الجرعة المحقونة: ٢٠٠ وحدة أنسولين — ضعف الجرعة المميتة لشخص غير مصاب بالسكري. زاوية الحقن في الذراع اليسرى — حُقن من شخص يقف على يمينه."},
+{id:"E7-02",ic:"📜",nm:"وثيقة توزيع الإرث",desc:"جاسم كان يعتزم تعديل توزيع الإرث هذا الأسبوع — بزيادة نصيب ابنه الأصغر عمر وتقليص نصيب البنات. الاجتماع مع المحامي محدد يوم الاثنين."},
+{id:"E7-03",ic:"🏥",nm:"سجل طبي سري",desc:"الممرضة التي كانت تزور جاسم لإعطاء حقن السكري أُقيلت قبل أسبوعين. كانت ابنته سلوى هي من طلبت إقالتها بحجة 'التوفير في المصاريف'. بعد الإقالة، استلمت سلوى مسؤولية إعطاء الحقن."},
+{id:"E7-04",ic:"🧴",nm:"أدوية مفقودة",desc:"أنابيب الأنسولين في صندوق دواء جاسم تُظهر استهلاكاً يفوق الجرعات المقررة بمقدار ٣٠٠ وحدة خلال ١٠ أيام. من كان يسيطر على الصندوق هو من أخذ الزيادة."},
+{id:"E7-05",ic:"📱",nm:"بحث في الإنترنت",desc:"تاريخ البحث على هاتف أحد المشتبه بهم يتضمن: 'كمية الأنسولين المميتة لشخص غير مصاب' و'هل الأنسولين يظهر في التشريح' — البحث قبل الجريمة بـ ١١ يوماً."},
+{id:"E7-06",ic:"🌙",nm:"شهادة الخادمة",desc:"الخادمة أم عبدالله قالت إنها رأت إضاءة في غرفة جاسم الساعة ٣:١٥ صباحاً وسمعت صوت باب يُفتح ثم يُغلق برفق. ولما سُئلت عن من رأت — قالت: رأيت ظلاً لامرأة في ثوب أبيض."}
 ],
 sus:[
-{id:"S4-01",nm:"دانيال حجازي",rl:"باحث أول — الشريك البحثي",em:"👨‍🔬",st:"دخلت المختبر مرتين — المرة الأولى للعمل الاعتيادي والثانية لنسيان ملفات. لا أتدخل في قهوة زملائي. نعم لديّ قطرات أنف لأنني أعاني من حساسية. الملف المحذوف كان خطأ في حذف ملفاتي الخاصة."},
-{id:"S4-02",nm:"هند باشير",rl:"تقنية مختبر",em:"👩‍🔬",st:"عملت في الجزء التقني فقط. لا علاقة لي بالأبحاث البحثية. قهوة رنا أعدّتها بنفسها كالعادة. لم ألاحظ شيئاً غير طبيعي."},
-{id:"S4-03",nm:"زياد كمال",rl:"مدير الشركة",em:"👔",st:"دخلت لاجتماع قصير مع رنا الساعة 1:15 ظهراً. كانت بحالة جيدة. لا أعرف شيئاً عن تلاعب في نتائج. الشركة تحت إدارتي وكل شيء شفاف."}
+{id:"S7-01",nm:"سلوى العجمي",rl:"الابنة الكبرى",em:"👩",st:"أعطيت أبي حقنه كالمعتاد قبل النوم. نمت مبكراً ولم أخرج من غرفتي. أنا التي أعتني به منذ سنوات — لماذا أؤذيه؟",con:"استلمت مسؤولية الحقن بعد إقالة الممرضة (E7-03). بحثها على الإنترنت عن جرعات الأنسولين المميتة (E7-05) قبل ١١ يوماً. والإرث المعدّل سيقلّص نصيبها."},
+{id:"S7-02",nm:"عمر العجمي",rl:"الابن الأصغر",em:"👦",st:"أنا كنت نائماً في الغرفة الخارجية. الإرث الجديد لصالحي نعم — لكنني أحب أبي وكنت سعيداً بقرار التعديل. لا داعي لأقتله وأنا الرابح.",con:null},
+{id:"S7-03",nm:"فهد العجمي",rl:"الابن الأكبر",em:"👨",st:"نمت الساعة ١١ ولم أستيقظ حتى الفجر. الإرث موزّع بالعدل منذ البداية — لن أكسب ولن أخسر من التعديل.",con:null},
+{id:"S7-04",nm:"مريم العجمي",rl:"الابنة الثانية",em:"👧",st:"كنت في غرفتي أقرأ حتى منتصف الليل. لا أعرف شيئاً عن الحقن — لم تكن من مسؤوليتي أبداً.",con:null},
+{id:"S7-05",nm:"ناصر الغانم",rl:"الزوج — زوج سلوى",em:"👨‍👩",st:"زوجتي لم تخرج من غرفتنا تلك الليلة أبداً. أنا صحيت مرة للحمام وعدت — هي كانت نائمة.",con:"شهادته لصالح زوجته مباشرة — لكن الخادمة رأت ظل امرأة قرب غرفة جاسم في نفس التوقيت. شهادة الزوج وحدها غير كافية."}
 ],
-sol:`<h3>الدليل الحاسم</h3><p><span class="sol-highlight">دانيال حجازي</span> هو الوحيد الذي تتقاطع عنده كل الأدلة.</p><div class="sol-proof">الفرصة: دخل المختبر مرتين + وُجد وحده عند آلة القهوة.\nالوسيلة: قطرات الأنف ناقصة 30% = كمية كافية لرفع الضغط.\nالدافع: حقوق براءة الاختراع تنتقل له عند وفاة رنا.\nالدليل الرقمي: التلاعب في النتائج مرتبط بحسابه.</div><h3>كيف نفّذ الجريمة</h3><p>أضاف محتوى القطرات لقهوتها عند آلة القهوة. نظّف الكوب من الداخل لإزالة البصمات. المادة شفافة وعديمة الرائحة — مثالية للإخفاء.</p><div class="sol-proof">// الثغرة القاتلة:\nعلبة قطرات جديدة ناقصة 30% دون سبب معقول.\nالكوب مُنظَّف من الداخل فقط = محاولة إخفاء الأثر.</div><p>الحكم: <strong>السجن 25 سنة.</strong></p>`
+conns:["استلام الحقن + إقالة الممرضة = سيطرة سلوى","البحث الإنترنت + ١١ يوم قبل الجريمة = تخطيط مسبق","الإرث المقلص + الاجتماع قبل يومين = الدافع","ظل امرأة بالليل + شهادة الزوج الوحيدة = رواية مشكوك فيها"],
+timeline:["قبل أسبوعين: سلوى تقيل الممرضة وتستلم الحقن","قبل ١١ يوم: بحث عن الجرعات المميتة","قبل يومين: جاسم يُخبر العائلة بموعد التعديل","٣:١٥ ص: ظل امرأة قرب الغرفة — الحقن تُعطى","صباحاً: جاسم لا يستيقظ"],
+sol:`<h3>الجريمة المُحكمة</h3><p><span class="sol-highlight">سلوى العجمي</span> خطّطت بدقة. أقالت الممرضة لتسيطر على الحقن، بحثت عن الجرعة المميتة قبل أسابيع، وانتظرت حتى يأتي موعد تعديل الإرث لتتحرك.</p><div class="sol-proof">الثلاثي المدمّر:\n١. هي الوحيدة التي تسيطر على الحقن\n٢. البحث الإنترنت قبل ١١ يوماً بيدها\n٣. الدافع: الإرث المقلص قبل يومين من الجريمة</div><h3>الحكم</h3><p>سلوى العجمي: <strong>الإعدام بتهمة قتل العمد مع سبق الإصرار</strong></p>`
 },
 
-// ─── CASE 5 ───
-5:{id:5,title:"قطار الفجر",caseId:"#2025-005",type:"جريمة قتل",colorCls:"case-purple",badgeCls:"badge-purple",icon:"🚆",date:"17/09/2025",
-killers:["إيمان الزبيدي","طارق الزبيدي"],
-killersAliases:[["إيمان","الزبيدي","إيمان زبيدي"],["طارق","طارق زبيدي"]],
-killersCount:2,
-scenario:"على متن قطار الليل بين المدينة والعاصمة، وُجد رجل الأعمال <strong>بسام العمر</strong> ميتاً في كبينته الخاصة مع بداية الفجر. الكبينة مقفلة من الداخل. الوفاة: اختناق. الركاب في محيطه: أربعة أشخاص في كبينات مجاورة.",
+8:{id:8,title:"نهاية الشريك",caseId:"#2025-008",type:"جريمة قتل",color:"cyan",badgeCls:"badge-cyan",icon:"🏢",
+date:"28/04/2025",location:"مبنى شركة الأفق العقارية",
+scenario:"وُجد <strong>محمود البكر</strong>، مدير شركة عقارية كبرى، ميتاً في مكتبه في الطابق السابع بعد سقوطه من النافذة. قالت الشرطة أولاً انتحار — لكن التحقيق الجنائي يكشف عكس ذلك. محمود كان على وشك الكشف عن فساد داخل الشركة لمدقق خارجي.",
+victims:"محمود البكر، ٤٩ عاماً",crime:"قتل مُموّه على أنه انتحار",culpritsCount:2,
+culpritsNote:"اثنان — واحد نفّذ وواحد ستر",
+answers:[["خالد الزيد","خالد"],["ليلى الأحمد","ليلى"]],
 ev:[
-{id:"E5-01",ic:"🔒",nm:"آلية قفل الكبينة",desc:"قفل الكبينة من الداخل: يستخدم نظام لاتش ميكانيكياً. التقرير الهندسي يُثبت أن هذا النوع يمكن إغلاقه من الخارج باستخدام خيط رفيع وخطّاف بُطول 30 سم — لكن يستلزم تدريباً أو معرفة مسبقة.",tag:"تقني"},
-{id:"E5-02",ic:"🧵",nm:"خيط أبيض رفيع",desc:"في فجوة باب الكبينة المجاورة (الكبينة C2): خيط أبيض رفيع من مادة النايلون، مقطوع بشكل غير منتظم. قطعة صغيرة.",tag:"مادي"},
-{id:"E5-03",ic:"💼",nm:"حقيبة الضحية",desc:"في حقيبة بسام: وثيقة إفلاس معلّقة لشركة الزبيدي وشركاه — يحمل توقيع بسام باعتباره دائن رئيسي. الديون: 18 مليون ريال.",tag:"مالي"},
-{id:"E5-04",ic:"📹",nm:"كاميرا ممر القطار",desc:"الكاميرا تُظهر: 11:48 م بسام يدخل كبينته. 12:03 ص إيمان تمر أمام الكبينة وتتوقف لثوانٍ ثم تكمل. 2:17 ص طارق يمشي في الممر بعكس اتجاهه من الكبينة C5 للكبينة C2.",tag:"بصري"},
-{id:"E5-05",ic:"🧤",nm:"أثر في نفق التهوية",desc:"في نفق التهوية الصغير الواصل بين الكبينتين C2 وC3: بصمة يد كاملة — حجم يد نسائي.",tag:"جنائي"},
-{id:"E5-06",ic:"📄",nm:"وثيقة التنازل المزيّفة",desc:"وُجدت في كبينة C2 ورقة تنازل عن الديون تحمل توقيعاً يُنسب لبسام — لكن خبير الخطوط يُشير لأنه توقيع منقول ضوئياً.",tag:"قانوني"},
-{id:"E5-07",ic:"📱",nm:"رسائل مشفّرة محذوفة",desc:"هاتف إيمان: رسائل محذوفة استُعيدت جزئياً: '...القطار الأخير فرصتنا... الباب يمكن... خيط نايلون...' — الرسائل مُرسَلة لرقم طارق.",tag:"رقمي"},
-{id:"E5-08",ic:"🎒",nm:"حقيبة طارق",desc:"في حقيبة طارق: خطّاف معدني صغير الحجم ملفوف بخيط أبيض — نفس مادة الخيط المُعثر عليه عند فجوة الباب.",tag:"مادي"}
+{id:"E8-01",ic:"🪟",nm:"تقرير مسرح الجريمة",desc:"النافذة لا تُفتح من الداخل إلا بجهد كبير وصوت مرتفع — لم يسمع أحد في المبنى صوت نافذة. بصمات على إطار النافذة الخارجي — وضعها يشير لشخص دفع من الخارج، لا من الداخل."},
+{id:"E8-02",ic:"📁",nm:"ملفات التدقيق",desc:"ملفات التدقيق التي أعدها محمود اختفت من جهازه — لكن نسخة احتياطية وُجدت على خادم الشركة. الملفات تُثبت اختلاس ٨ ملايين على مدار ٣ سنوات."},
+{id:"E8-03",ic:"🕰️",nm:"الجدول الزمني",desc:"محمود أبلغ المدير المالي ليلى الأحمد قبل ثلاثة أيام أنه سيسلّم الملفات للمدقق الخارجي الاثنين. قالت ليلى إنها فهمت واحترمت قراره."},
+{id:"E8-04",ic:"🔐",nm:"سجل الدخول الإلكتروني",desc:"الطابق السابع في هذه الشركة يتطلب بطاقة وصول خاصة. سجل الدخول يُظهر ثلاثة أشخاص دخلوا في الساعة الأخيرة قبل الحادثة: محمود، خالد الزيد نائب المدير، وليلى الأحمد."},
+{id:"E8-05",ic:"💬",nm:"رسالة محذوفة",desc:"استُرجعت رسالة محذوفة على هاتف ليلى لخالد قبل الحادثة بـ ٤٠ دقيقة: 'الآن أو لا. الملفات ستُسلّم الاثنين.' — ثم ردّ خالد: 'لا تتصلي بي بعد الآن.'"},
+{id:"E8-06",ic:"🩺",nm:"تقرير الطب الشرعي",desc:"آثار كدمات على ذراعي محمود من الأعلى — تدل على مسك قوي من الخلف. لا توجد إصابات في الأصابع تتوافق مع محاولة التشبث بالنافذة طوعاً — الجسم أُلقي بقوة."}
 ],
 sus:[
-{id:"S5-01",nm:"إيمان الزبيدي",rl:"شريكة الشركة المفلسة — زوجة طارق",em:"👩‍💼",st:"كنت أمشي للمرحاض ليس غير. توقفت لأتحقق من رقم كبينتي. لا أعرف شيئاً عن أي خيط. إفلاس الشركة مسألة قانونية نعالجها بالمحاكم."},
-{id:"S5-02",nm:"طارق الزبيدي",rl:"مالك الشركة المفلسة",em:"👨‍💼",st:"ذهبت للمرحاض في الساعة 2 صباحاً. لا أعرف شيئاً عن القتل. بسام كان يُلاحقنا قضائياً لكن الأمر سيُحسم في المحكمة. الخطّاف في حقيبتي لتعليق الملابس — أحمله دائماً في السفر."},
-{id:"S5-03",nm:"سوزان البكر",rl:"صحفية — كبينة C4",em:"📰",st:"لم أرَ شيئاً غير عادي. كنت مستيقظة أكتب حتى الثانية صباحاً. سمعت خطوات في الممر أكثر من مرة لكن في القطار هذا طبيعي."},
-{id:"S5-04",nm:"وليد شاهين",rl:"مهندس — كبينة C5",em:"👷",st:"نمت مبكراً ولم أستيقظ حتى الفجر. لا أعرف بسام ولا الزوجين إلا من وثيقة التحقيق."}
+{id:"S8-01",nm:"خالد الزيد",rl:"نائب مدير الشركة",em:"👔",st:"كنت في الطابق السابع للتوقيع على وثائق عادية. دخلت ورأيت النافذة مفتوحة ومحمود غائب — صعقت وأبلغت الأمن فوراً.",con:"هو أول من أبلغ — لكن ردّه على رسالة ليلى 'لا تتصلي بي بعد الآن' يعني أنه كان يعرف بالخطة. الطب الشرعي يُثبت القتل بالدفع — وهو كان موجوداً في الطابق."},
+{id:"S8-02",nm:"ليلى الأحمد",rl:"المديرة المالية",em:"👩‍💼",st:"خسارة محمود مأساة. أنا لم أكن موجودة لحظة الحادثة — دخلت الطابق باكراً وخرجت قبل ٣٠ دقيقة من وقت الحادثة وفق سجل البطاقة.",con:"رسالتها لخالد 'الآن أو لا' قبل ٤٠ دقيقة = من دفع إلى التنفيذ. وهي المتورطة في ملفات الاختلاس التي كان محمود على وشك كشفها."},
+{id:"S8-03",nm:"سامر العوض",rl:"موظف محاسبة",em:"🧮",st:"أنا في الطابق الخامس طوال اليوم. لم أصعد للسابع أبداً. سجل بطاقتي يُثبت ذلك.",con:null}
 ],
-sol:`<h3>الجريمة المشتركة</h3><p><span class="sol-highlight">إيمان وطارق الزبيدي</span> نفّذا الجريمة معاً بتخطيط مسبق.</p><div class="sol-proof">الرسائل المحذوفة تذكر "الخيط" و"الباب" = تخطيط مسبق للأسلوب.\nالخطّاف + الخيط في حقيبة طارق = الأداة المستخدمة.\nإيمان توقفت عند الباب = نصبت الخيط من الجانب الآخر.\nطارق ذهب عكس اتجاهه = كذب عن مساره.\nالبصمة في نفق التهوية = إيمان هي من اخترقت.</div><h3>كيف نُفّذت</h3><p>إيمان أغلقت الباب بالخيط والخطّاف من الخارج. طارق دخل عبر نفق التهوية الصغير وخنق بسام. الوثيقة المزوّرة كانت محاولة للاستفادة المالية.</p><div class="sol-proof">// الثغرة القاتلة:\nالرسائل المحذوفة تتحدث عن الأسلوب بالتحديد\nقبل ساعات من الجريمة.</div><p>الحكم: <strong>إيمان وطارق الزبيدي — السجن المؤبد.</strong></p>`
+conns:["ليلى + ملفات الاختلاس + إبلاغ محمود = الدافع واضح","رسالة 'الآن أو لا' + توقيت خالد = تنسيق","الكدمات + عدم التشبث = دُفع قسراً","خالد في الطابق وقت الجريمة = المنفّذ"],
+timeline:["قبل ٣ أيام: محمود يُبلغ ليلى بتسليم الملفات","قبل ٤٠ دقيقة: ليلى تضغط على خالد 'الآن أو لا'","خالد يرد بقطع الاتصال ثم يصعد للطابق","الجريمة — خالد يُلقيه من النافذة","خالد يتصل بالأمن ليلعب دور المكتشف"],
+sol:`<h3>الشريكان في الجريمة</h3><p><span class="sol-highlight">ليلى الأحمد</span> أعطت الأمر وكانت تعرف أن محمود سيدمّرها مهنياً. <span class="sol-highlight">خالد الزيد</span> نفّذ بيديه.</p><div class="sol-proof">الرسالة التي دمّرتهما:\n"الآن أو لا. الملفات ستُسلّم الاثنين."\n= ليلى هي المحرّض\n= خالد موجود في الطابق وقت الجريمة\n= الكدمات تؤكد الدفع القسري</div><h3>الحكم</h3><p>خالد الزيد: <strong>السجن المؤبد</strong><br/>ليلى الأحمد: <strong>السجن ٢٠ سنة تحريضاً على القتل</strong></p>`
 },
 
-// ─── CASE 6 ───
-6:{id:6,title:"المعرض الأخير",caseId:"#2025-006",type:"جريمة قتل",colorCls:"case-cyan",badgeCls:"badge-cyan",icon:"🎨",date:"10/10/2025",
-killers:["نادر الحلبي"],
-killersAliases:[["نادر","الحلبي","نادر حلبي"]],
-killersCount:1,
-scenario:"في حفل افتتاح معرض فني راقٍ، وُجد الفنان الشهير <strong>مازن الرفاعي</strong> ميتاً في الغرفة الخلفية للمعرض. الوفاة: ضربة قوية برأسه. الغرفة بها مخرج خلفي يؤدي للشارع الجانبي. المعرض كان يعجّ بالضيوف والمنافسين.",
+9:{id:9,title:"جثة على الرصيف",caseId:"#2025-009",type:"جريمة قتل",color:"red",badgeCls:"badge-red",icon:"🚶",
+date:"10/05/2025",location:"شارع الأمير محمد — وسط المدينة",
+scenario:"وُجدت <strong>نادية الشمري</strong>، مصوّرة صحفية، ميتة في الشارع الساعة ٣ فجراً. الظاهر: حادث دهس وهرب. لكن التحقيق يكشف أن نادية كانت تحتفظ بصور وثّقت فيها جريمة منظمة. السيارة عُثر عليها محروقة — والشاشة الأخيرة على كاميرتها كانت فارغة.",
+victims:"نادية الشمري، ٣٢ عاماً",crime:"قتل متعمد مُموّه على دهس",culpritsCount:2,
+culpritsNote:"اثنان — سائق ومن أعطى الأمر",
+answers:[["ضياء الحمدان","ضياء"],["عبدالله الرشيد","عبدالله الرشيد","الرشيد"]],
 ev:[
-{id:"E6-01",ic:"🔨",nm:"أداة الجريمة",desc:"تمثال نحاسي صغير من داخل المعرض — عُثر عليه مُنظَّفاً في حوض المطبخ الخلفي. بقايا دقيقة من الدم في مسام النحاس رغم التنظيف.",tag:"جنائي"},
-{id:"E6-02",ic:"🖼️",nm:"وثيقة ملكية اللوحة",desc:"في خزنة المعرض: نزاع قانوني حول لوحة 'ليل المدينة' بقيمة 4 ملايين — مازن يدّعي أن الفكرة الأصلية سُرقت منه من قِبل فنان آخر.",tag:"قانوني"},
-{id:"E6-03",ic:"📱",nm:"رسالة مجهولة",desc:"قبل الحفل بساعة، أرسل شخص ما لمازن: 'الحقيقة ستظهر الليلة. لقاؤنا في الغرفة الخلفية الساعة 9.' — الرقم المرسل مُستهلَك.",tag:"رقمي"},
-{id:"E6-04",ic:"🎥",nm:"كاميرا مدخل الغرفة",desc:"الكاميرا في وضع مائل لا يُغطّي الباب بشكل كامل. تُظهر فقط: مازن دخل الساعة 8:58. نادر الحلبي دخل 9:03. خروج شخص واحد يرتدي معطفاً داكناً 9:11.",tag:"بصري"},
-{id:"E6-05",ic:"🧥",nm:"معطف مفقود",desc:"نادر الحلبي كان يرتدي معطفاً داكناً عند وصوله — لم يُعثر عليه في المعرض. يقول إنه نسيه في سيارته. سيارته في موقف مغلق.",tag:"مادي"},
-{id:"E6-06",ic:"💸",nm:"العقد المالي",desc:"قبل 10 أيام وقّع نادر عقداً مع دار نشر فنية تُلزمه بتقديم لوحة 'ليل المدينة' — التي مازن يطعن بملكيتها. التأخير في التسليم يتسبب بغرامة 600 ألف ريال.",tag:"مالي"},
-{id:"E6-07",ic:"👀",nm:"شهادة حارس الأمن",desc:"الحارس رأى شخصاً يخرج من الباب الخلفي الساعة 9:14 مسرعاً 'كأنه يهرب'. الوصف: قامة متوسطة، شعر قصير، بدون معطف رغم الطقس البارد.",tag:"شهادة"},
-{id:"E6-08",ic:"🩸",nm:"بقعة دم على الأرض",desc:"في خط مستقيم من موقع الجثة للباب الخلفي: أثر دم صغير عند حافة الحائط على ارتفاع 1.5 متر — كأن شخصاً اتكأ على الجدار مسرعاً.",tag:"جنائي"}
+{id:"E9-01",ic:"🚗",nm:"تقرير السيارة المحروقة",desc:"سيارة هيلوكس بيضاء محروقة وُجدت على بُعد ٤ كيلومترات. رقم الهيكل طُمس. لكن قطعة صغيرة من ستيكر الشركة على البمبر نجت من الحريق — تعود لشركة 'مجموعة الرشيد للمقاولات'."},
+{id:"E9-02",ic:"📸",nm:"الكاميرا الفارغة",desc:"كاميرا نادية المحترفة موجودة لكن بطاقة الذاكرة مسحوبة. جهاز الاستخلاص التقني وجد صورة واحدة لا تزال في ذاكرة الكاميرا المؤقتة — تُظهر رجلاً يُحمّل صناديق في مستودع ليلاً."},
+{id:"E9-03",ic:"📔",nm:"دفتر نادية",desc:"وُجد دفتر ملاحظات في حقيبة نادية يتضمن: 'ضياء يعرف مكان المستودع. الاجتماع الأحد.' ضياء شخص كانت نادية على تواصل معه في القضية التي تحقق فيها."},
+{id:"E9-04",ic:"📡",nm:"تتبع هاتف نادية",desc:"هاتف نادية أُغلق الساعة ٢:٥٠ صباحاً — أي ١٠ دقائق قبل العثور عليها. آخر برج اتصال: بالقرب من منزل ضياء الحمدان، لا في المنطقة التي وُجدت فيها جثتها."},
+{id:"E9-05",ic:"🏗️",nm:"سجل المقاولات",desc:"'مجموعة الرشيد للمقاولات' لها عقد مع بلدية المنطقة لكن نادية اكتشفت مؤخراً أن أعمال المقاولات وهمية والمبالغ تُسرق. عبدالله الرشيد المالك لم يُعلّق علناً."},
+{id:"E9-06",ic:"🔍",nm:"شاهد العيان",desc:"بائع جوّال كان في المنطقة يقول إنه رأى سيارة بيضاء تتوقف بجانب فتاة ثم تنطلق بسرعة. يصف السائق بأنه رجل في الثلاثينات بملامح 'تبدو محلية'. لم يرَ لوحة السيارة."}
 ],
 sus:[
-{id:"S6-01",nm:"نادر الحلبي",rl:"فنان منافس — صاحب النزاع",em:"🎭",st:"دخلت الغرفة الخلفية لأستلم بعض أعمالي المعروضة هناك. وجدت مازن على الأرض وهربت خوفاً لأنني ظننت أنني سأُتّهم. المعطف تركته لأنني استعجلت. لم أقتله."},
-{id:"S6-02",nm:"لمياء العسل",rl:"مديرة المعرض",em:"👩‍🎨",st:"كنت مشغولة بالضيوف طوال الوقت. أرسلت للمعروضين رسائل تذكير قبل الحفل لكن ليس للقاء سري. لا أعلم بأي نزاع مادي بين مازن ونادر."},
-{id:"S6-03",nm:"حامد التميمي",rl:"جامع لوحات — عميل",em:"🤵",st:"كنت أتجوّل في المعرض باستمرار. أعرف مازن تجارياً. لم أكن في الغرفة الخلفية ولا أعلم شيئاً عن لقاء سري."}
+{id:"S9-01",nm:"ضياء الحمدان",rl:"مصدر نادية في التحقيق",em:"🕵️",st:"نعم كنت أساعدها في التحقيق لكنني لم أقتلها. هاتفها اتصل بمنطقتي لأنها كانت عائدة من لقائنا مبكراً في المساء. تركتها بخير وذهبت لمنزلي.",con:"قال إن اللقاء كان 'مبكراً في المساء' — لكن آخر إشارة لهاتف نادية كانت قرب منزله الساعة ٢:٥٠ صباحاً. التوقيت لا يتطابق مع روايته أبداً."},
+{id:"S9-02",nm:"عبدالله الرشيد",rl:"مالك مجموعة الرشيد للمقاولات",em:"👷",st:"شركتي تعمل بشكل قانوني ١٠٠٪. لا أعرف هذه الصحفية. سياراتنا موجودة في المستودع — أي حديث عن سيارة من شركتي مجرد تلفيق.",con:"ستيكر شركته على السيارة المحروقة (E9-01) — الدليل المادي يربطه مباشرة. والصورة في الكاميرا (E9-02) ترصد عملية في مستودعه. الإنكار لا يكفي."},
+{id:"S9-03",nm:"هيا الدوسري",rl:"زميلة نادية في الصحيفة",em:"📰",st:"نادية كانت تعمل على قضية كبرى لكنها لم تخبرني بالتفاصيل. لم أرَها بعد الساعة ٦ مساءً يوم الحادثة.",con:null}
 ],
-sol:`<h3>الأدلة المتقاطعة</h3><p><span class="sol-highlight">نادر الحلبي</span> دخل الغرفة ولم يخرج فوراً رغم ادعائه العثور على الجثة فوراً.</p><div class="sol-proof">الكاميرا: نادر دخل 9:03 — الخروج 9:11 = 8 دقائق داخل.\nلو وجد جثة لخرج فوراً أو صرخ — لماذا 8 دقائق؟\nالمعطف "المنسي" = التخلص منه لأنه يحمل الدم.\nالغرامة المالية 600 ألف = دافع قوي.\nالخروج المتسرع + وصف الحارس = يتطابق مع نادر.</div><h3>كيف نفّذ الجريمة</h3><p>أرسل الرسالة المجهولة لجذب مازن. ضربه بالتمثال ثم نظّفه. أزال المعطف الملطّخ وخرج من الباب الخلفي.</p><div class="sol-proof">// الثغرة القاتلة:\n"وجدته على الأرض وهربت خوفاً" — لكنه كان 8 دقائق بالداخل.\nالبريء يصرخ ويطلب النجدة فوراً.</div><p>الحكم: <strong>السجن 18 سنة.</strong></p>`
+conns:["ستيكر الرشيد + السيارة المحروقة = الدليل المادي","هاتف نادية بالقرب من ضياء الساعة ٢:٥٠ = رواية ضياء كاذبة","دفتر نادية + اسم ضياء = علمه بالقضية","صورة المستودع + مقاولات وهمية = دافع الرشيد"],
+timeline:["مساء: نادية تلتقي ضياء — لكن التوقيت الحقيقي بعد منتصف الليل","٢:٥٠ ص: هاتفها قرب منزل ضياء ثم يُغلق","٣:٠٠ ص: نادية على الرصيف — دهس متعمد","السيارة تُحرق على بُعد ٤ كيلومترات"],
+sol:`<h3>من قتل نادية</h3><p><span class="sol-highlight">عبدالله الرشيد</span> أعطى الأمر حين علم أن نادية تملك الأدلة. <span class="sol-highlight">ضياء الحمدان</span> خان الثقة — أبلغ الرشيد بموعد وموقع نادية ثم نفّذ الدهس بسيارة الشركة.</p><div class="sol-proof">الدليلان الحاسمان:\n- ستيكر الرشيد على السيارة المحروقة\n- هاتف نادية قرب منزل ضياء الساعة ٢:٥٠\n  بينما قال إن لقاءهم كان 'مبكراً في المساء'</div><h3>الحكم</h3><p>ضياء الحمدان: <strong>الإعدام</strong><br/>عبدالله الرشيد: <strong>السجن المؤبد + مصادرة الشركة</strong></p>`
 },
 
-// ─── CASE 7 ───
-7:{id:7,title:"الوصيّة المزدوجة",caseId:"#2025-007",type:"تزوير وقتل",colorCls:"case-gold",badgeCls:"badge-gold",icon:"📜",date:"30/06/2025",
-killers:["صالح الجبر","أمل الجبر"],
-killersAliases:[["صالح","الجبر","صالح جبر"],["أمل","أمل جبر","أمل الجبر"]],
-killersCount:2,
-scenario:"توفّيت الأرملة الثرية <strong>أم فيصل الدوسري</strong> في منزلها وسط نومها. الوفاة المبدئية: طبيعية بسبب تقدّم السن. لكن حفيدتها المُبعدة أبلغت السلطات بأن الوصية الأخيرة ليست بخط يدها واشتبهت في التزوير — وطالبت بفتح التحقيق.",
+10:{id:10,title:"ملف الطبيب الميت",caseId:"#2025-010",type:"اغتيال",color:"purple",badgeCls:"badge-purple",icon:"⚕️",
+date:"22/05/2025",location:"مستشفى الرعاية — قسم الأعصاب",
+scenario:"طبيب الأعصاب المرموق <strong>د. حسان البريكي</strong> وُجد ميتاً في مكتبه داخل المستشفى. الظاهر نوبة قلبية — لكن الطب الشرعي يكتشف حقناً بجرعة دواء أوقفت قلبه. الأخطر: البريكي كان يملك ملفات تثبت عمليات بيع أعضاء غير قانونية نفّذها أشخاص داخل المستشفى.",
+victims:"د. حسان البريكي، ٥٥ عاماً",crime:"اغتيال بحقنة طبية متعمدة",culpritsCount:1,
+culpritsNote:"الجاني واحد — لكن كل المشتبه بهم لديهم وصول طبي",
+answers:[["رنا الصباح","رنا"],["د. رنا الصباح","رنا الصباح"]],
 ev:[
-{id:"E7-01",ic:"📄",nm:"الوصيتان",desc:"وصية عام 2022 تعطي الثروة بالتساوي للأبناء والأحفاد. وصية عام 2024 (آخر وصية): تُعطي كامل الثروة لـ'الابن الأكبر الوفي صالح' وزوجته. خبير التوثيق: الوصية الأولى أصيلة قطعاً، الثانية مشكوك فيها.",tag:"قانوني"},
-{id:"E7-02",ic:"🖊️",nm:"تحليل خط اليد",desc:"تحليل دقيق: الوصية الثانية تحمل توقيع 'أم فيصل' لكن ضغط القلم واتجاه الحروف يختلفان جوهرياً عن الوصية الأولى. الكتابة أبطأ مما ينبغي للشخص الذي كتب الأولى.",tag:"جنائي"},
-{id:"E7-03",ic:"💊",nm:"أدوية وجدت بالمنزل",desc:"بين أدوية المتوفاة: علبة دواء نوم قوي من نوع Zolpidem 10mg. وصفة الطبيب المعتاد: لم يُصف لها هذا الدواء أبداً. مصدره غير معروف.",tag:"طبي"},
-{id:"E7-04",ic:"🔍",nm:"تقرير التشريح المفاجئ",desc:"بعد إعادة الفحص: مستوى Zolpidem في الدم أعلى من الجرعة العلاجية بثلاثة أضعاف. هذا المستوى وحده ليس قاتلاً — لكن مع عمرها وحالتها القلبية: يُفسّر الوفاة.",tag:"طبي"},
-{id:"E7-05",ic:"🏦",nm:"سجل التحويلات",desc:"في الشهرين الأخيرين: 11 تحويلاً بنكياً من حساب أم فيصل لحساب صالح وزوجته أمل بمجموع 600 ألف ريال. أم فيصل لم تخرج من المنزل خلال هذه الفترة.",tag:"مالي"},
-{id:"E7-06",ic:"📞",nm:"شهادة الممرضة",desc:"الممرضة المنزلية (مُوقفة عن الخدمة قبل شهر من الوفاة): 'أُخبرت فجأة أن خدماتي لم تعد مطلوبة. السيدة كانت بخير ثم تدهورت فجأة في الأسابيع الأخيرة.'",tag:"شهادة"},
-{id:"E7-07",ic:"💻",nm:"جهاز الكمبيوتر المنزلي",desc:"في جهاز الكمبيوتر المنزلي: ملفات تدريب محذوفة — نماذج لخط يد متكررة. التاريخ: أكتوبر وديسمبر 2024. قبل الوصية المشكوك فيها بأسابيع.",tag:"رقمي"},
-{id:"E7-08",ic:"👁️",nm:"شهادة الجارة",desc:"جارة: 'كانت أم فيصل تشتكي لي دائماً من صالح وزوجته. في آخر لقاء لنا قالت لي: خائفة منهم ولا أستطيع الخروج. ذلك كان قبل الوفاة بثلاثة أسابيع.'",tag:"شهادة"}
+{id:"E10-01",ic:"💉",nm:"تقرير التشريح",desc:"جرعة زائدة من عقار البوتاسيوم الوريدي — تُوقف القلب في دقائق وتبدو طبيعية في البداية. الإبرة أُزيلت — لكن أثر الحقن وُجد في الساعد الأيسر. هذا العقار متاح فقط في وحدة العناية المركزة."},
+{id:"E10-02",ic:"🗃️",nm:"ملفات البريكي",desc:"وُجد قرص خارجي مخفي في درج البريكي يحتوي على أدلة تورط ٣ أطباء وممرضة في بيع أعضاء بشرية. أحد الأسماء في الملف: رنا الصباح، طبيبة التخدير."},
+{id:"E10-03",ic:"🏥",nm:"سجل وحدة العناية",desc:"عقار البوتاسيوم الزائد أُخذ من وحدة العناية المركزة الساعة ٦:١٥ مساءً. التوقيع على الأخذ: طبيبة تخدير — الخط مطابق لخط رنا الصباح لكن الاسم الموقّع 'مجهول'."},
+{id:"E10-04",ic:"📹",nm:"كاميرا الممر الجانبي",desc:"الممر الجانبي لمكتب البريكي لا تُغطيه الكاميرات الرئيسية — لكن كاميرا طارئة صغيرة في الزاوية التقطت شكل شخص يدخل الساعة ٧:٤٠ مساءً ويخرج الساعة ٧:٥٢. الملابس: معطف طبي أبيض وقبعة جراحية."},
+{id:"E10-05",ic:"📋",nm:"جدول المناوبات",desc:"مناوبة رنا الصباح انتهت رسمياً الساعة ٧:٠٠ مساءً. لكن بطاقتها سُجّلت في مبنى المستشفى حتى الساعة ٨:١٠ مساءً — ٧٠ دقيقة بعد انتهاء مناوبتها."},
+{id:"E10-06",ic:"🔔",nm:"نبضات الساعة الذكية",desc:"ساعة البريكي الذكية سجّلت توقف نبضه الساعة ٧:٤٨ مساءً. يتطابق مع وجود الشخص في مكتبه بين ٧:٤٠ و٧:٥٢ من تسجيل الكاميرا. وقت الجريمة دقيق."}
 ],
 sus:[
-{id:"S7-01",nm:"صالح الجبر",rl:"الابن الأكبر للمتوفاة",em:"👨",st:"أمي كتبت الوصية بإرادتها الحرة أمامي. نعم ساعدتها في التحويلات لأنها كانت طاعنة في السن. صرف الممرضة كان بقرارها لأنها كانت مزعجة. الدواء قد يكون اشترته هي من الصيدلية."},
-{id:"S7-02",nm:"أمل الجبر",rl:"زوجة صالح",em:"👩",st:"أعتنيت بأم فيصل كابنة. الوصية أرادتها بنفسها لأننا من خدمناها. لا أعلم شيئاً عن الدواء أو عن تدريب الخط. جهاز الكمبيوتر يستخدمه الجميع."},
-{id:"S7-03",nm:"فيصل الدوسري",rl:"الابن الأصغر — المبعد",em:"👨‍👦",st:"أُبعدت عن المنزل قبل وفاة أمي بأمر من أخي. لم أرَها في آخر شهرين. الوصية مزوّرة أنا متأكد — أمي لا تحرمني هكذا."},
-{id:"S7-04",nm:"هنادي الدوسري",rl:"الحفيدة — من رفعت البلاغ",em:"👧",st:"جدتي خبّأتلي رسالة سرية قبل وفاتها بأسابيع قالت فيها إنها خائفة وأنهم يُعطونها شيئاً يجعلها نائمة. لهذا رفعت البلاغ."}
+{id:"S10-01",nm:"رنا الصباح",rl:"طبيبة تخدير",em:"👩‍⚕️",st:"مناوبتي انتهت الساعة ٧. بقيت لاستكمال ورق إداري. لم أذهب لمكتب البريكي — لا أعرف لماذا اسمي في أي ملف. البريكي كان زميلاً محترماً لا خلاف بيننا.",con:"اسمها في ملف بيع الأعضاء (E10-02). بطاقتها في المبنى حتى ٨:١٠ (E10-05) بينما الجريمة ٧:٤٨. وأخذ العقار بخط مشابه لها (E10-03)."},
+{id:"S10-02",nm:"د. فواز الشريف",rl:"رئيس قسم الجراحة",em:"👨‍⚕️",st:"كنت في غرفة العمليات من ٦ مساءً حتى ٩:٣٠ ليلاً. العملية موثّقة بالكامل وفيها طاقم طبي كامل. اسمي في ملف البريكي؟ هذا افتراء.",con:null},
+{id:"S10-03",nm:"ممرضة هنادي",rl:"ممرضة وحدة العناية المركزة",em:"👩‍⚕️",st:"الدواء لا يُعطى إلا بتوقيع طبيب. في ذلك الوقت كانت رنا هي الطبيبة الوحيدة غير المتواجدة في العمليات.",con:null},
+{id:"S10-04",nm:"د. سعيد الأحمدي",rl:"طبيب داخلي — متورط في الملف",em:"👨‍⚕️",st:"أنا في مقابلة مع إدارة المستشفى من ٧ حتى ٨:٣٠ — مديرة التمريض شاهدة. لو البريكي يملك ملفات عليّ، أفضل أعرف ما فيها — لا أقتل من يعرف.",con:null}
 ],
-sol:`<h3>الجريمة الممنهجة</h3><p><span class="sol-highlight">صالح وأمل الجبر</span> خططا لهذا على مدى أشهر.</p><div class="sol-proof">ملفات تدريب الخط = أمل كانت تتدرب على تقليد خط أم فيصل.\nصرف الممرضة = إزالة الشاهد الوحيد على التدهور.\nالتحويلات المالية المتكررة = نهب تدريجي والمتوفاة لم تخرج.\nالدواء غير الموصوف + التركيز المرتفع = إعطاء متعمد.\nرسالة الجدة + شهادة الجارة = المتوفاة كانت تعرف أنها في خطر.</div><h3>التسلسل الزمني للجريمة</h3><p>صرف الممرضة للعمل بحرية. أمل تدربت على التزوير. أعطياها الدواء تدريجياً ثم وقّعت الوصية (أو زوّرا توقيعها) وزادا الجرعة مما عجّل بوفاتها.</p><div class="sol-proof">// الثغرة القاتلة:\nملفات تدريب الخط على الكمبيوتر المنزلي\nلا تُخطئ — لماذا يتدرب أحد على توقيع شخص آخر\nإلا ليزوّره؟</div><p>الحكم: <strong>صالح وأمل الجبر — السجن 30 سنة وإعادة كامل الثروة.</strong></p>`
+conns:["اسمها في الملف + دافع إسكات البريكي = رنا المتورطة","بطاقتها بالمبنى + توقيت الجريمة = كانت هناك","خط الدواء + تخصصها = لديها الوصول والمعرفة","كاميرا الممر + معطف أبيض = شخص طبي"],
+timeline:["٦:١٥ م: أخذ عقار البوتاسيوم بخط مشابه لرنا","٧:٠٠ م: انتهاء مناوبتها رسمياً — لكنها لم تغادر","٧:٤٠ م: شخص يدخل مكتب البريكي","٧:٤٨ م: توقف نبض البريكي","٧:٥٢ م: الشخص يغادر المكتب","٨:١٠ م: بطاقة رنا تُسجّل خروجها"],
+sol:`<h3>طبيبة قتلت لإسكات الحقيقة</h3><p>اسمها في ملف بيع الأعضاء كان كافياً — <span class="sol-highlight">رنا الصباح</span> علمت بوجود الملف وقرّرت أن الصمت الأبدي هو الحل الوحيد.</p><div class="sol-proof">السلسلة التي لا تُكسر:\n- اسمها في الملف = الدافع\n- أخذ الدواء المطابق = الأداة\n- بطاقتها في المبنى وقت الجريمة = كانت هناك\n- الجريمة في ٧:٤٨ وخروجها ٨:١٠ = الجدول الزمني مضبوط</div><h3>الحكم</h3><p>رنا الصباح: <strong>الإعدام + التحقيق في ملف بيع الأعضاء</strong></p>`
 },
 
-// ─── CASE 8 ───
-8:{id:8,title:"الضابط المفقود",caseId:"#2025-008",type:"اغتيال",colorCls:"case-orange",badgeCls:"badge-orange",icon:"🎖️",date:"03/11/2025",
-killers:["كرم الشاوي"],
-killersAliases:[["كرم","الشاوي","كرم شاوي"]],
-killersCount:1,
-scenario:"اختفى المقدّم <strong>ناصر البريكي</strong> عقب عشاء رسمي لضباط الأمن. جُثمانه وُجد بعد ثلاثة أيام في المنطقة الصناعية. الوفاة: رصاصة واحدة دقيقة. قائمة المدعوين للعشاء: خمسة ضباط وثلاثة مدنيين.",
+11:{id:11,title:"الرسالة الأخيرة",caseId:"#2025-011",type:"جريمة قتل",color:"green",badgeCls:"badge-green",icon:"✉️",
+date:"05/06/2025",location:"منزل عائلة الهاجري — الرياض",
+scenario:"الشاب <strong>تركي الهاجري</strong>، ٢٤ عاماً، وُجد ميتاً في غرفته — والجميع يقول انتحار. لكن المحقق يجد رسالة 'الانتحار' مكتوبة بخط مختلف تماماً عن خط تركي الطبيعي. ومن يعرف تركي يعرف أنه لم يكن يعاني من أي اكتئاب — بل كان متحمساً لمشروع جديد.",
+victims:"تركي الهاجري، ٢٤ عاماً",crime:"قتل مُموّه على انتحار",culpritsCount:1,
+culpritsNote:"الجاني واحد — أكبر خطأه: الرسالة المزيّفة",
+answers:[["سارة الهاجري","سارة"]],
 ev:[
-{id:"E8-01",ic:"🔫",nm:"الرصاصة والزاوية",desc:"رصاصة عيار 9 مم من نوع عسكري. الزاوية تشير لمسافة من 5-8 أمتار. المُطلق كان أمام الضحية. لا كاسر صوت — جرأة أو ثقة بعدم الرؤية.",tag:"جنائي"},
-{id:"E8-02",ic:"📁",nm:"ملف الفساد السري",desc:"في مكتب البريكي: ملف تحقيق سري جارٍ ضد شخص مجهول الهوية في جهاز الأمن. الملف يصل لمرحلة 'التأكيد قبل المحاكمة'.",tag:"مهم"},
-{id:"E8-03",ic:"📍",nm:"آخر موقع مُتتبَّع",desc:"آخر إشارة GPS للضحية: موقف سيارات مطعم 'البلدية' الساعة 11:42 م. يبعد عن مكان العشاء بـ8 دقائق. لم يكن مبرمجاً للذهاب هناك تلك الليلة.",tag:"رقمي"},
-{id:"E8-04",ic:"🚗",nm:"كاميرا موقف السيارات",desc:"في الموقف: سيارة دفع رباعي داكنة دخلت الساعة 11:38 وخرجت 11:46. اللوحة: مغطاة بالطين عمداً. الموديل يتطابق مع موديل السيارة الرسمية المخصصة لكرم الشاوي.",tag:"بصري"},
-{id:"E8-05",ic:"📲",nm:"مكالمة مجهولة",desc:"في سجل هاتف البريكي: مكالمة واردة مدتها 40 ثانية الساعة 11:31 م من رقم مجهول. المضمون غير معروف. لكن بعدها مباشرة تحرّك البريكي.",tag:"رقمي"},
-{id:"E8-06",ic:"🏦",nm:"حسابات مالية غير معتادة",desc:"كرم الشاوي: تحويلات من حساب خارجي بمجموع 780 ألف ريال خلال الستة أشهر الماضية لا مصدر رسمي لها.",tag:"مالي"},
-{id:"E8-07",ic:"🔐",nm:"سجل دخول الأرشيف",desc:"قبل يومين من الاختفاء: دخل غير مُرخَّص لأرشيف الملفات السرية. تسجيل المستخدم الذي دخل: محذوف. لكن وقت الدخول: 7:45 م يوم الجمعة — يوم إجازة إلزامية للجميع ما عدا الضباط المناوبين.",tag:"رقمي"},
-{id:"E8-08",ic:"👁️",nm:"شهادة موظف أمن",desc:"موظف حراسة: 'رأيت النقيب كرم وحده في الطابق الثالث مساء الجمعة. سألته فقال إنه نسي شيئاً. لكن مكتبه في الطابق الأول.'",tag:"شهادة"}
+{id:"E11-01",ic:"✍️",nm:"تحليل خبير الخط",desc:"رسالة 'الانتحار' كُتبت بضغط وزوايا تختلف جذرياً عن خط تركي في ٧ رسائل حقيقية من حسابه. الخبير يؤكد: لم يكتب هذه الرسالة."},
+{id:"E11-02",ic:"💻",nm:"النشاط الأخير للجهاز",desc:"قبل وفاته بـ١٠ دقائق، كتب تركي رسالة بريد إلكتروني لمحاميه عن 'توثيق حصته في المشروع'. لا يتوافق أبداً مع شخص ينوي الانتحار."},
+{id:"E11-03",ic:"💊",nm:"تقرير السموم",desc:"مادة منومة بجرعة عالية وُجدت في دمه — تُسبب فقدان الوعي خلال دقائق. لم تُوجد هذه المادة في غرفته. من أين جاءت؟"},
+{id:"E11-04",ic:"💰",nm:"النزاع على المشروع",desc:"تركي وشقيقته سارة كانا شركاء في مشروع رقمي بدأ ينجح. قبل أسبوع من وفاته، طلب تركي من محامٍ توثيق حصته رسمياً — مما كان سيقلّص سيطرة سارة الكاملة على المشروع."},
+{id:"E11-05",ic:"📱",nm:"رسالة حُذفت من هاتف سارة",desc:"استُرجعت رسالة من هاتف سارة: 'إذا وثّق المحامي — خلصنا. عنده ٣ أيام.' أُرسلت لرقم مجهول — التحليل يُظهر أن الرقم كان نشطاً في نفس المنطقة يوم الجريمة."},
+{id:"E11-06",ic:"🧪",nm:"كوب الشاي",desc:"وُجد كوب شاي في غرفة تركي — المادة المنومة اكتُشفت فيه. الكوب خارجي الصنع — لا يشبه أكواب المنزل. من جلبه؟"}
 ],
 sus:[
-{id:"S8-01",nm:"كرم الشاوي",rl:"نقيب في الأمن",em:"👮",st:"كنت في المنزل بعد العشاء مباشرة. لا علاقة لي بأي ملف فساد. السيارة الرسمية كانت مرابطة أمام البيت طوال الليل — جاري يؤكد ذلك. التحويلات المالية: إرث من عمي توفي."},
-{id:"S8-02",nm:"اللواء محمد الراشد",rl:"قائد الوحدة",em:"🎖️",st:"البريكي ضابط ممتاز. لا أعلم بوجود ملف فساد ضد أحد. حضرت العشاء وغادرت الأول الساعة 10:30 م."},
-{id:"S8-03",nm:"الرائد عبدالله الخالدي",rl:"ضابط زميل",em:"🎖️",st:"غادرنا العشاء معاً أنا وكرم وذهبنا لبيتي للسهر حتى الثانية فجراً. كرم كان معي طوال الوقت."},
-{id:"S8-04",nm:"سامي وهبي",rl:"مدني — صاحب أعمال",em:"💼",st:"دُعيت للعشاء كعلاقة عامة. لا أعرف التفاصيل الداخلية. غادرت العشاء الساعة 10 وذهبت مباشرة للمنزل."}
+{id:"S11-01",nm:"سارة الهاجري",rl:"الشقيقة الكبرى وشريكة المشروع",em:"👩",st:"تركي كان يعاني في صمت ولم نعرف. رسالة الانتحار كُتبت بيده — ربما تغيّر خطه تحت الضغط. أنا خسرت أخي — ليس لديّ دافع.",con:"رسالتها المحذوفة 'إذا وثّق المحامي — خلصنا' قبل الجريمة بأيام. المشروع سيصبح بالكامل لها. والكوب الخارجي مع المادة المنومة — من جلبه إن لم يكن أحد من الداخل؟"},
+{id:"S11-02",nm:"فهد الهاجري",rl:"الأب",em:"👨",st:"لاحظت على تركي تعباً أخيراً لكنه لم يتحدث. دخلت غرفته الساعة ١١ ليلاً ووجدته — اعتقدت أنه نائم في البداية.",con:null},
+{id:"S11-03",nm:"زياد حمدان",rl:"صديق تركي المقرب",em:"👦",st:"تركي لم يكن مكتئباً — حدثني عن المشروع قبل يومين وكان متحمساً جداً. قال إن سارة ستتضايق من قرار المحامي لكنه لم يبدُ خائفاً.",con:null}
 ],
-sol:`<h3>الضابط الخائن</h3><p>ملف الفساد السري كان يصل لمرحلة التأكيد — المُشار إليه هو <span class="sol-highlight">كرم الشاوي</span>.</p><div class="sol-proof">التحويلات الخارجية = مصدر الفساد المالي.\nالسيارة المطابقة في موقف الجريمة = الثغرة المادية.\nدخول الأرشيف يوم الإجازة = كان يُفتّش على مدى تقدم ملف الفساد ضده.\nشهادة الخالدي 'كنا معاً' = شهادة زور من شريك في المصلحة.\nالمكالمة التي حرّكت البريكي = فخ نصبه كرم.</div><h3>الدافع الواضح</h3><p>البريكي وصل لمرحلة التأكيد في الملف. كرم عرف أنه سيُحاكم خلال أسابيع. الاغتيال كان الحل الوحيد في نظره.</p><div class="sol-proof">// الثغرة القاتلة:\nالدخول للأرشيف يوم الجمعة من الطابق الثالث\n— مكتبه في الأول — لماذا؟\nلأن ملف الفساد كان في الطابق الثالث.</div><p>الحكم: <strong>الإعدام + إسقاط الرتبة.</strong></p>`
+conns:["رسالة 'الانتحار' بخط مختلف = مزوّرة","البريد للمحامي قبل ١٠ دقائق = لم يكن ينوي الانتحار","رسالة سارة المحذوفة + الـ ٣ أيام = جدول زمني","الكوب الخارجي + المادة المنومة = جلبته سارة"],
+timeline:["قبل أسبوع: تركي يتصل بمحامٍ لتوثيق حصته","قبل ٣ أيام: سارة ترسل 'خلصنا. عنده ٣ أيام'","يوم الجريمة: كوب شاي مسموم في الغرفة","قبل ١٠ دقائق: تركي يبعث بريداً للمحامي — لا يعرف","فقدان الوعي ثم الوفاة — رسالة مزيّفة تُوضع"],
+sol:`<h3>الشقيقة والإرث الرقمي</h3><p><span class="sol-highlight">سارة الهاجري</span> فهمت أن توثيق حصة تركي يعني نهاية سيطرتها على المشروع — فاختارت أن تنهيه بدلاً من ذلك.</p><div class="sol-proof">الخطأ الذي دمّرها:\nرسالتها المحذوفة "إذا وثّق المحامي — خلصنا"\nجاءت قبل ٣ أيام من الجريمة بالضبط.\n\nثم: الرسالة المزيّفة بخط مختلف\nثم: الكوب الخارجي بالمادة المنومة</div><h3>الحكم</h3><p>سارة الهاجري: <strong>السجن المؤبد + مصادرة حصتها في المشروع</strong></p>`
 },
 
-// ─── CASE 9 ───
-9:{id:9,title:"الشبكة المظلمة",caseId:"#2025-009",type:"جريمة منظمة",colorCls:"case-purple",badgeCls:"badge-purple",icon:"🌐",date:"25/08/2025",
-killers:["نوف القرني","يزيد العامري"],
-killersAliases:[["نوف","القرني","نوف قرني"],["يزيد","العامري","يزيد عامري"]],
-killersCount:2,
-scenario:"تحقيق مالي في شركة استثمارية كبرى كشف عن شبكة غسيل أموال منظمة بقيمة 50 مليون ريال. الأموال تعود لجهات مشبوهة دولية. أحد المحققين الداخليين <strong>سلطان المطيري</strong> الذي كاد يكشف الشبكة وُجد ميتاً في سيارته. جريمتان في واحدة.",
+12:{id:12,title:"الحفلة الأخيرة",caseId:"#2025-012",type:"جريمة قتل",color:"gold",badgeCls:"badge-gold",icon:"🎭",
+date:"18/06/2025",location:"قصر الأحداث — حي الحمراء",
+scenario:"وُجدت المغنية الشهيرة <strong>لمياء نور</strong> ميتة في غرفة خلف المسرح بعد حفلتها الأخيرة مباشرة. تسمم دواء وليس مخدرات. مدير أعمالها يقول إنها كانت تعاني من ضغوط مالية. لكن المحقق يعلم أن لمياء كانت تملك عقداً جديداً بملايين — وواحداً كان يخسر كل شيء لو أُبرم العقد.",
+victims:"لمياء نور، ٣٦ عاماً",crime:"تسميم متعمد",culpritsCount:2,
+culpritsNote:"اثنان تعاونا — داخل الفريق وخارجه",
+answers:[["رامي شحادة","رامي"],["غادة الحسيني","غادة"]],
 ev:[
-{id:"E9-01",ic:"💀",nm:"وفاة المحقق",desc:"سلطان وُجد في سيارته بالطابق الأرضي من المبنى. الوفاة: تسمم بأول أكسيد الكربون. سيارته في مرآب مغلق وهو لم يكن ليجلس وحده ساعات في مرآب.",tag:"جنائي"},
-{id:"E9-02",ic:"💻",nm:"الملف قبل الحذف",desc:"جزء من ملف تحقيق سلطان استُعيد: يُشير لحسابين محوريين تمرّ عبرهما جميع التحويلات. أحد الحسابين مرتبط بشخص داخل الشركة.",tag:"رقمي"},
-{id:"E9-03",ic:"📊",nm:"تحليل التحويلات",desc:"شركة وهمية في لوكسمبرغ تستقبل تحويلات منتظمة. مُحوّل المبالغ: موظف مالي في الشركة. التحويلات تتزامن مع إجازات مدير الامتثال.",tag:"مالي"},
-{id:"E9-04",ic:"🔑",nm:"بطاقة دخول المرآب",desc:"آخر دخول للمرآب: بطاقة مسجّلة باسم نوف القرني الساعة 6:47 م. سلطان دخل 6:23 م. موعد الخروج الطبيعي 5:30 م للجميع.",tag:"رقمي"},
-{id:"E9-05",ic:"📝",nm:"مذكرة سلطان الأخيرة",desc:"'حددت الحساب الداخلي. صاحبه في قسم المالية. سأحتاج موافقة المدير العام غداً قبل الإبلاغ. اكتشفت أيضاً أن هناك طرفاً خارجياً متواصلاً مع داخل الشركة بشكل منتظم.'",tag:"مهم"},
-{id:"E9-06",ic:"📱",nm:"اتصال مشبوه",desc:"قبل وفاة سلطان بساعة: مكالمة بين هاتفَي نوف القرني ويزيد العامري مدتها 11 دقيقة. وهذا غير اعتيادي إذ لا علاقة عمل مباشرة بينهما.",tag:"رقمي"},
-{id:"E9-07",ic:"🏢",nm:"سجل مكالمات الشركة",desc:"يزيد العامري، مدير الامتثال، يُسجّل اتصالات منتظمة كل أسبوع مع رقم خارجي غير مسجّل في سجلات العمل. التواصل مستمر منذ 14 شهراً.",tag:"رقمي"},
-{id:"E9-08",ic:"🚘",nm:"كاميرا المرآب",desc:"كاميرا المرآب: نوف دخلت ووقفت قرب سيارة سلطان لمدة 6 دقائق. تفاصيل أفعالها غير واضحة بسبب الإضاءة الخافتة — لكن حركتها حول السيارة واضحة.",tag:"بصري"}
+{id:"E12-01",ic:"🥃",nm:"زجاجة الماء المسمومة",desc:"وُجد دواء مضاد للتخثر بجرعة عالية في زجاجة الماء الخاصة بلمياء — تلك التي يُعدّها شخصياً مساعدها رامي شحادة قبل كل حفلة. الجرعة قاتلة مع تاريخ لمياء الطبي."},
+{id:"E12-02",ic:"📄",nm:"العقد الجديد",desc:"لمياء كانت على وشك التوقيع على عقد مع شركة إنتاج جديدة — وهو ما كان سيُنهي عقدها مع الشركة الحالية 'نوتة للفنون'. مدير نوتة: فريد الحجاوي، خسارته ستكون ٨ ملايين ريال."},
+{id:"E12-03",ic:"💊",nm:"وصفة طبية مسروقة",desc:"ملف لمياء الطبي الخاص أُخذ من عيادتها الخاصة. الوصفة الطبية تذكر أنها تتناول أدوية تتفاعل بشكل قاتل مع مضادات التخثر. من يعرف هذا يعرف السُّم الصحيح."},
+{id:"E12-04",ic:"💳",nm:"حوالة مالية مريبة",desc:"قبل ٤ أيام من الجريمة، أُرسلت حوالة ٢٥٠ ألف ريال من حساب مجهول لحساب 'رامي ش' — نفس اليوم الذي أُبلغت فيه لمياء فريد الحجاوي بقرار تغيير الشركة."},
+{id:"E12-05",ic:"📞",nm:"مكالمات رامي",desc:"رامي تلقّى ٦ مكالمات خلال الأسبوع الأخير من رقم مرتبط بغادة الحسيني، مساعدة مدير نوتة للفنون. آخر مكالمة: قبل الحفلة بـ٣ ساعات."},
+{id:"E12-06",ic:"🔑",nm:"دخول غير مصرح",desc:"كاميرا الأمن رصدت شخصاً دخل غرفة الخلف الساعة ٥:٣٠ مساءً — قبل ساعتين من الحفلة. الشخص يرتدي ملابس طاقم العمل لكن بطاقته لا تتطابق مع أي من الموظفين المصرّح لهم."}
 ],
 sus:[
-{id:"S9-01",nm:"نوف القرني",rl:"موظفة مالية",em:"👩‍💼",st:"ذهبت للمرآب لأستلم حقيبة نسيتها في سيارتي. رأيت سيارة سلطان لكن لم أنتبه لشيء. لا أعرف يزيد إلا كمدير في قسم آخر. التحويلات في عملي اعتيادية وموثّقة."},
-{id:"S9-02",nm:"يزيد العامري",rl:"مدير الامتثال",em:"👔",st:"وظيفتي تتطلب التواصل مع جهات خارجية للتحقق من الامتثال. لا علاقة لي بتحقيق سلطان. لم أكن في المبنى وقت الحادثة."},
-{id:"S9-03",nm:"خالد مرزوق",rl:"المدير العام للشركة",em:"🏛️",st:"سلطان لم يطلب موافقة مني رسمياً. الشركة نظيفة — أي تحقيق مرحّب به. أنا من طلبت فتح التحقيق الداخلي أصلاً."},
-{id:"S9-04",nm:"ريتا حنا",rl:"مساعدة مدير الامتثال",em:"👩‍💻",st:"يزيد يتواصل خارجياً كثيراً — لكن هذا عمله. لاحظت أنه كان متوتراً يوم الحادثة لكنني لم أعطِ الأمر أهمية."}
+{id:"S12-01",nm:"رامي شحادة",rl:"المساعد الشخصي للمغنية",em:"👨‍💼",st:"أعددت الماء كالمعتاد. لمياء طلبت مني دائماً تجهيز زجاجتها الخاصة. لا أعرف شيئاً عن سُمّ. الحوالة المالية كانت لقرض عادي من صديق.",con:"يُعدّ الزجاجة بيديه (E12-01). تلقّى ٢٥٠ ألف في نفس يوم إبلاغ لمياء لفريد (E12-04). مكالمات مع غادة قبل الجريمة (E12-05)."},
+{id:"S12-02",nm:"فريد الحجاوي",rl:"مدير شركة نوتة للفنون",em:"🎵",st:"لمياء حرة في قرارها. ٨ ملايين خسارة نعم — لكنني رجل أعمال ناضج ولا أقتل فنانيني. وثيقة الخسارة موجودة — لكنها ليست دافعاً للقتل في عالمي.",con:null},
+{id:"S12-03",nm:"غادة الحسيني",rl:"مساعدة مدير نوتة",em:"👩",st:"مكالماتي لرامي؟ تنسيق فعاليات عادية — نحن نتعاون أحياناً. لا علاقة لي بما حدث.",con:"مكالماتها لرامي قبل الجريمة (E12-05) — وهي التي لها وصول لملف لمياء الطبي لكونها تعمل في فريق الإدارة. والدخول غير المصرّح في الكاميرا مجهول الهوية."},
+{id:"S12-04",nm:"نور باسل",rl:"صديقة لمياء المقربة",em:"🤝",st:"لمياء كانت سعيدة بالعقد الجديد. لم أكن أعلم بالتفاصيل المالية. رأيتها قبل الحفلة وبدت طبيعية.",con:null}
 ],
-sol:`<h3>الشبكة الداخلية</h3><p><span class="sol-highlight">نوف القرني</span> صاحبة الحساب الداخلي، و<span class="sol-highlight">يزيد العامري</span> المتواصل مع الجهة الخارجية.</p><div class="sol-proof">سلطان: "حساب داخلي في قسم المالية + طرف خارجي" = نوف + يزيد.\nالاتصال بينهما قبل وفاته بساعة = إبلاغ وتنسيق.\nنوف في المرآب 6 دقائق عند سيارته = أدخلت الغاز عبر خرطوم أو غيّرت شيئاً.\nيزيد مدير الامتثال = يُسيطر على ما يصل للمدير العام.\nالتحويلات تتزامن مع إجازاته = هو من يُغطّيها.</div><h3>كيف عملت الشبكة</h3><p>نوف تُحوّل المال، يزيد يضمن عدم اكتشافه. عندما اقترب سلطان من الكشف، تواصلا واتفقا على التصفية.</p><div class="sol-proof">// الثغرة القاتلة:\nمكالمة 11 دقيقة بين شخصين "لا علاقة عمل بينهما"\nقبل ساعة من وفاة المحقق الذي كاد يكشفهما.</div><p>الحكم: <strong>نوف القرني ويزيد العامري — السجن 20 سنة وتجميد الأصول.</strong></p>`
+conns:["رامي + إعداد الزجاجة + حوالة = المنفّذ","غادة + ملف طبي + مكالمات رامي = المخططة","فريد = الدافع الأكبر لكن لا دليل مباشر","الدخول غير المصرح + وقت التجهيز = غادة أضافت السُّم"],
+timeline:["٤ أيام قبل: حوالة ٢٥٠ ألف لرامي","٣ ساعات قبل: مكالمة أخيرة بين غادة ورامي","٥:٣٠ م: دخول غير مصرّح به — غادة تُجهّز السُّم","رامي يُعدّ الزجاجة — السُّم موجود","بعد الحفلة: لمياء تشرب وتنهار"],
+sol:`<h3>المساعد والمخططة</h3><p><span class="sol-highlight">رامي شحادة</span> كان الأداة — و<span class="sol-highlight">غادة الحسيني</span> هي من خطّطت ووفّرت السُّم والمعلومات الطبية لحماية مصالح الشركة.</p><div class="sol-proof">الثالوث المميت:\n١. رامي: وحده يُعدّ الزجاجة + حوالة مشبوهة\n٢. غادة: وصول للملف الطبي + مكالمات سرية + دخول غير مصرّح\n٣. التوقيت: كل شيء حدث بعد إبلاغ فريد بالقرار</div><h3>الحكم</h3><p>رامي شحادة: <strong>السجن ٢٥ سنة</strong><br/>غادة الحسيني: <strong>السجن المؤبد — تخطيط وتنفيذ</strong></p>`
 },
 
-// ─── CASE 10 ───
-10:{id:10,title:"الرسالة الأخيرة",caseId:"#2025-010",type:"جريمة قتل مدبّرة",colorCls:"case-green",badgeCls:"badge-green",icon:"✉️",date:"31/12/2025",
-killers:["هشام البلوشي"],
-killersAliases:[["هشام","البلوشي","هشام بلوشي"]],
-killersCount:1,
-scenario:"في ليلة رأس السنة، وُجد الأكاديمي المعروف <strong>د. عبدالله الحموي</strong> ميتاً في شقته. الوفاة: صعقة كهربائية متعمدة. الأبواب مقفلة. لا آثار اقتحام. كل شيء يشير لشخص يعرف الشقة جيداً.",
+13:{id:13,title:"الشاهد الصامت",caseId:"#2025-013",type:"اغتيال",color:"red",badgeCls:"badge-red",icon:"👁️",
+date:"30/06/2025",location:"شقة المتهم — حي العزيزية",
+scenario:"النائب العام المساعد <strong>مسعد الغنام</strong> وُجد ميتاً في شقته بعد مسدس على طاولته يوحي بالانتحار. لكن مسعد كان على وشك تقديم شهادة في قضية كبرى ستُدين رجلاً نافذاً. ثلاثة أشخاص كانوا على علم بشهادته — وواحد منهم قرر أنه يجب أن يصمت للأبد.",
+victims:"مسعد الغنام، ٥٢ عاماً",crime:"اغتيال مُموّه على انتحار",culpritsCount:1,
+culpritsNote:"شخص واحد — لكن له علاقات قوية جداً",
+answers:[["عادل البلوي","عادل"],["البلوي"]],
 ev:[
-{id:"E10-01",ic:"⚡",nm:"مصدر الصعقة",desc:"الصعقة جاءت من جهاز حاسوب محمول مُعدَّل عمداً — الكابل الداخلي كُشط وعُزل بطريقة تُسبب صعقة عند لمسه. تعديل احترافي يتطلب معرفة كهربائية.",tag:"جنائي"},
-{id:"E10-02",ic:"✉️",nm:"الرسالة الإلكترونية",desc:"آخر رسالة تلقاها الدكتور: 'أرسلت لك ملف الأبحاث النهائي على الحاسوب المحمول. هناك مفاجأة تسعدك.' — الرسالة من عنوان مُزيَّف يُشابه بريد أحد معارفه.",tag:"رقمي"},
-{id:"E10-03",ic:"🎒",nm:"حاسوب محمول غريب",desc:"الحاسوب المحمول ليس ملكاً للضحية — لا توجد في الشقة حواسيب غريبة عادةً. كيف وصل؟ لا أحد يُقرّ بإرساله.",tag:"مادي"},
-{id:"E10-04",ic:"🔑",nm:"مفتاح مكرر",desc:"الأمن: جهاز تكرار المفاتيح يُسجّل آخر نسخة لمفتاح الشقة — قبل 3 أسابيع. صاحب الطلب: مجهول. لكن الشقة في حي يعرفه أصدقاء الدكتور.",tag:"مادي"},
-{id:"E10-05",ic:"📚",nm:"نزاع أكاديمي",desc:"قبل 4 أشهر: هشام البلوشي، طالب دكتوراه سابق، رُفض بحثه وطُرد من البرنامج بقرار الدكتور الحموي. هشام قدّم طعناً رُفض.",tag:"مهم"},
-{id:"E10-06",ic:"🌐",nm:"سجل IP للرسالة",desc:"عنوان IP الرسالة المُزيَّفة يقود لشبكة واي فاي مقهى في نفس الحي. كاميرات المقهى تُظهر زبوناً بملابس داكنة لفترة قصيرة — لكن وجهه غير واضح.",tag:"رقمي"},
-{id:"E10-07",ic:"🔧",nm:"أدوات في سيارة هشام",desc:"في صندوق سيارة هشام: مجموعة أدوات كهربائية متخصصة. الأدوات حديثة الاستخدام وفق آثار الشحوم الطازجة.",tag:"مادي"},
-{id:"E10-08",ic:"🏠",nm:"سجل الزيارات القديم",desc:"قبل عام: هشام كان يزور الدكتور بانتظام للإشراف على رسالته. كان يعرف تفاصيل الشقة. آخر زيارة مسجّلة: قبل 5 أشهر.",tag:"شخصي"}
+{id:"E13-01",ic:"🔫",nm:"تحليل أثر البارود",desc:"الرصاصة أُطلقت من مسافة ٤٥ سم وليس من التلامس المباشر — وهو غير متسق مع الانتحار. أثر البارود على يد مسعد ضعيف جداً قياساً بالانتحار الفعلي."},
+{id:"E13-02",ic:"📁",nm:"نسخة الشهادة",desc:"شهادة مسعد المحفوظة في الحاسب تُدين رجل الأعمال عادل البلوي في قضية تزوير عقود حكومية بـ١٥٠ مليون. يوم التقديم: الأربعاء — اليوم الذي سبق وفاته بيوم."},
+{id:"E13-03",ic:"🚗",nm:"تتبع السيارة",desc:"كاميرا حركة المرور رصدت سيارة فارهة متوقفة أمام شقة مسعد بين ١١ م و١:٣٠ ص. لوحة السيارة مسجّلة باسم موظف في شركة البلوي — ليس عادل مباشرة لكن السيارة من أسطوله."},
+{id:"E13-04",ic:"💬",nm:"رسالة التهديد",desc:"رسالة في صندوق بريد مسعد يومين قبل الوفاة: 'الشهادة لن تُقدَّم.' موقّعة برمز — لكن ورق الطباعة فُحص وكشف عن بصمة جهاز طابعة تعود لشركة البلوي."},
+{id:"E13-05",ic:"📞",nm:"مكالمة مجهولة",desc:"آخر مكالمة تلقّاها مسعد الساعة ١٠:٤٥ م — قبل ١٥ دقيقة من تقدير وقت الوفاة. الرقم مسبق الدفع. المحادثة استمرت ٦ دقائق."},
+{id:"E13-06",ic:"🔐",nm:"سجل الدخول الإلكتروني",desc:"مبنى الشقة له نظام دخول إلكتروني. سُجّل ضيف دخل معه مسعد الساعة ١١:٠٢ م — ما يعني أن مسعد فتح الباب طوعاً لشخص يعرفه."}
 ],
 sus:[
-{id:"S10-01",nm:"هشام البلوشي",rl:"طالب دكتوراه مطرود",em:"👨‍🎓",st:"أنا كنت في بيت أهلي ليلة رأس السنة. لديّ صور مع العائلة. الأدوات في سيارتي لأنني أساعد والدي في منزله. الدكتور ظلمني لكنني تجاوزت الأمر — لا أقتل أحداً."},
-{id:"S10-02",nm:"د. سمر الأحمد",rl:"زميلة في الأكاديمية",em:"👩‍🏫",st:"تواصلت مع الدكتور يوم العيد فقط لأتمنى له السنة الجديدة. لا أعرف شيئاً عن أي نزاع مع هشام. الدكتور لم يذكر لي أنه يخشى شيئاً."},
-{id:"S10-03",nm:"مروان الغزالي",rl:"الجار المباشر",em:"🏠",st:"سمعت صوت سقوط الساعة 11:45 م لكنني ظننته ضجة العيد. لم أرَ أحداً يدخل أو يخرج من الشقة المجاورة. لكن لاحظت سيارة وقفت في الشارع لبضع دقائق في وقت مبكر من الليل."},
-{id:"S10-04",nm:"ليث الجمال",rl:"صديق الدكتور",em:"👨‍💼",st:"اتصلت بالدكتور الساعة 9 مساءً لأهنئه. كان يبدو بخير. لا أعرف هشام شخصياً. الدكتور ذكر لي قبل أسابيع أنه قلق من أحد الطلاب المطرودين لكنه لم يُسمّه."}
+{id:"S13-01",nm:"عادل البلوي",rl:"رجل أعمال — المتهم في قضية مسعد",em:"👔",st:"أنا رجل أعمال محترم. شهادة مسعد مجرد ادعاءات كاذبة. كنت في منزلي ليلة الحادثة مع عائلتي. لا أعرف شيئاً عن سيارة أو رسالة.",con:"رسالة التهديد بطابعة شركته (E13-04). سيارة أسطوله أمام الشقة وقت الجريمة (E13-03). الشهادة التي تُدينه (E13-02) = دافع واضح."},
+{id:"S13-02",nm:"رلى غصن",rl:"المدعية العامة المشرفة على القضية",em:"👩‍⚖️",st:"مسعد كان يعمل تحت إشرافي. الشهادة كانت قوية. نعم أعلم بوجود ضغوط عليه لكنه لم يُخبرني بتفاصيل. أنا في المكتب حتى الساعة ٩ ليلاً وسجل الدخول يُثبت ذلك.",con:null},
+{id:"S13-03",nm:"نزار حمدان",rl:"المحامي المدافع عن عادل البلوي",em:"⚖️",st:"موكلي بريء. الشهادة كانت مبنية على وثائق مزوّرة. لو أراد موكلي إسكات مسعد لفعل ذلك بطرق قانونية.",con:null}
 ],
-sol:`<h3>الدليل المتراكم</h3><p><span class="sol-highlight">هشام البلوشي</span> هو الوحيد الذي تجتمع فيه كل العوامل.</p><div class="sol-proof">يعرف الشقة من زياراته السابقة = قادر على تكرار المفتاح.\nمطرود بسبب الدكتور = الدافع الأقوى.\nأدوات كهربائية حديثة الاستخدام = التعديل الأخير قبل الجريمة.\nالرسالة المُزيَّفة أُرسلت من حيه = هو في حيّه.\nصديق الدكتور: "قلق من طالب مطرود" = إشارة لهشام.</div><h3>الخطة المحكمة</h3><p>كرر المفتاح قبل أسابيع. عدّل الحاسوب محترفاً. أرسل الرسالة لإغرائه بفتح الجهاز. الصعقة كانت مباشرة عند لمس الكابل.</p><div class="sol-proof">// الثغرة القاتلة:\nالأدوات الكهربائية حديثة الاستخدام\nفي سيارة شخص لا عمل تقني له —\nتكتب قصة التحضير بكل وضوح.</div><p>الحكم: <strong>السجن 20 سنة.</strong></p>`
+conns:["طابعة البلوي + رسالة التهديد = جاءت منه","سيارة أسطوله + التوقيت = موجودة هناك","الشهادة المدينة + الاثنين قبل التقديم = الدافع والتوقيت","مسعد فتح الباب طوعاً = أرسل البلوي شخصاً يعرفه"],
+timeline:["يومان قبل: رسالة تهديد بطابعة شركة البلوي","مساء الجريمة: مسعد يصل للشقة","١١:٠٢ م: ضيف يدخل معه — مسعد فتح الباب طوعاً","١١-١:٣٠ ص: سيارة أسطول البلوي في المنطقة","تقدير الوفاة: حوالي ١١ م"],
+sol:`<h3>النافذ الذي خاف من الحقيقة</h3><p><span class="sol-highlight">عادل البلوي</span> أرسل شخصاً بسيارة من أسطوله لتنفيذ الجريمة — وكان مسعد يعرف هذا الشخص فلم يخشَ منه ففتح الباب.</p><div class="sol-proof">الثلاثي المدمّر:\n١. طابعة شركته = رسالة التهديد\n٢. سيارة أسطوله = موجودة وقت الجريمة\n٣. الشهادة التي تُدينه بـ١٥٠ مليون = الدافع الأكبر</div><h3>الحكم</h3><p>عادل البلوي: <strong>الإعدام — اغتيال مسؤول قضائي + تزوير عقود حكومية</strong></p>`
 }
 };
 
-// ════════════════════════════════════════════════════════════
-// STATE
-// ════════════════════════════════════════════════════════════
-var cur=null,solved=[],notesStore={},flashT=null,modalT=null;
-try{var s=localStorage.getItem('inv_hard_v1');if(s){var p=JSON.parse(s);if(Array.isArray(p))solved=p.filter(function(x){return typeof x==='number';})}}catch(e){}
-function saveSolved(){try{localStorage.setItem('inv_hard_v1',JSON.stringify(solved))}catch(e){}}
-function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
-function show(id){document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active')});document.getElementById(id).classList.add('active');window.scrollTo(0,0)}
+/* ══════════════════════════════════
+   APP STATE
+══════════════════════════════════ */
+var cur = null;
+var solved = [];
+var notesStore = {};
+var flashT = null;
+var modalT = null;
+var pendingCaseId = null;
 
-// ════════════════════════════════════════════════════════════
-// DASHBOARD
-// ════════════════════════════════════════════════════════════
-function buildDashboard(){
-  var list=document.getElementById('files-list');
-  list.innerHTML='';
-  for(var i=1;i<=10;i++){
-    var c=C[i];
-    var isSolved=solved.includes(i);
-    var kLabel='عدد الجناة: '+c.killersCount;
-    var statusDot=isSolved?'dot-solved':'dot-open';
-    var statusText=isSolved?'محلولة':'مفتوحة';
-    var statusColor=isSolved?'#22c55e':'var(--red2)';
-    var el=document.createElement('div');
-    el.className='file-item '+c.colorCls+(isSolved?' solved-case':'');
-    el.id='card-'+i;
-    el.onclick=function(cid){return function(){openScenario(cid)}}(i);
-    el.innerHTML='<div class="fi-stripe" style="background:var(--'+getStripeColor(c.colorCls)+')"></div>'
-    +'<div class="fi-body">'
-    +'<div class="fi-icon">'+c.icon+'</div>'
-    +'<div class="fi-content">'
-    +'<div class="fi-meta">'
-    +'<span class="fi-id">'+esc(c.caseId)+'</span>'
-    +'<span class="fi-type-badge '+c.badgeCls+'">'+esc(c.type)+'</span>'
-    +'<span class="fi-killers-count">'+esc(kLabel)+'</span>'
-    +'</div>'
-    +'<div class="fi-title">'+esc(c.title)+'</div>'
-    +'<div class="fi-desc">'+c.scenario.substring(0,100)+'...</div>'
-    +'</div>'
-    +'<div class="fi-right">'
-    +'<div class="fi-status"><div class="status-dot '+statusDot+'"></div><span style="color:'+statusColor+';font-family:var(--fmono);font-size:.56rem">'+statusText+'</span></div>'
-    +'<button class="fi-btn">فتح الملف</button>'
-    +'<div class="fi-date">'+esc(c.date)+'</div>'
-    +'</div></div>';
-    if(isSolved){
-      var stamp=document.createElement('div');
-      stamp.className='solved-stamp';
-      stamp.textContent='✓ محلولة';
-      el.appendChild(stamp);
-    }
-    list.appendChild(el);
+/* Load solved cases from localStorage */
+try {
+  var s = localStorage.getItem('inv_v2');
+  if (s) {
+    var p = JSON.parse(s);
+    if (Array.isArray(p)) solved = p.filter(function(x) { return typeof x === 'number'; });
   }
-  document.getElementById('solved-count').textContent=solved.length;
-}
-function getStripeColor(cls){
-  var map={
-    'case-red':'red2',
-    'case-gold':'gold2',
-    'case-cyan':'cyan2',
-    'case-purple':'purple2',
-    'case-orange':'orange2',
-    'case-green':'green2'
-  };
-  return map[cls]||'blue3';
+} catch(e) {}
+
+function saveSolved() {
+  try { localStorage.setItem('inv_v2', JSON.stringify(solved)); } catch(e) {}
 }
 
-// ════════════════════════════════════════════════════════════
-// SCENARIO
-// ════════════════════════════════════════════════════════════
-function openScenario(id){
-  cur=C[id];
-  document.getElementById('sc-id').textContent=cur.caseId;
-  document.getElementById('sc-title').textContent=cur.title;
-  var badge=document.getElementById('sc-badge');
-  badge.className='fi-type-badge '+cur.badgeCls;
-  badge.textContent=cur.type;
-  var kLabel='عدد الجناة: '+cur.killersCount+' شخص';
-  document.getElementById('sc-killers-label').textContent=kLabel;
-  document.getElementById('sc-text').innerHTML=cur.scenario;
-  document.getElementById('sc-date').textContent=cur.date;
-  document.getElementById('sc-sus-count').textContent=cur.sus.length+' أشخاص';
-  document.getElementById('sc-ev-count').textContent=cur.ev.length+' دليل';
-  show('scenario-screen');
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
-function goBackDash(){cur=null;show('dashboard-screen');buildDashboard()}
-document.getElementById('btn-enter-case').addEventListener('click',function(){
-  if(!cur)return;
-  buildCase();
+
+/* ══════════════════════════════════
+   DASHBOARD
+══════════════════════════════════ */
+function buildDash() {
+  var el = document.getElementById('files-list');
+  var html = '';
+  Object.keys(C).forEach(function(k) {
+    var c = C[k];
+    var isSolved = solved.includes(c.id);
+    var colCls = 'case-' + c.color;
+    html += '<div class="file-item ' + colCls + (isSolved ? ' solved-case' : '') + '" id="card-' + c.id + '" onclick="triggerScenario(' + c.id + ')">'
+      + '<div class="fi-stripe" style="background:var(--' + c.color + '2)"></div>'
+      + '<div class="fi-body">'
+      + '<div class="fi-icon">' + c.icon + '</div>'
+      + '<div class="fi-content">'
+      + '<div class="fi-meta"><span class="fi-id">' + esc(c.caseId) + '</span><span class="fi-type-badge ' + c.badgeCls + '">' + esc(c.type) + '</span></div>'
+      + '<div class="fi-title">' + esc(c.title) + '</div>'
+      + '<div class="fi-desc">' + c.scenario.replace(/<[^>]+>/g,'').substring(0,120) + '...</div>'
+      + '</div>'
+      + '<div class="fi-right">'
+      + '<div class="fi-status"><div class="status-dot ' + (isSolved ? 'dot-solved' : 'dot-open') + '"></div>'
+      + '<span style="color:' + (isSolved ? '#27ae60' : 'var(--red2)') + ';font-family:var(--fmono);font-size:.58rem">' + (isSolved ? 'محلولة' : 'مفتوحة') + '</span></div>'
+      + '<button class="fi-btn">فتح الملف</button>'
+      + '<div class="fi-date">' + esc(c.date) + '</div>'
+      + '</div></div>'
+      + (isSolved ? '<div class="solved-stamp">✓ محلولة</div>' : '')
+      + '</div>';
+  });
+  el.innerHTML = html;
+}
+
+function refreshDash() {
+  document.getElementById('solved-count').textContent = solved.length;
+  buildDash();
+}
+
+/* ══════════════════════════════════
+   SCENARIO POPUP
+══════════════════════════════════ */
+function triggerScenario(id) {
+  pendingCaseId = id;
+  var c = C[id];
+  document.getElementById('sc-id').textContent = c.caseId + ' — ' + c.date;
+  document.getElementById('sc-title').textContent = c.title;
+  document.getElementById('sc-text').innerHTML = c.scenario;
+  document.getElementById('sc-meta').innerHTML =
+    '<div class="smeta-item"><div class="smeta-label">الجريمة</div><div class="smeta-val danger">' + esc(c.crime) + '</div></div>'
+    + '<div class="smeta-item"><div class="smeta-label">الضحية</div><div class="smeta-val">' + esc(c.victims) + '</div></div>'
+    + '<div class="smeta-item"><div class="smeta-label">الموقع</div><div class="smeta-val">' + esc(c.location) + '</div></div>';
+  document.getElementById('sc-sus-count').textContent = '⚠ عدد المتورطين: ' + c.culpritsCount + ' — ' + c.culpritsNote;
+  document.getElementById('scenario-overlay').classList.remove('off');
+}
+
+document.getElementById('btn-enter-case').addEventListener('click', function() {
+  document.getElementById('scenario-overlay').classList.add('off');
+  if (pendingCaseId) openCase(pendingCaseId);
+});
+
+/* ══════════════════════════════════
+   OPEN CASE
+══════════════════════════════════ */
+function openCase(id) {
+  if (modalT) { clearTimeout(modalT); modalT = null; }
+  cur = C[id];
+  document.getElementById('ctb-name').textContent = cur.title;
+  document.getElementById('ctb-id').textContent = cur.caseId;
+  var b = document.getElementById('ctb-badge');
+  b.textContent = cur.type;
+  b.className = 'ctb-badge ' + cur.badgeCls;
+  buildEv();
+  buildSus();
+  buildNb();
+  resetSolve();
   show('case-screen');
-  document.querySelectorAll('.ctab').forEach(function(t){t.classList.remove('active')});
-  document.querySelectorAll('.cpane').forEach(function(p){p.classList.remove('active')});
-  document.querySelector('.ctab[data-tab="evidence"]').classList.add('active');
-  document.getElementById('tab-evidence').classList.add('active');
-});
-
-// ════════════════════════════════════════════════════════════
-// CASE BUILD
-// ════════════════════════════════════════════════════════════
-function buildCase(){
-  document.getElementById('ctb-name').textContent=cur.title;
-  document.getElementById('ctb-id').textContent=cur.caseId;
-  var b=document.getElementById('ctb-badge');b.textContent=cur.type;b.className='ctb-badge '+cur.badgeCls;
-  buildEv();buildSus();buildVerdict();
-  var ta=document.getElementById('nb-ta');
-  ta.value=notesStore[cur.id]||'';
-  ta.oninput=function(){notesStore[cur.id]=ta.value};
-  document.getElementById('vres').style.display='none';
-  document.getElementById('vres').className='vres';
+  setTab('evidence');
 }
-function buildEv(){
-  document.getElementById('ev-grid').innerHTML=cur.ev.map(function(e){
+
+function setTab(t) {
+  document.querySelectorAll('.ctab').forEach(function(x) { x.classList.remove('active'); });
+  document.querySelectorAll('.cpane').forEach(function(x) { x.classList.remove('active'); });
+  document.querySelector('.ctab[data-tab="' + t + '"]').classList.add('active');
+  document.getElementById('tab-' + t).classList.add('active');
+}
+
+/* ══════════════════════════════════
+   BUILD EVIDENCE
+══════════════════════════════════ */
+function buildEv() {
+  document.getElementById('ev-grid').innerHTML = cur.ev.map(function(e) {
     return '<div class="ev-card" onclick="this.classList.toggle(\'flipped\')">'
-    +'<div class="ev-inner"><div class="ev-front">'
-    +'<div class="ev-front-tag">'+esc(e.id)+'</div>'
-    +'<div class="ev-front-ico">'+e.ic+'</div>'
-    +'<div class="ev-front-name">'+esc(e.nm)+'</div>'
-    +'<div class="ev-front-hint">اضغط للكشف</div>'
-    +'</div><div class="ev-back">'
-    +'<div class="ev-back-id">'+esc(e.id)+' · '+esc(e.tag)+'</div>'
-    +'<div class="ev-back-name">'+esc(e.nm)+'</div>'
-    +'<div class="ev-back-desc">'+esc(e.desc)+'</div>'
-    +'</div></div></div>';
+      + '<div class="ev-inner"><div class="ev-front">'
+      + '<div class="ev-front-tag">' + esc(e.id) + '</div>'
+      + '<div class="ev-front-ico">' + e.ic + '</div>'
+      + '<div class="ev-front-name">' + esc(e.nm) + '</div>'
+      + '<div class="ev-front-hint">اضغط للكشف</div>'
+      + '</div><div class="ev-back">'
+      + '<div class="ev-back-id">' + esc(e.id) + '</div>'
+      + '<div class="ev-back-name">' + esc(e.nm) + '</div>'
+      + '<div class="ev-back-desc">' + esc(e.desc) + '</div>'
+      + '</div></div></div>';
   }).join('');
 }
-function buildSus(){
-  document.getElementById('sus-grid').innerHTML=cur.sus.map(function(s){
+
+/* ══════════════════════════════════
+   BUILD SUSPECTS
+══════════════════════════════════ */
+function buildSus() {
+  document.getElementById('sus-grid').innerHTML = cur.sus.map(function(s) {
+    var con = s.con
+      ? '<div class="sus-contradiction" style="margin-top:.8rem;background:rgba(231,76,60,.06);border:1px solid rgba(231,76,60,.2);border-radius:3px;padding:.7rem .9rem;font-size:.74rem;color:var(--red2);line-height:1.7"><strong>⚠ تناقض: </strong>' + esc(s.con) + '</div>'
+      : '';
     return '<div class="sus-card">'
-    +'<div class="sus-card-head">'
-    +'<div class="sus-avatar">'+s.em+'</div>'
-    +'<div class="sus-info"><div class="sus-name">'+esc(s.nm)+'</div><div class="sus-role">'+esc(s.rl)+'</div></div>'
-    +'</div>'
-    +'<div class="sus-card-actions">'
-    +'<button class="btn-stmt" onclick="toggleStmt(\'stmt-'+esc(s.id)+'\',this)">عرض الإفادة</button>'
-    +'</div>'
-    +'<div class="sus-stmt" id="stmt-'+esc(s.id)+'">'
-    +'<div class="sus-stmt-label">الإفادة الرسمية</div>'
-    +'<div class="sus-stmt-text">'+esc(s.st)+'</div>'
-    +'</div></div>';
+      + '<div class="sus-card-head"><div class="sus-avatar">' + s.em + '</div><div class="sus-info"><div class="sus-name">' + esc(s.nm) + '</div><div class="sus-role">' + esc(s.rl) + '</div></div></div>'
+      + '<div class="sus-card-actions"><button class="btn-stmt" onclick="toggleStmt(\'stmt-' + esc(s.id) + '\',this)">عرض الإفادة الرسمية</button></div>'
+      + '<div class="sus-stmt" id="stmt-' + esc(s.id) + '">'
+      + '<div class="sus-stmt-label">الإفادة الرسمية</div>'
+      + '<div class="sus-stmt-text">' + esc(s.st) + '</div>'
+      + con + '</div></div>';
   }).join('');
 }
-function buildVerdict(){
-  var info=document.getElementById('v-killers-info');
-  info.textContent='عدد الجناة في هذه القضية: '+cur.killersCount+' شخص — أدخل جميع الأسماء';
-  var cont=document.getElementById('multi-inputs');
-  cont.innerHTML='';
-  for(var i=0;i<cur.killersCount;i++){
-    var lbl=document.createElement('label');
-    lbl.className='vlabel';
-    lbl.textContent=(cur.killersCount>1?'المتهم '+(i+1)+':':'اسم المتهم:');
-    var inp=document.createElement('input');
-    inp.type='text';
-    inp.className='vinp';
-    inp.placeholder='أدخل الاسم الكامل...';
-    inp.id='cinp-'+i;
-    inp.addEventListener('keydown',function(e){if(e.key==='Enter')checkVerdict()});
-    cont.appendChild(lbl);
-    cont.appendChild(inp);
-  }
-}
-function toggleStmt(id,btn){
-  var el=document.getElementById(id);if(!el)return;
-  var open=el.classList.toggle('open');
-  btn.textContent=open?'إخفاء الإفادة':'عرض الإفادة';
+
+function toggleStmt(id, btn) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  var open = el.classList.toggle('open');
+  btn.textContent = open ? 'إخفاء الإفادة' : 'عرض الإفادة الرسمية';
 }
 
-// ════════════════════════════════════════════════════════════
-// VERDICT
-// ════════════════════════════════════════════════════════════
-function normalize(s){return s.toLowerCase().replace(/\s+/g,' ').trim()}
-function matchName(inp,correct,aliases){
-  var n=normalize(inp);
-  var all=[correct].concat(aliases||[]);
-  return all.some(function(a){
-    var al=normalize(a);
-    return n===al||n.includes(al)||al.includes(n);
+/* ══════════════════════════════════
+   BUILD NOTEBOOK
+══════════════════════════════════ */
+function buildNb() {
+  document.getElementById('nb-conns').innerHTML = cur.conns.map(function(c) {
+    return '<div class="nb-conn"><span class="nb-conn-arrow">→</span><span>' + esc(c) + '</span></div>';
+  }).join('');
+  document.getElementById('nb-timeline').innerHTML = (cur.timeline || []).map(function(t) {
+    return '<div class="nb-conn"><span class="nb-conn-arrow">◆</span><span>' + esc(t) + '</span></div>';
+  }).join('');
+  var ta = document.getElementById('nb-ta');
+  ta.value = notesStore[cur.id] || '';
+  ta.oninput = function() { notesStore[cur.id] = ta.value; };
+}
+
+/* ══════════════════════════════════
+   VERDICT / SOLVE
+══════════════════════════════════ */
+function resetSolve() {
+  if (!cur) return;
+  document.getElementById('cinp').value = '';
+  document.getElementById('vres').style.display = 'none';
+  document.getElementById('vres').className = 'vres';
+  var lbl2 = document.getElementById('cinp2-label');
+  var inp2 = document.getElementById('cinp2');
+  var note = document.getElementById('vinp-note');
+  if (cur.culpritsCount === 2) {
+    lbl2.style.display = 'block';
+    inp2.style.display = 'block';
+    inp2.value = '';
+    note.textContent = 'هذه القضية تتطلب تحديد اثنين من المتورطين';
+    document.getElementById('vdoc-suspects-hint').textContent = '⚠ المتورطون في هذه القضية: ٢ أشخاص — اكتشف من هم';
+  } else {
+    lbl2.style.display = 'none';
+    inp2.style.display = 'none';
+    inp2.value = '';
+    note.textContent = '';
+    document.getElementById('vdoc-suspects-hint').textContent = '⚠ تحقق من عدد المتورطين الفعلي قبل الحكم';
+  }
+}
+
+function normName(s) { return s.toLowerCase().replace(/\s+/g,' ').trim(); }
+function nameMatch(inp, candidates) {
+  var n = normName(inp);
+  return candidates.some(function(a) {
+    var al = normName(a);
+    return n === al || n.includes(al) || al.includes(n);
   });
 }
-function checkVerdict(){
-  if(!cur)return;
-  var inputs=[];
-  for(var i=0;i<cur.killersCount;i++){
-    var el=document.getElementById('cinp-'+i);
-    if(el)inputs.push(el.value.trim());
-  }
-  if(inputs.some(function(v){return!v})){return}
-  
-  var correctKillers=cur.killers;
-  var aliasesArr=cur.killersAliases||[];
-  
-  // check each entered name matches a different killer
-  var matched=[];
-  var allCorrect=true;
-  for(var j=0;j<inputs.length;j++){
-    var foundMatch=false;
-    for(var k=0;k<correctKillers.length;k++){
-      if(matched.indexOf(k)>=0)continue;
-      var aliases=aliasesArr[k]||[];
-      if(matchName(inputs[j],correctKillers[k],aliases)){
-        matched.push(k);
-        foundMatch=true;
-        break;
-      }
-    }
-    if(!foundMatch){allCorrect=false;break}
-  }
-  if(inputs.length!==cur.killersCount)allCorrect=false;
 
-  var r=document.getElementById('vres');r.style.display='block';
-  if(allCorrect&&matched.length===cur.killersCount){
-    r.className='vres ok';
-    r.innerHTML='<strong>✓ صحيح تماماً</strong><br/>الجناة: '+correctKillers.join(' و ')+'<br/>تم إصدار أوامر الاعتقال الرسمية.';
-    if(!solved.includes(cur.id)){solved.push(cur.id);saveSolved()}
-    modalT=setTimeout(showModal,800);
-  }else{
-    // partial check
-    if(cur.killersCount>1&&matched.length>0&&matched.length<cur.killersCount){
-      r.className='vres partial';
-      r.innerHTML='اسم أو أكثر خاطئ — عدد الجناة '+cur.killersCount+'. راجع الأدلة مجدداً.';
-    }else{
-      r.className='vres fail';
-      r.innerHTML='❌ خطأ — تحقق من الأسماء وراجع الأدلة والإفادات';
-      showFlash();
-    }
+function checkVerdict() {
+  if (!cur) return;
+  var v1 = document.getElementById('cinp').value.trim();
+  if (!v1) return;
+  var ok = false;
+  if (cur.culpritsCount === 1) {
+    ok = nameMatch(v1, cur.answers[0]);
+  } else {
+    var v2 = document.getElementById('cinp2').value.trim();
+    if (!v2) { showFlash(); return; }
+    var bothDiff = (nameMatch(v1, cur.answers[0]) && nameMatch(v2, cur.answers[1]))
+                || (nameMatch(v1, cur.answers[1]) && nameMatch(v2, cur.answers[0]));
+    ok = bothDiff;
+  }
+  var r = document.getElementById('vres');
+  r.style.display = 'block';
+  if (ok) {
+    var names = cur.answers.map(function(a) { return a[0]; }).join(' و ');
+    r.className = 'vres ok';
+    r.innerHTML = '<strong>✓ صحيح</strong><br/>الجاني/الجناة: ' + esc(names) + '<br/>تم إصدار أمر الاعتقال الرسمي.';
+    if (!solved.includes(cur.id)) { solved.push(cur.id); saveSolved(); }
+    modalT = setTimeout(showModal, 700);
+  } else {
+    r.className = 'vres fail';
+    r.innerHTML = 'اسم خاطئ أو ناقص — راجع الأدلة والتناقضات مجدداً';
+    showFlash();
   }
 }
 
-// ════════════════════════════════════════════════════════════
-// MODAL
-// ════════════════════════════════════════════════════════════
-function showModal(){
-  if(!cur)return;
-  document.getElementById('modal-body').innerHTML='<div class="sol-scene">'+cur.sol+'</div>';
+/* ══════════════════════════════════
+   MODAL
+══════════════════════════════════ */
+function showModal() {
+  if (!cur) return;
+  document.getElementById('modal-body').innerHTML = '<div class="sol-scene">' + cur.sol + '</div>';
   document.getElementById('modal').classList.remove('off');
-  document.body.style.overflow='hidden';
+  document.body.style.overflow = 'hidden';
 }
-function closeModal(){document.getElementById('modal').classList.add('off');document.body.style.overflow='';backFromCase()}
-function backFromCase(){
-  if(modalT){clearTimeout(modalT);modalT=null}
-  document.body.style.overflow='';
+
+function closeModal() {
+  document.getElementById('modal').classList.add('off');
+  document.body.style.overflow = '';
+  goBack();
+}
+
+function goBack() {
+  if (modalT) { clearTimeout(modalT); modalT = null; }
+  document.body.style.overflow = '';
+  document.getElementById('scenario-overlay').classList.add('off');
+  cur = null;
+  pendingCaseId = null;
   show('dashboard-screen');
-  buildDashboard();
+  refreshDash();
 }
-function showFlash(){var f=document.getElementById('flash');f.classList.remove('off');if(flashT)clearTimeout(flashT);flashT=setTimeout(function(){f.classList.add('off')},2800)}
 
-// ════════════════════════════════════════════════════════════
-// CLOCK & EVENTS
-// ════════════════════════════════════════════════════════════
-function updateClock(){
-  var d=new Date(),h=String(d.getHours()).padStart(2,'0'),m=String(d.getMinutes()).padStart(2,'0'),s=String(d.getSeconds()).padStart(2,'0');
-  var el=document.getElementById('nav-clock');if(el)el.textContent=h+':'+m+':'+s;
+function showFlash() {
+  var f = document.getElementById('flash');
+  f.classList.remove('off');
+  if (flashT) clearTimeout(flashT);
+  flashT = setTimeout(function() { f.classList.add('off'); }, 2500);
 }
-setInterval(updateClock,1000);updateClock();
 
-document.getElementById('btn-start').addEventListener('click',function(){show('dashboard-screen');buildDashboard()});
-document.getElementById('btn-back').addEventListener('click',function(){show('scenario-screen')});
-document.getElementById('btn-verdict').addEventListener('click',checkVerdict);
-document.getElementById('btn-mclose').addEventListener('click',closeModal);
-document.getElementById('btn-mok').addEventListener('click',closeModal);
-document.querySelectorAll('.ctab').forEach(function(tab){
-  tab.addEventListener('click',function(){
-    document.querySelectorAll('.ctab').forEach(function(t){t.classList.remove('active')});
-    document.querySelectorAll('.cpane').forEach(function(p){p.classList.remove('active')});
-    this.classList.add('active');
-    document.getElementById('tab-'+this.getAttribute('data-tab')).classList.add('active');
-  });
+/* ══════════════════════════════════
+   CLOCK
+══════════════════════════════════ */
+function updateClock() {
+  var d = new Date();
+  var h = String(d.getHours()).padStart(2,'0');
+  var m = String(d.getMinutes()).padStart(2,'0');
+  var s = String(d.getSeconds()).padStart(2,'0');
+  var el = document.getElementById('nav-clock');
+  if (el) el.textContent = h + ':' + m + ':' + s;
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+/* ══════════════════════════════════
+   EVENT LISTENERS
+══════════════════════════════════ */
+document.getElementById('btn-start').addEventListener('click', function() {
+  show('dashboard-screen');
+  refreshDash();
 });
+
+document.getElementById('btn-back').addEventListener('click', function() {
+  document.getElementById('scenario-overlay').classList.add('off');
+  goBack();
+});
+
+document.getElementById('btn-verdict').addEventListener('click', checkVerdict);
+
+document.getElementById('cinp').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') checkVerdict();
+});
+
+document.getElementById('cinp2').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') checkVerdict();
+});
+
+document.getElementById('btn-mclose').addEventListener('click', closeModal);
+document.getElementById('btn-mok').addEventListener('click', closeModal);
+
+document.querySelectorAll('.ctab').forEach(function(tab) {
+  tab.addEventListener('click', function() { setTab(this.getAttribute('data-tab')); });
+});
+
+/* Initial render — dashboard will build when needed */
+refreshDash();
 </script>
 </body>
 </html>
