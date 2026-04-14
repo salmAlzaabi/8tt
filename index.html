@@ -3,376 +3,357 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>ملفات سرية — التحقيقات الجنائية</title>
+<title>ملفات التحقيق السرية</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&family=IBM+Plex+Mono:wght@400;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#040a06;--bg2:#060e08;--bg3:#081208;
-  --green:#00ff6a;--green2:#00c44f;--green3:#007a30;--green-dim:#003d18;
-  --red:#ff2244;--red-dim:#3d0011;
-  --amber:#ffb800;--amber-dim:#3d2c00;
-  --cyan:#00eeff;--cyan-dim:#003d42;
-  --panel:#050c06;--panel2:#071009;
-  --border:#0f3318;--border2:#1a5c2a;
-  --text:#a8ffbe;--text2:#5cba74;--text3:#2d6640;
-  --glow:0 0 20px rgba(0,255,106,.18),0 0 40px rgba(0,255,106,.08);
-  --glow2:0 0 12px rgba(0,255,106,.3);
+  --navy:#0a0f1e;
+  --navy2:#0d1528;
+  --navy3:#111d35;
+  --navy4:#162040;
+  --blue:#1a6fb5;
+  --blue2:#2484d4;
+  --blue3:#4da3e8;
+  --blue-pale:#daeeff;
+  --white:#ffffff;
+  --off-white:#f4f6fa;
+  --gray:#8a9ab5;
+  --gray2:#c5cedd;
+  --border:#1e2d4a;
+  --border2:#253860;
+  --red:#c0392b;
+  --red2:#e74c3c;
+  --red-pale:#fff0ef;
+  --red-mid:#fad7d4;
+  --gold:#b8860b;
+  --gold2:#d4a017;
+  --gold-pale:#fffaed;
+  --gold-mid:#faeab5;
+  --cyan:#0e7c8e;
+  --cyan2:#17a2b8;
+  --cyan-pale:#eafafc;
+  --cyan-mid:#b2ecf3;
+  --fcairo:'Cairo',sans-serif;
   --fmono:'IBM Plex Mono',monospace;
-  --ftaj:'Tajawal',sans-serif;
-  --forb:'Orbitron',sans-serif;
 }
-html,body{height:100%;scroll-behavior:smooth}
-body{font-family:var(--ftaj);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;direction:rtl;-webkit-font-smoothing:antialiased}
+html,body{min-height:100%;background:var(--navy);color:var(--white);font-family:var(--fcairo);-webkit-font-smoothing:antialiased;direction:rtl}
 
-/* scan lines overlay */
-body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.15) 2px,rgba(0,0,0,.15) 4px);pointer-events:none;z-index:9998}
-
-/* noise */
-body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9997;opacity:.4}
-
-/* ─── screens ─── */
+/* ── screens ── */
 .screen{display:none}
 .screen.active{display:block}
-#intro-screen.active{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:2rem}
-#dashboard-screen.active{display:block;min-height:100vh;padding:0}
-#case-screen.active{display:flex;flex-direction:column;min-height:100vh}
+#intro-screen.active{display:flex;min-height:100vh;flex-direction:column}
+#dashboard-screen.active{display:flex;min-height:100vh;flex-direction:column}
+#case-screen.active{display:flex;min-height:100vh;flex-direction:column}
 
-/* ─── ANIMATIONS ─── */
-@keyframes flicker{0%,100%{opacity:1}92%{opacity:1}93%{opacity:.6}94%{opacity:1}97%{opacity:.8}98%{opacity:1}}
-@keyframes scanIn{from{opacity:0;transform:translateY(-10px);filter:blur(4px)}to{opacity:1;transform:translateY(0);filter:blur(0)}}
-@keyframes pulse{0%,100%{box-shadow:var(--glow)}50%{box-shadow:0 0 30px rgba(0,255,106,.3),0 0 60px rgba(0,255,106,.12)}}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
-@keyframes glitch{0%,100%{clip-path:none;transform:none}20%{clip-path:inset(30% 0 50% 0);transform:translateX(-3px)}21%{clip-path:inset(30% 0 50% 0);transform:translateX(3px)}22%{clip-path:none;transform:none}60%{clip-path:inset(70% 0 10% 0);transform:translateX(2px)}61%{clip-path:none;transform:none}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-@keyframes typeIn{from{width:0}to{width:100%}}
-@keyframes rotate{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+/* ── INTRO ── */
+.intro-nav{display:flex;align-items:center;justify-content:space-between;padding:1.2rem 2rem;border-bottom:1px solid var(--border);background:var(--navy2)}
+.intro-nav-brand{font-family:var(--fmono);font-size:.7rem;color:var(--blue3);letter-spacing:3px}
+.intro-nav-badge{font-family:var(--fmono);font-size:.6rem;color:var(--gray);letter-spacing:2px;border:1px solid var(--border2);padding:3px 10px}
+.intro-hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3rem 2rem;text-align:center;position:relative;overflow:hidden}
+.intro-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 50%,rgba(26,111,181,.08) 0%,transparent 70%)}
+.hero-label{font-family:var(--fmono);font-size:.65rem;letter-spacing:5px;color:var(--blue3);margin-bottom:1.4rem;opacity:.7}
+.hero-title{font-size:3.2rem;font-weight:900;color:var(--white);line-height:1.1;margin-bottom:.8rem;letter-spacing:-1px}
+.hero-title span{color:var(--blue3)}
+.hero-sub{font-size:1rem;color:var(--gray);font-weight:300;margin-bottom:3rem;max-width:380px;line-height:1.7}
+.hero-stats{display:flex;gap:2.5rem;margin-bottom:3rem;justify-content:center}
+.hstat{text-align:center}
+.hstat-n{font-size:1.8rem;font-weight:700;color:var(--white)}
+.hstat-l{font-size:.72rem;color:var(--gray);margin-top:2px}
+.btn-start{background:var(--blue2);color:var(--white);border:none;padding:14px 40px;font-family:var(--fcairo);font-size:.95rem;font-weight:600;cursor:pointer;border-radius:4px;letter-spacing:.5px;transition:all .2s;position:relative;overflow:hidden}
+.btn-start:hover{background:var(--blue3);transform:translateY(-1px)}
+.intro-scroll-hint{font-family:var(--fmono);font-size:.58rem;color:var(--gray);letter-spacing:2px;opacity:.5;margin-top:2rem}
 
-/* ─── INTRO ─── */
-.intro-wrap{width:min(540px,94vw);position:relative}
-.terminal-box{background:var(--panel);border:1px solid var(--border2);box-shadow:var(--glow),inset 0 0 40px rgba(0,255,106,.03);padding:2.5rem 2rem;position:relative;animation:scanIn .8s cubic-bezier(.16,1,.3,1) both}
-.terminal-box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--green),transparent);animation:pulse 2s ease infinite}
-.t-header{display:flex;align-items:center;gap:.7rem;margin-bottom:1.8rem;padding-bottom:.8rem;border-bottom:1px solid var(--border)}
-.t-dots{display:flex;gap:.35rem}
-.t-dot{width:10px;height:10px;border-radius:50%}
-.t-dot:nth-child(1){background:#ff2244}
-.t-dot:nth-child(2){background:#ffb800}
-.t-dot:nth-child(3){background:#00ff6a}
-.t-title-bar{font-family:var(--fmono);font-size:.62rem;color:var(--text3);letter-spacing:2px;flex:1;text-align:center}
-.t-badge{font-family:var(--fmono);font-size:.5rem;color:var(--red);border:1px solid var(--red);padding:2px 6px;letter-spacing:1px;animation:flicker 4s ease infinite}
-.intro-logo{text-align:center;margin-bottom:1.8rem}
-.logo-hex{font-family:var(--forb);font-size:.55rem;color:var(--green3);letter-spacing:6px;text-transform:uppercase;margin-bottom:.6rem;animation:flicker 6s ease infinite}
-.logo-main{font-family:var(--forb);font-size:2.4rem;font-weight:900;color:var(--green);text-shadow:0 0 30px rgba(0,255,106,.5),0 0 60px rgba(0,255,106,.2);line-height:1;animation:glitch 8s ease infinite;letter-spacing:2px}
-.logo-sub{font-family:var(--fmono);font-size:.6rem;color:var(--text3);letter-spacing:4px;margin-top:.5rem}
-.terminal-output{margin-bottom:1.6rem}
-.t-line{font-family:var(--fmono);font-size:.7rem;color:var(--text2);line-height:2.2;display:flex;align-items:center;gap:.6rem}
-.t-line .prompt{color:var(--green);flex-shrink:0}
-.t-line .path{color:var(--cyan);opacity:.7}
-.t-line .cmd{color:var(--text)}
-.t-line .ok{color:var(--green);font-weight:700}
-.t-line .warn{color:var(--amber)}
-.t-line .err{color:var(--red)}
-.case-list{border:1px solid var(--border);background:rgba(0,255,106,.02);margin-bottom:1.6rem}
-.cl-head{font-family:var(--fmono);font-size:.55rem;letter-spacing:3px;color:var(--text3);padding:.5rem .8rem;border-bottom:1px solid var(--border);background:rgba(0,255,106,.04)}
-.cl-row{display:flex;align-items:center;gap:.6rem;padding:.55rem .8rem;border-bottom:1px solid var(--border);font-family:var(--fmono);font-size:.65rem;transition:background .15s;cursor:default}
-.cl-row:last-child{border-bottom:none}
-.cl-row:hover{background:rgba(0,255,106,.04)}
-.cl-id{color:var(--text3);flex-shrink:0;width:90px}
-.cl-name{color:var(--text);flex:1}
-.cl-status{font-size:.52rem;padding:2px 7px;letter-spacing:1px}
-.st-open{color:var(--amber);border:1px solid rgba(255,184,0,.3)}
-.st-closed{color:var(--green);border:1px solid rgba(0,255,106,.3)}
-.btn-enter{width:100%;background:transparent;border:1px solid var(--green);color:var(--green);padding:14px;font-family:var(--forb);font-size:.75rem;letter-spacing:3px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;text-transform:uppercase}
-.btn-enter::before{content:'';position:absolute;inset:0;background:var(--green);transform:scaleX(0);transform-origin:right;transition:transform .3s ease;z-index:0}
-.btn-enter:hover::before{transform:scaleX(1)}
-.btn-enter:hover{color:var(--bg);text-shadow:none}
-.btn-enter span{position:relative;z-index:1}
-.cursor{display:inline-block;width:8px;height:14px;background:var(--green);animation:blink .8s ease infinite;vertical-align:middle;margin-right:2px}
+/* ── DASHBOARD ── */
+.dash-nav{background:var(--navy2);border-bottom:1px solid var(--border);padding:.85rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:40}
+.dnav-brand{display:flex;align-items:center;gap:.8rem}
+.dnav-logo{width:28px;height:28px;border:1.5px solid var(--blue2);border-radius:3px;display:flex;align-items:center;justify-content:center}
+.dnav-logo svg{width:14px;height:14px;fill:var(--blue3)}
+.dnav-title{font-size:.88rem;font-weight:700;color:var(--white)}
+.dnav-sub{font-family:var(--fmono);font-size:.55rem;color:var(--gray);letter-spacing:2px}
+.dnav-right{display:flex;align-items:center;gap:1.5rem}
+.dnav-stat{font-family:var(--fmono);font-size:.62rem;color:var(--gray)}
+.dnav-stat strong{color:var(--blue3)}
+.dnav-clock{font-family:var(--fmono);font-size:.65rem;color:var(--gray2);background:var(--navy3);padding:4px 10px;border:1px solid var(--border)}
+.dash-body{flex:1;padding:2rem}
+.dash-section-label{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem}
+.dash-section-label span{font-family:var(--fmono);font-size:.6rem;letter-spacing:4px;color:var(--gray);white-space:nowrap}
+.dash-section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+/* ملفات التحقيق */
+.files-list{display:flex;flex-direction:column;gap:1rem}
+.file-item{background:var(--navy2);border:1px solid var(--border);border-right:4px solid transparent;cursor:pointer;transition:all .22s;position:relative;overflow:hidden;display:flex;align-items:stretch}
+.file-item:hover{border-color:var(--border2);transform:translateX(-3px)}
+.file-item.case-red{border-right-color:var(--red2)}
+.file-item.case-gold{border-right-color:var(--gold2)}
+.file-item.case-cyan{border-right-color:var(--cyan2)}
+.file-item.case-red:hover{box-shadow:-4px 0 20px rgba(231,76,60,.15)}
+.file-item.case-gold:hover{box-shadow:-4px 0 20px rgba(212,160,23,.15)}
+.file-item.case-cyan:hover{box-shadow:-4px 0 20px rgba(23,162,184,.15)}
+.file-item.solved-case{opacity:.65}
+.fi-stripe{width:6px;flex-shrink:0}
+.fi-body{flex:1;padding:1.2rem 1.5rem;display:flex;align-items:center;gap:1.5rem}
+.fi-icon{width:52px;height:64px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:2rem;position:relative}
+.fi-icon::after{content:'';position:absolute;bottom:0;right:0;width:12px;height:12px;border-bottom:2px solid;border-right:2px solid}
+.case-red .fi-icon::after{border-color:var(--red2)}
+.case-gold .fi-icon::after{border-color:var(--gold2)}
+.case-cyan .fi-icon::after{border-color:var(--cyan2)}
+.fi-content{flex:1}
+.fi-meta{display:flex;align-items:center;gap:.8rem;margin-bottom:.4rem}
+.fi-id{font-family:var(--fmono);font-size:.6rem;color:var(--gray);letter-spacing:2px}
+.fi-type-badge{font-family:var(--fmono);font-size:.52rem;padding:2px 8px;border-radius:2px;letter-spacing:1px}
+.badge-red{background:var(--red-pale);color:var(--red);border:1px solid var(--red-mid)}
+.badge-gold{background:var(--gold-pale);color:var(--gold);border:1px solid var(--gold-mid)}
+.badge-cyan{background:var(--cyan-pale);color:var(--cyan);border:1px solid var(--cyan-mid)}
+.fi-title{font-size:1.1rem;font-weight:700;color:var(--white);margin-bottom:.3rem}
+.fi-desc{font-size:.8rem;color:var(--gray);line-height:1.65}
+.fi-desc strong{color:var(--gray2);font-weight:600}
+.fi-right{display:flex;flex-direction:column;align-items:flex-end;gap:.6rem;flex-shrink:0;padding:.3rem 0}
+.fi-status{display:flex;align-items:center;gap:.4rem;font-family:var(--fmono);font-size:.58rem}
+.status-dot{width:6px;height:6px;border-radius:50%}
+.dot-open{background:var(--red2);box-shadow:0 0 6px var(--red2)}
+.dot-solved{background:#27ae60;box-shadow:0 0 6px #27ae60}
+.fi-btn{background:transparent;border:1px solid var(--border2);color:var(--gray2);padding:7px 18px;font-family:var(--fcairo);font-size:.75rem;cursor:pointer;transition:all .18s;white-space:nowrap}
+.fi-btn:hover{border-color:var(--blue2);color:var(--white);background:rgba(36,132,212,.08)}
+.fi-date{font-family:var(--fmono);font-size:.58rem;color:var(--gray);opacity:.7}
+.solved-stamp{position:absolute;top:50%;left:30%;transform:translate(-50%,-50%) rotate(-8deg);font-family:var(--fmono);font-size:.72rem;letter-spacing:3px;color:#27ae60;border:1.5px solid #27ae60;padding:4px 14px;background:rgba(10,15,30,.9);pointer-events:none;z-index:5}
 
-/* ─── DASHBOARD ─── */
-.dash-nav{background:var(--panel);border-bottom:1px solid var(--border2);padding:.7rem 1.5rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
-.nav-brand{font-family:var(--forb);font-size:.75rem;color:var(--green);letter-spacing:2px;text-shadow:0 0 10px rgba(0,255,106,.4)}
-.nav-status{display:flex;align-items:center;gap:1.5rem}
-.nav-stat{font-family:var(--fmono);font-size:.62rem;color:var(--text3)}
-.nav-stat strong{color:var(--green)}
-.nav-clock{font-family:var(--fmono);font-size:.62rem;color:var(--text3)}
-.dash-body{padding:1.5rem}
-.dash-grid-title{font-family:var(--fmono);font-size:.58rem;letter-spacing:4px;color:var(--text3);margin-bottom:1.2rem;display:flex;align-items:center;gap:.6rem}
-.dash-grid-title::after{content:'';flex:1;height:1px;background:var(--border)}
-.cases-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem}
-.ccard{background:var(--panel);border:1px solid var(--border);position:relative;cursor:pointer;transition:all .25s;overflow:hidden}
-.ccard::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--green2),transparent);opacity:0;transition:opacity .2s}
-.ccard:hover{border-color:var(--green3);box-shadow:var(--glow);transform:translateY(-4px)}
-.ccard:hover::before{opacity:1}
-.ccard.solved{border-color:var(--green3)}
-.ccard-accent{height:3px}
-.acc-r{background:linear-gradient(90deg,var(--red),transparent)}
-.acc-g{background:linear-gradient(90deg,var(--amber),transparent)}
-.acc-b{background:linear-gradient(90deg,var(--cyan),transparent)}
-.ccard-head{padding:.8rem 1rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
-.ccard-id{font-family:var(--fmono);font-size:.52rem;color:var(--text3);letter-spacing:2px}
-.ccard-badge{font-family:var(--fmono);font-size:.5rem;padding:2px 8px;letter-spacing:1px}
-.badge-r{color:var(--red);border:1px solid rgba(255,34,68,.3)}
-.badge-g{color:var(--amber);border:1px solid rgba(255,184,0,.3)}
-.badge-b{color:var(--cyan);border:1px solid rgba(0,238,255,.3)}
-.ccard-body{padding:1rem}
-.ccard-title{font-family:var(--ftaj);font-size:1.05rem;font-weight:700;color:var(--text);margin-bottom:.6rem;line-height:1.3}
-.ccard-desc{font-size:.75rem;color:var(--text3);line-height:1.7;margin-bottom:.9rem}
-.ccard-desc strong{color:var(--text2)}
-.ccard-meta{font-family:var(--fmono);font-size:.57rem;color:var(--text3);line-height:2;margin-bottom:.9rem}
-.btn-open{width:100%;background:transparent;border:1px solid var(--border2);color:var(--text2);padding:9px;font-family:var(--fmono);font-size:.65rem;letter-spacing:2px;cursor:pointer;transition:all .2s}
-.btn-open:hover{border-color:var(--green);color:var(--green);box-shadow:var(--glow2)}
-.ccard-footer{padding:.6rem 1rem;border-top:1px solid var(--border);display:flex;align-items:center;gap:.4rem}
-.ccard-footer .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-.dot-red{background:var(--red);box-shadow:0 0 6px var(--red)}
-.dot-green{background:var(--green);box-shadow:0 0 6px var(--green)}
-.ccard-note{font-family:var(--fmono);font-size:.54rem;color:var(--text3)}
-.solved-stamp{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-12deg);font-family:var(--forb);font-size:.8rem;color:var(--green);border:2px solid var(--green);padding:5px 14px;white-space:nowrap;z-index:3;background:rgba(4,10,6,.85);box-shadow:0 0 20px rgba(0,255,106,.3);letter-spacing:2px}
+/* ── CASE SCREEN ── */
+.case-topbar{display:flex;align-items:center;gap:1rem;padding:.7rem 1.5rem;border-bottom:1px solid var(--border);background:var(--navy2);position:sticky;top:0;z-index:40}
+.btn-back{background:transparent;border:1px solid var(--border2);color:var(--gray);padding:6px 16px;font-family:var(--fmono);font-size:.65rem;cursor:pointer;transition:all .18s;letter-spacing:1px}
+.btn-back:hover{border-color:var(--blue2);color:var(--white)}
+.ctb-info{flex:1}
+.ctb-name{font-size:.95rem;font-weight:700;color:var(--white)}
+.ctb-id{font-family:var(--fmono);font-size:.58rem;color:var(--gray);letter-spacing:2px}
+.ctb-badge{font-family:var(--fmono);font-size:.55rem;padding:3px 10px;letter-spacing:1px}
+/* tabs */
+.case-tabs{display:flex;background:var(--navy2);border-bottom:1px solid var(--border);padding:0 1.5rem;overflow-x:auto}
+.ctab{background:transparent;border:none;border-bottom:2px solid transparent;color:var(--gray);padding:.7rem 1.2rem;font-family:var(--fcairo);font-size:.8rem;font-weight:600;cursor:pointer;transition:all .18s;white-space:nowrap;flex-shrink:0}
+.ctab:hover{color:var(--gray2)}
+.ctab.active{color:var(--white);border-bottom-color:var(--blue2)}
+/* panes */
+.case-desk{flex:1;padding:1.8rem 1.5rem;background:var(--navy)}
+.cpane{display:none}
+.cpane.active{display:block;animation:fadeUp .2s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.pane-label{font-family:var(--fmono);font-size:.58rem;letter-spacing:4px;color:var(--gray);margin-bottom:1.4rem;display:flex;align-items:center;gap:.8rem}
+.pane-label::after{content:'';flex:1;height:1px;background:var(--border)}
 
-/* ─── CASE SCREEN ─── */
-.case-topbar{background:var(--panel);border-bottom:1px solid var(--border2);padding:.6rem 1.2rem;display:flex;align-items:center;gap:1rem;position:sticky;top:0;z-index:50}
-.btn-back{background:transparent;border:1px solid var(--border2);color:var(--text3);padding:5px 14px;font-family:var(--fmono);font-size:.65rem;cursor:pointer;transition:all .2s;direction:ltr;flex-shrink:0;letter-spacing:1px}
-.btn-back:hover{border-color:var(--green);color:var(--green)}
-.case-topbar-name{font-family:var(--forb);font-size:.8rem;color:var(--text);flex:1;letter-spacing:1px}
-.case-topbar-type{font-family:var(--fmono);font-size:.55rem;color:var(--text3);letter-spacing:2px;flex-shrink:0}
-.ftabs{background:var(--bg2);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;padding:0 1.2rem;gap:0}
-.ftab{background:transparent;border:none;border-bottom:2px solid transparent;color:var(--text3);padding:.65rem 1.2rem;font-family:var(--fmono);font-size:.65rem;cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0;letter-spacing:1px}
-.ftab:hover{color:var(--text2)}
-.ftab.active{color:var(--green);border-bottom-color:var(--green);background:rgba(0,255,106,.03)}
-.desk{flex:1;background:var(--bg);padding:1.6rem 1.4rem}
-.pane{display:none;animation:fadeUp .22s ease both}
-.pane.active{display:block}
-.slabel{font-family:var(--fmono);font-size:.55rem;letter-spacing:4px;color:var(--text3);margin-bottom:1.4rem;display:flex;align-items:center;gap:.7rem}
-.slabel::after{content:'';flex:1;height:1px;background:var(--border)}
+/* ── EVIDENCE ── */
+.ev-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem}
+.ev-card{background:var(--navy2);border:1px solid var(--border);cursor:pointer;transition:all .25s;height:200px;perspective:800px}
+.ev-card:hover{border-color:var(--border2)}
+.ev-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .45s cubic-bezier(.4,0,.2,1)}
+.ev-card.flipped .ev-inner{transform:rotateY(180deg)}
+.ev-front,.ev-back{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;padding:1.2rem}
+.ev-front{background:var(--navy2);border:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.7rem;text-align:center}
+.ev-front-tag{position:absolute;top:.6rem;right:.7rem;font-family:var(--fmono);font-size:.5rem;color:var(--gray);letter-spacing:1px;opacity:.6}
+.ev-front-ico{font-size:2rem}
+.ev-front-name{font-size:.82rem;font-weight:700;color:var(--white);line-height:1.3}
+.ev-front-hint{font-family:var(--fmono);font-size:.52rem;color:var(--gray);letter-spacing:1px;opacity:.7}
+.ev-back{background:var(--navy3);border:1px solid var(--border2);transform:rotateY(180deg);display:flex;flex-direction:column;overflow:hidden}
+.ev-back-id{font-family:var(--fmono);font-size:.52rem;color:var(--blue3);letter-spacing:2px;margin-bottom:.4rem;padding-bottom:.4rem;border-bottom:1px solid var(--border)}
+.ev-back-name{font-size:.78rem;font-weight:700;color:var(--white);margin-bottom:.5rem}
+.ev-back-desc{font-size:.72rem;color:var(--gray);line-height:1.7;flex:1;overflow:hidden}
+.ev-critical{border-color:rgba(212,160,23,.4)}
+.ev-critical .ev-front{position:relative}
+.ev-critical .ev-front::before{content:'مهم';position:absolute;top:.5rem;left:.6rem;font-family:var(--fmono);font-size:.48rem;background:var(--gold2);color:#000;padding:2px 6px;letter-spacing:1px;border-radius:2px}
 
-/* ─── EVIDENCE ─── */
-.ev-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:1rem}
-.ev-wrap{height:220px;perspective:900px;cursor:pointer}
-.ev-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.4,0,.2,1)}
-.ev-wrap.flipped .ev-inner{transform:rotateY(180deg)}
-.ev-front,.ev-back{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden}
-.ev-front{background:var(--panel);border:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem;position:relative;overflow:hidden;transition:border-color .2s}
-.ev-front::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--green2),transparent);opacity:0;transition:opacity .2s}
-.ev-wrap:hover .ev-front{border-color:var(--green3)}
-.ev-wrap:hover .ev-front::after{opacity:1}
-.ev-grid-bg{position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:20px 20px;opacity:.4}
-.ev-eid{position:absolute;top:.5rem;right:.6rem;font-family:var(--fmono);font-size:.5rem;color:var(--text3);letter-spacing:1px}
-.ev-ico{font-size:2.2rem;position:relative;z-index:1}
-.ev-nm{font-family:var(--ftaj);font-size:.78rem;font-weight:700;color:var(--text);text-align:center;padding:0 .5rem;position:relative;z-index:1}
-.ev-tip{font-family:var(--fmono);font-size:.48rem;color:var(--green3);letter-spacing:2px;position:relative;z-index:1}
-.ev-tag{position:absolute;bottom:0;left:0;right:0;background:rgba(0,255,106,.06);border-top:1px solid var(--border);color:var(--text3);font-family:var(--fmono);font-size:.5rem;letter-spacing:1px;padding:4px 0;text-align:center}
-.ev-back{background:var(--panel2);border:1px solid var(--green3);transform:rotateY(180deg);padding:.7rem;display:flex;flex-direction:column;overflow:hidden}
-.ev-bid{font-family:var(--fmono);font-size:.5rem;letter-spacing:2px;color:var(--green);border-bottom:1px solid var(--border);padding-bottom:.3rem;margin-bottom:.4rem}
-.ev-bnm{font-family:var(--ftaj);font-size:.78rem;font-weight:700;color:var(--text);margin-bottom:.35rem}
-.ev-bdesc{font-size:.7rem;line-height:1.65;color:var(--text2);flex:1;overflow:hidden}
+/* ── SUSPECTS ── */
+.sus-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.1rem}
+.sus-card{background:var(--navy2);border:1px solid var(--border);overflow:hidden}
+.sus-card-head{display:flex;align-items:center;gap:.9rem;padding:1rem 1.2rem;border-bottom:1px solid var(--border)}
+.sus-avatar{width:50px;height:60px;flex-shrink:0;background:var(--navy3);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:1.6rem;position:relative}
+.sus-avatar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px}
+.sus-info{flex:1}
+.sus-name{font-size:.95rem;font-weight:700;color:var(--white);margin-bottom:.15rem}
+.sus-role{font-family:var(--fmono);font-size:.58rem;color:var(--gray);letter-spacing:1px}
+.sus-card-actions{padding:.7rem 1.2rem;border-bottom:1px solid var(--border);display:flex;gap:.6rem}
+.btn-stmt{background:transparent;border:1px solid var(--border2);color:var(--gray);padding:6px 14px;font-family:var(--fcairo);font-size:.72rem;font-weight:600;cursor:pointer;transition:all .15s;flex:1;text-align:center}
+.btn-stmt:hover{border-color:var(--blue2);color:var(--white)}
+.sus-stmt{display:none;padding:.9rem 1.2rem}
+.sus-stmt.open{display:block;animation:fadeUp .18s ease both}
+.sus-stmt-label{font-family:var(--fmono);font-size:.52rem;letter-spacing:3px;color:var(--gray);margin-bottom:.5rem}
+.sus-stmt-text{font-size:.78rem;color:var(--gray2);line-height:1.85;font-style:italic;border-right:2px solid var(--border2);padding-right:.9rem}
+.sus-contradiction{margin-top:.8rem;background:rgba(231,76,60,.06);border:1px solid rgba(231,76,60,.2);border-radius:3px;padding:.7rem .9rem;font-size:.74rem;color:var(--red2);line-height:1.7}
+.sus-contradiction::before{content:'⚠ تناقض: ';font-weight:700}
 
-/* ─── SUSPECTS ─── */
-.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.1rem}
-.sc{background:var(--panel);border:1px solid var(--border);overflow:hidden;transition:border-color .2s}
-.sc:hover{border-color:var(--border2)}
-.sc-h{background:rgba(0,255,106,.04);padding:.45rem .9rem;display:flex;justify-content:space-between;border-bottom:1px solid var(--border)}
-.sc-hl{font-family:var(--fmono);font-size:.5rem;letter-spacing:3px;color:var(--text3)}
-.sc-hn{font-family:var(--fmono);font-size:.5rem;color:var(--green3);letter-spacing:2px}
-.sc-b{padding:.8rem}
-.sc-row{display:flex;gap:.7rem;align-items:flex-start;margin-bottom:.7rem}
-.sc-ph{width:56px;height:70px;flex-shrink:0;background:rgba(0,255,106,.05);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:1.8rem;position:relative}
-.sc-ph::before{content:'';position:absolute;top:0;right:0;border-style:solid;border-width:0 8px 8px 0;border-color:transparent var(--border2) transparent transparent}
-.sc-inf{flex:1}
-.sc-nm{font-family:var(--ftaj);font-size:.92rem;font-weight:700;color:var(--text);margin-bottom:.2rem}
-.sc-rl{font-family:var(--fmono);font-size:.55rem;letter-spacing:1px;color:var(--text3);margin-bottom:.5rem}
-.btn-st{font-family:var(--fmono);font-size:.55rem;letter-spacing:2px;color:var(--green3);border:1px solid var(--border2);padding:3px 9px;cursor:pointer;background:transparent;transition:all .15s}
-.btn-st:hover{border-color:var(--green);color:var(--green)}
-.sc-stmt{display:none;border-top:1px solid var(--border);padding:.75rem;position:relative}
-.sc-stmt.open{display:block;animation:fadeUp .2s ease}
-.sc-stmt::before{content:'';position:absolute;top:0;right:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--green),transparent)}
-.sc-stl{font-family:var(--fmono);font-size:.5rem;letter-spacing:3px;color:var(--green3);margin-bottom:.4rem}
-.sc-stt{font-size:.74rem;line-height:1.8;color:var(--text2);font-style:italic}
-.sc-con{margin-top:.6rem;background:rgba(255,34,68,.06);border:1px solid rgba(255,34,68,.2);padding:.5rem .75rem;font-size:.68rem;color:var(--red);line-height:1.7}
-.sc-con::before{content:'⚠ '}
-
-/* ─── NOTEBOOK ─── */
+/* ── NOTEBOOK ── */
 .nb-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
-.nb-card{background:var(--panel);border:1px solid var(--border);padding:1rem}
-.nb-card-title{font-family:var(--fmono);font-size:.58rem;letter-spacing:3px;color:var(--green3);margin-bottom:.8rem;padding-bottom:.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.5rem}
-.nb-card-title::before{content:'';width:6px;height:6px;background:var(--green);border-radius:50%;box-shadow:0 0 8px var(--green);flex-shrink:0}
-.hr{display:flex;gap:.4rem;align-items:flex-start;padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.72rem;color:var(--text2);line-height:1.55}
-.hr:last-child{border-bottom:none}
-.hi{color:var(--green3);flex-shrink:0;font-family:var(--fmono);font-size:.65rem}
-.cr{display:flex;gap:.4rem;align-items:flex-start;padding:.3rem 0;border-bottom:1px solid var(--border);font-size:.7rem;color:var(--text2);line-height:1.55;font-family:var(--fmono)}
-.cr:last-child{border-bottom:none}
-.cd{color:var(--green);flex-shrink:0;font-size:.8rem}
+.nb-card{background:var(--navy2);border:1px solid var(--border);padding:1.1rem}
+.nb-card-head{font-family:var(--fmono);font-size:.58rem;letter-spacing:3px;color:var(--gray);margin-bottom:.9rem;padding-bottom:.6rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.5rem}
+.nb-card-head::before{content:'';display:inline-block;width:5px;height:5px;background:var(--blue3);border-radius:50%;flex-shrink:0}
+.nb-hint{display:flex;gap:.6rem;padding:.4rem 0;border-bottom:1px solid var(--border);font-size:.75rem;color:var(--gray);line-height:1.6}
+.nb-hint:last-child{border-bottom:none}
+.nb-hint-icon{color:var(--blue3);flex-shrink:0;font-family:var(--fmono);font-size:.65rem;margin-top:2px}
+.nb-conn{display:flex;gap:.6rem;padding:.38rem 0;border-bottom:1px solid var(--border);font-size:.73rem;color:var(--gray);line-height:1.55;font-family:var(--fmono)}
+.nb-conn:last-child{border-bottom:none}
+.nb-conn-arrow{color:var(--blue3);flex-shrink:0}
 .nb-full{grid-column:1/-1}
-.nb-ta{width:100%;min-height:110px;background:var(--bg);border:1px solid var(--border);font-family:var(--fmono);font-size:.72rem;padding:.65rem;color:var(--text2);resize:vertical;line-height:1.9;outline:none;transition:border-color .2s}
-.nb-ta:focus{border-color:var(--green3);box-shadow:inset 0 0 10px rgba(0,255,106,.04)}
-.nb-ta::placeholder{color:var(--text3);font-size:.65rem}
+.nb-ta{width:100%;min-height:120px;background:var(--navy);border:1px solid var(--border);font-family:var(--fmono);font-size:.72rem;padding:.8rem;color:var(--gray2);resize:vertical;line-height:1.9;outline:none;transition:border-color .18s;direction:rtl}
+.nb-ta:focus{border-color:var(--blue2)}
+.nb-ta::placeholder{color:var(--gray);opacity:.5;font-size:.65rem}
 
-/* ─── VERDICT ─── */
+/* ── VERDICT ── */
 .vwrap{max-width:520px;margin:0 auto}
-.vdoc{background:var(--panel);border:1px solid var(--border2);padding:2rem;position:relative;box-shadow:var(--glow)}
-.vdoc::before{content:'CLASSIFIED — OFFICIAL WARRANT';display:block;font-family:var(--fmono);font-size:.5rem;letter-spacing:3px;color:var(--text3);text-align:center;margin-bottom:1rem;padding-bottom:.8rem;border-bottom:1px solid var(--border)}
-.vttl{font-family:var(--forb);font-size:1rem;color:var(--green);text-align:center;margin-bottom:.4rem;letter-spacing:2px;text-shadow:0 0 20px rgba(0,255,106,.4)}
-.vsub{font-size:.75rem;color:var(--text3);text-align:center;line-height:1.8;margin-bottom:1.2rem;font-family:var(--fmono)}
-.vwarn{background:rgba(255,184,0,.05);border:1px solid rgba(255,184,0,.2);padding:.5rem .9rem;font-family:var(--fmono);font-size:.6rem;color:var(--amber);letter-spacing:1px;text-align:center;margin-bottom:1.4rem}
-.vlbl{display:block;font-family:var(--fmono);font-size:.58rem;letter-spacing:3px;color:var(--text3);margin-bottom:.4rem}
-.vinp{width:100%;background:var(--bg);border:none;border-bottom:2px solid var(--border2);font-family:var(--ftaj);font-size:1rem;padding:.6rem .5rem;color:var(--text);margin-bottom:1.2rem;outline:none;transition:border-color .2s}
-.vinp:focus{border-bottom-color:var(--green);box-shadow:0 2px 0 0 rgba(0,255,106,.2)}
-.vinp::placeholder{color:var(--text3);font-size:.8rem}
-.btn-v{width:100%;background:transparent;border:1px solid var(--green);color:var(--green);padding:13px;font-family:var(--forb);font-size:.75rem;letter-spacing:3px;cursor:pointer;position:relative;overflow:hidden;transition:all .2s;text-transform:uppercase}
-.btn-v::before{content:'';position:absolute;inset:0;background:var(--green);transform:scaleY(0);transform-origin:bottom;transition:transform .3s ease;z-index:0}
-.btn-v:hover::before{transform:scaleY(1)}
-.btn-v:hover{color:var(--bg)}
-.btn-v span{position:relative;z-index:1}
-.vres{margin-top:1rem;padding:.9rem;text-align:center;display:none;font-family:var(--fmono)}
-.vres.ok{background:rgba(0,255,106,.06);border:1px solid rgba(0,255,106,.3);color:var(--green);font-size:.78rem;line-height:1.8}
-.vres.fail{background:rgba(255,34,68,.06);border:1px solid rgba(255,34,68,.3);color:var(--red);font-size:.7rem;letter-spacing:1px}
+.vdoc{background:var(--navy2);border:1px solid var(--border2)}
+.vdoc-top{background:var(--navy3);padding:.9rem 1.4rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.vdoc-top-label{font-family:var(--fmono);font-size:.55rem;letter-spacing:3px;color:var(--gray)}
+.vdoc-top-stamp{font-family:var(--fmono);font-size:.55rem;color:var(--red2);border:1px solid rgba(231,76,60,.3);padding:2px 8px;letter-spacing:2px}
+.vdoc-body{padding:1.8rem}
+.vdoc-title{font-size:1.2rem;font-weight:700;color:var(--white);text-align:center;margin-bottom:.3rem}
+.vdoc-sub{font-size:.78rem;color:var(--gray);text-align:center;line-height:1.7;margin-bottom:1.4rem;font-family:var(--fmono);font-size:.62rem}
+.vdoc-warn{background:rgba(184,134,11,.06);border:1px solid rgba(184,134,11,.2);padding:.6rem 1rem;font-size:.68rem;color:var(--gold2);text-align:center;margin-bottom:1.5rem;border-radius:3px}
+.vlabel{display:block;font-family:var(--fmono);font-size:.58rem;letter-spacing:3px;color:var(--gray);margin-bottom:.5rem}
+.vinp{width:100%;background:var(--navy);border:none;border-bottom:2px solid var(--border2);font-family:var(--fcairo);font-size:1rem;padding:.7rem .5rem;color:var(--white);margin-bottom:1.4rem;outline:none;transition:border-color .2s;direction:rtl}
+.vinp:focus{border-bottom-color:var(--blue2)}
+.vinp::placeholder{color:var(--gray);font-size:.85rem;opacity:.6}
+.btn-verdict{width:100%;background:var(--blue2);color:var(--white);border:none;padding:13px;font-family:var(--fcairo);font-size:.9rem;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.5px}
+.btn-verdict:hover{background:var(--blue3)}
+.vres{margin-top:1rem;padding:.9rem;text-align:center;display:none;font-family:var(--fmono);font-size:.7rem;line-height:1.9;border-radius:3px}
+.vres.ok{background:rgba(39,174,96,.07);border:1px solid rgba(39,174,96,.25);color:#27ae60}
+.vres.fail{background:rgba(231,76,60,.07);border:1px solid rgba(231,76,60,.25);color:var(--red2)}
 
-/* ─── MODAL ─── */
-.modal-bg{position:fixed;inset:0;background:rgba(2,6,3,.92);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1.4rem;backdrop-filter:blur(4px);animation:fadeUp .25s ease}
+/* ── MODAL ── */
+.modal-bg{position:fixed;inset:0;background:rgba(5,8,18,.94);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1.5rem;backdrop-filter:blur(6px)}
 .modal-bg.off{display:none}
-.modal-paper{background:var(--panel);border:1px solid var(--green3);max-width:640px;width:100%;max-height:82vh;overflow-y:auto;box-shadow:var(--glow),0 0 0 1px var(--border)}
-.modal-top{background:rgba(0,255,106,.05);padding:.9rem 1.3rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)}
-.modal-ttl{font-family:var(--forb);font-size:.75rem;color:var(--green);letter-spacing:2px}
-.btn-mc{background:transparent;border:1px solid var(--border2);color:var(--text3);width:26px;height:26px;cursor:pointer;font-size:.75rem;transition:all .15s;font-family:var(--fmono)}
-.btn-mc:hover{border-color:var(--red);color:var(--red)}
+.modal-box{background:var(--navy2);border:1px solid var(--border2);max-width:640px;width:100%;max-height:85vh;overflow-y:auto}
+.modal-head{background:var(--navy3);padding:1rem 1.4rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);position:sticky;top:0}
+.modal-head-title{font-size:.9rem;font-weight:700;color:var(--white);display:flex;align-items:center;gap:.6rem}
+.modal-head-title::before{content:'';display:inline-block;width:8px;height:8px;background:#27ae60;border-radius:50%}
+.btn-mclose{background:transparent;border:1px solid var(--border2);color:var(--gray);width:28px;height:28px;cursor:pointer;font-size:.75rem;transition:all .15s}
+.btn-mclose:hover{border-color:var(--red2);color:var(--red2)}
 .modal-body{padding:1.5rem}
-.solution-scene{font-size:.83rem;color:var(--text2);line-height:1.95;font-family:var(--ftaj)}
-.solution-scene h3{font-family:var(--forb);font-size:.75rem;color:var(--green);margin:1.1rem 0 .5rem;letter-spacing:2px;display:flex;align-items:center;gap:.5rem}
-.solution-scene h3::after{content:'';flex:1;height:1px;background:var(--border)}
-.solution-scene .highlight{color:var(--green);font-weight:700;text-shadow:0 0 10px rgba(0,255,106,.4)}
-.solution-scene .proof{background:var(--bg);border-right:2px solid var(--green3);padding:.75rem 1rem;margin:.7rem 0;font-style:italic;font-size:.76rem;white-space:pre-line;font-family:var(--fmono);color:var(--text2);line-height:1.9}
-.modal-foot{padding:.85rem 1.3rem;border-top:1px solid var(--border);display:flex;justify-content:flex-end}
-.btn-mok{background:transparent;border:1px solid var(--border2);color:var(--text2);padding:8px 22px;font-family:var(--fmono);font-size:.65rem;letter-spacing:2px;cursor:pointer;transition:all .15s}
-.btn-mok:hover{border-color:var(--green);color:var(--green)}
+.sol-scene{font-size:.83rem;color:var(--gray2);line-height:1.95}
+.sol-scene h3{font-size:.72rem;font-family:var(--fmono);letter-spacing:3px;color:var(--blue3);margin:1.2rem 0 .6rem;display:flex;align-items:center;gap:.6rem}
+.sol-scene h3::after{content:'';flex:1;height:1px;background:var(--border)}
+.sol-highlight{color:var(--white);font-weight:700}
+.sol-proof{background:var(--navy);border-right:2px solid var(--blue2);padding:.8rem 1.1rem;margin:.7rem 0;font-family:var(--fmono);font-size:.7rem;color:var(--gray2);line-height:1.9;white-space:pre-line}
+.modal-foot{padding:.9rem 1.4rem;border-top:1px solid var(--border);display:flex;justify-content:flex-end}
+.btn-mok{background:transparent;border:1px solid var(--border2);color:var(--gray2);padding:8px 22px;font-family:var(--fcairo);font-size:.78rem;cursor:pointer;transition:all .15s}
+.btn-mok:hover{border-color:var(--blue2);color:var(--white)}
 
-/* ─── FLASH ─── */
-.flash{position:fixed;bottom:1.8rem;left:50%;transform:translateX(-50%);background:var(--panel);border:1px solid var(--red);color:var(--red);font-family:var(--fmono);font-size:.65rem;letter-spacing:2px;padding:.55rem 1.4rem;z-index:9999;box-shadow:0 0 20px rgba(255,34,68,.2);pointer-events:none}
-.flash.off{display:none}
+/* ── FLASH ── */
+.flash-msg{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:var(--navy2);border:1px solid var(--red2);color:var(--red2);font-family:var(--fmono);font-size:.65rem;letter-spacing:2px;padding:.6rem 1.5rem;z-index:9999;pointer-events:none;box-shadow:0 4px 20px rgba(0,0,0,.4)}
+.flash-msg.off{display:none}
 
 /* scrollbar */
 ::-webkit-scrollbar{width:4px}
-::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-track{background:var(--navy)}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
-::-webkit-scrollbar-thumb:hover{background:var(--green3)}
 
-/* responsive */
-@media(max-width:860px){.cases-grid{grid-template-columns:1fr 1fr}.nb-grid{grid-template-columns:1fr}}
-@media(max-width:560px){.cases-grid{grid-template-columns:1fr}.ev-grid{grid-template-columns:repeat(2,1fr)}.sg{grid-template-columns:1fr}}
+@media(max-width:700px){.nb-grid{grid-template-columns:1fr}.sus-grid{grid-template-columns:1fr}.ev-grid{grid-template-columns:repeat(2,1fr)}.fi-body{flex-wrap:wrap}.fi-right{flex-direction:row;align-items:center}}
 </style>
 </head>
 <body>
 
 <!-- ══ INTRO ══ -->
 <div id="intro-screen" class="screen active">
-  <div class="intro-wrap">
-    <div class="terminal-box">
-      <div class="t-header">
-        <div class="t-dots">
-          <div class="t-dot"></div><div class="t-dot"></div><div class="t-dot"></div>
-        </div>
-        <div class="t-title-bar">FORENSIC_INVESTIGATION_SYSTEM_v4.2.1</div>
-        <div class="t-badge">TOP SECRET</div>
-      </div>
-      <div class="intro-logo">
-        <div class="logo-hex">// MINISTRY OF INTERIOR //</div>
-        <div class="logo-main">CLASSIFIED</div>
-        <div class="logo-sub">ملفات التحقيقات الجنائية السرية</div>
-      </div>
-      <div class="terminal-output">
-        <div class="t-line"><span class="prompt">root@forensics:~$</span><span class="cmd">system --status</span></div>
-        <div class="t-line"><span class="ok">[✓]</span><span>تهيئة قاعدة البيانات... مكتمل</span></div>
-        <div class="t-line"><span class="ok">[✓]</span><span>تحميل الملفات السرية... مكتمل</span></div>
-        <div class="t-line"><span class="warn">[!]</span><span>3 قضايا تنتظر الحل — مستوى التهديد: عالي</span></div>
-        <div class="t-line"><span class="prompt">root@forensics:~$</span><span class="cursor"></span></div>
-      </div>
-      <div class="case-list">
-        <div class="cl-head">ACTIVE_CASES — القضايا النشطة</div>
-        <div class="cl-row">
-          <span class="cl-id">#2024-001</span>
-          <span class="cl-name">ليلة الجمعة السوداء</span>
-          <span class="cl-status st-open">مفتوحة</span>
-        </div>
-        <div class="cl-row">
-          <span class="cl-id">#2024-002</span>
-          <span class="cl-name">الصفقة الملوثة</span>
-          <span class="cl-status st-open">مفتوحة</span>
-        </div>
-        <div class="cl-row">
-          <span class="cl-id">#2024-003</span>
-          <span class="cl-name">الشبح الرقمي</span>
-          <span class="cl-status st-open">مفتوحة</span>
-        </div>
-      </div>
-      <button class="btn-enter" id="btn-enter"><span>[ الدخول للنظام ]</span></button>
+  <nav class="intro-nav">
+    <div class="intro-nav-brand">FORENSIC_INVESTIGATION_SYSTEM</div>
+    <div class="intro-nav-badge">سري للغاية</div>
+  </nav>
+  <div class="intro-hero">
+    <div class="hero-label">وزارة الداخلية — وحدة التحقيقات الجنائية</div>
+    <h1 class="hero-title">ملفات <span>التحقيق</span><br/>السرية</h1>
+    <p class="hero-sub">ثلاث قضايا معقدة تنتظر المحقق الصحيح. افحص الأدلة، استجوب المشتبه بهم، وأصدر حكمك.</p>
+    <div class="hero-stats">
+      <div class="hstat"><div class="hstat-n">3</div><div class="hstat-l">قضايا نشطة</div></div>
+      <div class="hstat"><div class="hstat-n">9</div><div class="hstat-l">مشتبه بهم</div></div>
+      <div class="hstat"><div class="hstat-n">18</div><div class="hstat-l">قطعة دليل</div></div>
     </div>
+    <button class="btn-start" id="btn-start">فتح الملفات</button>
+    <div class="intro-scroll-hint">مستوى التصنيف: سري للغاية</div>
   </div>
 </div>
 
 <!-- ══ DASHBOARD ══ -->
 <div id="dashboard-screen" class="screen">
   <nav class="dash-nav">
-    <div class="nav-brand">CLASSIFIED_SYSTEM</div>
-    <div class="nav-status">
-      <div class="nav-stat">محلولة: <strong id="solved-count">0</strong>/3</div>
-      <div class="nav-clock" id="nav-clock">--:--:--</div>
+    <div class="dnav-brand">
+      <div class="dnav-logo">
+        <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M8 1L1 4v4c0 4 3 6 7 7 4-1 7-3 7-7V4L8 1z"/></svg>
+      </div>
+      <div>
+        <div class="dnav-title">ملفات التحقيق</div>
+        <div class="dnav-sub">وحدة الجرائم الجنائية</div>
+      </div>
+    </div>
+    <div class="dnav-right">
+      <div class="dnav-stat">محلولة: <strong id="solved-count">0</strong>/3</div>
+      <div class="dnav-clock" id="nav-clock">--:--:--</div>
     </div>
   </nav>
   <div class="dash-body">
-    <div class="dash-grid-title">ACTIVE_INVESTIGATION_FILES</div>
-    <div class="cases-grid">
+    <div class="dash-section-label"><span>القضايا النشطة</span></div>
+    <div class="files-list" id="files-list">
 
-      <div class="ccard" id="card-1">
-        <div class="ccard-accent acc-r"></div>
-        <div class="ccard-head">
-          <span class="ccard-id">#2024-001</span>
-          <span class="ccard-badge badge-r">جريمة قتل</span>
-        </div>
-        <div class="ccard-body">
-          <div class="ccard-title">ليلة الجمعة السوداء</div>
-          <div class="ccard-desc">وُجد رجل الأعمال <strong>خالد الرشيدي</strong> ميتاً في مكتبه. الباب مقفل من الداخل. سُمّ في مشروبه. ثلاثة مشتبه بهم — ثلاثة أكاذيب.</div>
-          <div class="ccard-meta">📍 برج المال، الطابق ٢٢ &nbsp;|&nbsp; 📅 11/01/2024</div>
-          <button class="btn-open" onclick="openCase(1)">[ فتح ملف التحقيق ]</button>
-        </div>
-        <div class="ccard-footer">
-          <div class="dot dot-red"></div>
-          <div class="ccard-note">المشتبه به الرئيسي: غير محدد</div>
+      <div class="file-item case-red" id="card-1" onclick="openCase(1)">
+        <div class="fi-stripe" style="background:var(--red2)"></div>
+        <div class="fi-body">
+          <div class="fi-icon">🔍</div>
+          <div class="fi-content">
+            <div class="fi-meta">
+              <span class="fi-id">#2024-001</span>
+              <span class="fi-type-badge badge-red">جريمة قتل</span>
+            </div>
+            <div class="fi-title">ليلة الجمعة السوداء</div>
+            <div class="fi-desc">وُجد رجل الأعمال <strong>خالد الرشيدي</strong> ميتاً في مكتبه. الباب مقفل من الداخل. سُمّ في مشروبه. ثلاثة مشتبه بهم — ثلاثة أكاذيب.</div>
+          </div>
+          <div class="fi-right">
+            <div class="fi-status">
+              <div class="status-dot dot-open"></div>
+              <span style="color:var(--red2);font-family:var(--fmono);font-size:.58rem">مفتوحة</span>
+            </div>
+            <button class="fi-btn">فتح الملف</button>
+            <div class="fi-date">11/01/2024</div>
+          </div>
         </div>
       </div>
 
-      <div class="ccard" id="card-2">
-        <div class="ccard-accent acc-g"></div>
-        <div class="ccard-head">
-          <span class="ccard-id">#2024-002</span>
-          <span class="ccard-badge badge-g">فساد مالي</span>
-        </div>
-        <div class="ccard-body">
-          <div class="ccard-title">الصفقة الملوثة</div>
-          <div class="ccard-desc">٢٠ مليون ريال اختفت من خزينة <strong>بلدية الغرب</strong>. شركة وهمية. ثلاثة موظفين. الأموال في مكان واحد فقط.</div>
-          <div class="ccard-meta">📍 بلدية الغرب &nbsp;|&nbsp; 📅 Q1/2024</div>
-          <button class="btn-open" onclick="openCase(2)">[ فتح ملف التحقيق ]</button>
-        </div>
-        <div class="ccard-footer">
-          <div class="dot dot-red"></div>
-          <div class="ccard-note">المبلغ: 20,000,000 ريال</div>
+      <div class="file-item case-gold" id="card-2" onclick="openCase(2)">
+        <div class="fi-stripe" style="background:var(--gold2)"></div>
+        <div class="fi-body">
+          <div class="fi-icon">💼</div>
+          <div class="fi-content">
+            <div class="fi-meta">
+              <span class="fi-id">#2024-002</span>
+              <span class="fi-type-badge badge-gold">فساد مالي</span>
+            </div>
+            <div class="fi-title">الصفقة الملوثة</div>
+            <div class="fi-desc">٢٠ مليون ريال اختفت من خزينة <strong>بلدية الغرب</strong>. شركة وهمية. ثلاثة موظفين. الأموال في مكان واحد فقط.</div>
+          </div>
+          <div class="fi-right">
+            <div class="fi-status">
+              <div class="status-dot dot-open"></div>
+              <span style="color:var(--red2);font-family:var(--fmono);font-size:.58rem">مفتوحة</span>
+            </div>
+            <button class="fi-btn">فتح الملف</button>
+            <div class="fi-date">Q1/2024</div>
+          </div>
         </div>
       </div>
 
-      <div class="ccard" id="card-3">
-        <div class="ccard-accent acc-b"></div>
-        <div class="ccard-head">
-          <span class="ccard-id">#2024-003</span>
-          <span class="ccard-badge badge-b">جريمة سيبرانية</span>
-        </div>
-        <div class="ccard-body">
-          <div class="ccard-title">الشبح الرقمي</div>
-          <div class="ccard-desc">اختُرق <strong>البنك المركزي</strong>. بيانات ٥٠٠ ألف عميل سُرقت. المخترق ترك أثراً واحداً — وارتكب خطأً واحداً كافياً.</div>
-          <div class="ccard-meta">📍 خوادم البنك المركزي &nbsp;|&nbsp; 📅 03/03/2024</div>
-          <button class="btn-open" onclick="openCase(3)">[ فتح ملف التحقيق ]</button>
-        </div>
-        <div class="ccard-footer">
-          <div class="dot dot-red"></div>
-          <div class="ccard-note">الضحايا: 500,000 عميل</div>
+      <div class="file-item case-cyan" id="card-3" onclick="openCase(3)">
+        <div class="fi-stripe" style="background:var(--cyan2)"></div>
+        <div class="fi-body">
+          <div class="fi-icon">💻</div>
+          <div class="fi-content">
+            <div class="fi-meta">
+              <span class="fi-id">#2024-003</span>
+              <span class="fi-type-badge badge-cyan">جريمة سيبرانية</span>
+            </div>
+            <div class="fi-title">الشبح الرقمي</div>
+            <div class="fi-desc">اختُرق <strong>البنك المركزي</strong>. بيانات ٥٠٠ ألف عميل سُرقت. المخترق ترك أثراً واحداً — وارتكب خطأً واحداً كافياً.</div>
+          </div>
+          <div class="fi-right">
+            <div class="fi-status">
+              <div class="status-dot dot-open"></div>
+              <span style="color:var(--red2);font-family:var(--fmono);font-size:.58rem">مفتوحة</span>
+            </div>
+            <button class="fi-btn">فتح الملف</button>
+            <div class="fi-date">03/03/2024</div>
+          </div>
         </div>
       </div>
 
@@ -383,53 +364,62 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 <!-- ══ CASE SCREEN ══ -->
 <div id="case-screen" class="screen">
   <div class="case-topbar">
-    <button class="btn-back" id="btn-back">← EXIT</button>
-    <div class="case-topbar-name" id="cb-name">—</div>
-    <div class="case-topbar-type" id="cb-type"></div>
+    <button class="btn-back" id="btn-back">← رجوع</button>
+    <div class="ctb-info">
+      <div class="ctb-name" id="ctb-name">—</div>
+      <div class="ctb-id" id="ctb-id"></div>
+    </div>
+    <span class="ctb-badge" id="ctb-badge"></span>
   </div>
-  <div class="ftabs">
-    <div class="ftab active" data-tab="evidence" id="ftab-evidence">[ EVIDENCE ]</div>
-    <div class="ftab" data-tab="interrogation" id="ftab-interrogation">[ SUSPECTS ]</div>
-    <div class="ftab" data-tab="notebook" id="ftab-notebook">[ NOTEBOOK ]</div>
-    <div class="ftab" data-tab="solve" id="ftab-solve">[ VERDICT ]</div>
+  <div class="case-tabs">
+    <div class="ctab active" data-tab="evidence">الأدلة</div>
+    <div class="ctab" data-tab="interrogation">المشتبه بهم</div>
+    <div class="ctab" data-tab="notebook">الملاحظات</div>
+    <div class="ctab" data-tab="solve">الحكم النهائي</div>
   </div>
-  <div class="desk">
-    <div class="pane active" id="tab-evidence">
-      <div class="slabel">PHYSICAL_EVIDENCE — اضغط للكشف</div>
+  <div class="case-desk">
+    <div class="cpane active" id="tab-evidence">
+      <div class="pane-label">الأدلة الجنائية — اضغط لكشف التفاصيل</div>
       <div class="ev-grid" id="ev-grid"></div>
     </div>
-    <div class="pane" id="tab-interrogation">
-      <div class="slabel">INTERROGATION_FILES</div>
-      <div class="sg" id="sg"></div>
+    <div class="cpane" id="tab-interrogation">
+      <div class="pane-label">ملفات الاستجواب</div>
+      <div class="sus-grid" id="sus-grid"></div>
     </div>
-    <div class="pane" id="tab-notebook">
-      <div class="slabel">DETECTIVE_NOTES</div>
+    <div class="cpane" id="tab-notebook">
+      <div class="pane-label">مفكرة المحقق</div>
       <div class="nb-grid">
         <div class="nb-card">
-          <div class="nb-card-title">HINTS — خيوط للتفكير</div>
+          <div class="nb-card-head">خيوط للتفكير</div>
           <div id="nb-hints"></div>
         </div>
         <div class="nb-card">
-          <div class="nb-card-title">CONNECTIONS — ربط الأدلة</div>
-          <div id="nb-conn"></div>
+          <div class="nb-card-head">ربط الأدلة</div>
+          <div id="nb-conns"></div>
         </div>
         <div class="nb-card nb-full">
-          <div class="nb-card-title">YOUR_NOTES — ملاحظاتك</div>
-          <textarea class="nb-ta" id="nb-ta" placeholder="// اكتب ملاحظاتك... أي التناقضات لاحظتها؟"></textarea>
+          <div class="nb-card-head">ملاحظاتك الشخصية</div>
+          <textarea class="nb-ta" id="nb-ta" placeholder="اكتب ملاحظاتك... ما التناقضات التي لاحظتها؟"></textarea>
         </div>
       </div>
     </div>
-    <div class="pane" id="tab-solve">
-      <div class="slabel">FINAL_VERDICT</div>
+    <div class="cpane" id="tab-solve">
+      <div class="pane-label">إصدار الحكم</div>
       <div class="vwrap">
         <div class="vdoc">
-          <div class="vttl">ARREST_WARRANT</div>
-          <p class="vsub">بعد مراجعة الأدلة، أدخل اسم الجاني لإصدار أمر الاعتقال الرسمي</p>
-          <div class="vwarn">⚠ التهمة الخاطئة تُدمر القضية — تأكد من الأدلة</div>
-          <label class="vlbl" for="cinp">SUSPECT_NAME:</label>
-          <input type="text" class="vinp" id="cinp" placeholder="أدخل الاسم الكامل..."/>
-          <button class="btn-v" id="btn-verdict"><span>[ إصدار الحكم الرسمي ]</span></button>
-          <div class="vres" id="vres"></div>
+          <div class="vdoc-top">
+            <span class="vdoc-top-label">وزارة الداخلية — أمر اعتقال رسمي</span>
+            <span class="vdoc-top-stamp">سري</span>
+          </div>
+          <div class="vdoc-body">
+            <div class="vdoc-title">إصدار أمر الاعتقال</div>
+            <p class="vdoc-sub">بعد مراجعة جميع الأدلة والاستجوابات، أدخل اسم الجاني لإصدار الحكم الرسمي</p>
+            <div class="vdoc-warn">⚠ التهمة الخاطئة تُدمر القضية — تأكد من الأدلة أولاً</div>
+            <label class="vlabel" for="cinp">اسم المشتبه به:</label>
+            <input type="text" class="vinp" id="cinp" placeholder="أدخل الاسم الكامل..."/>
+            <button class="btn-verdict" id="btn-verdict">إصدار الحكم الرسمي</button>
+            <div class="vres" id="vres"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -438,255 +428,214 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 
 <!-- ══ MODAL ══ -->
 <div class="modal-bg off" id="modal">
-  <div class="modal-paper">
-    <div class="modal-top">
-      <div class="modal-ttl">CASE_SOLUTION</div>
-      <button class="btn-mc" id="btn-modal-close">✕</button>
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-head-title">حل القضية</div>
+      <button class="btn-mclose" id="btn-mclose">✕</button>
     </div>
     <div class="modal-body" id="modal-body"></div>
     <div class="modal-foot">
-      <button class="btn-mok" id="btn-modal-ok">[ CLOSE ]</button>
+      <button class="btn-mok" id="btn-mok">إغلاق</button>
     </div>
   </div>
 </div>
-<div class="flash off" id="flash">// ERROR: اسم خاطئ — راجع الأدلة</div>
+<div class="flash-msg off" id="flash">خطأ — اسم المشتبه به غير صحيح</div>
 
 <script>
-const C={
-1:{id:1,title:"ليلة الجمعة السوداء",type:"HOMICIDE",answer:"نورة الرشيدي",
-aliases:["نوره الرشيدي","نورة الرشيدي","نوره"],
+var C={
+1:{id:1,title:"ليلة الجمعة السوداء",caseId:"#2024-001",type:"جريمة قتل",badgeCls:"badge-red",answer:"نورة الرشيدي",
+aliases:["نوره الرشيدي","نورة","نوره"],
 ev:[
-{id:"E1-01",ic:"🥃",nm:"كأس ويسكي مسمومة",desc:"عُثر على كأس تحتوي على جرعة قاتلة من السيانيد. البصمات لخالد فقط — يعني شخصاً آخر نظّف آثاره.",tag:"CHEMICAL"},
-{id:"E1-02",ic:"🔑",nm:"مفتاح احتياطي مفقود",desc:"المكتب مقفل من الداخل والمفتاح الأصلي مع القتيل. المفتاح الاحتياطي كان في درج منزل الرشيدي — وُجد الدرج فارغاً.",tag:"PHYSICAL"},
-{id:"E1-03",ic:"📱",nm:"آخر رسالة نصية",desc:"رسالة لخالد الساعة 10:42 م من رقم مجهول: 'لقد حان الوقت'. من هاتف مسبق الدفع لا يمكن تتبعه.",tag:"DIGITAL"},
-{id:"E1-04",ic:"🏥",nm:"سجلات مستشفى الرازي",desc:"قسم العناية المركزة يُطبّق سياسة صارمة تمنع كلياً وجود أجهزة تلفزيون أو أي شاشات في غرف المرضى.",tag:"OFFICIAL"},
-{id:"E1-05",ic:"📋",nm:"وثيقة تعديل الوصية",desc:"قُبيل الوفاة بأسبوع عدّل خالد وصيته. تُعطي شريكه فيصل النمر 40% من الثروة على حساب حصة الزوجة.",tag:"LEGAL"},
-{id:"E1-06",ic:"🔬",nm:"تقرير الطب الشرعي",desc:"الوفاة بين 11 م و12:30 ص. السيانيد: بوتاسيوم سيانيد — يُباع في مستودعات صناعية ومحلات تحميض الصور القديمة.",tag:"FORENSIC"}
+{id:"E1-01",ic:"🥃",nm:"كأس ويسكي مسمومة",desc:"عُثر على كأس تحتوي على جرعة قاتلة من السيانيد. البصمات لخالد فقط — يعني شخصاً آخر نظّف آثاره.",tag:"كيميائي"},
+{id:"E1-02",ic:"🔑",nm:"مفتاح احتياطي مفقود",desc:"المكتب مقفل من الداخل والمفتاح الأصلي مع القتيل. المفتاح الاحتياطي كان في درج منزل الرشيدي — وُجد الدرج فارغاً.",tag:"مادي"},
+{id:"E1-03",ic:"📱",nm:"آخر رسالة نصية",desc:"رسالة لخالد الساعة 10:42 م من رقم مجهول: 'لقد حان الوقت'. من هاتف مسبق الدفع لا يمكن تتبعه.",tag:"رقمي"},
+{id:"E1-04",ic:"🏥",nm:"سجلات مستشفى الرازي",desc:"قسم العناية المركزة يُطبّق سياسة صارمة تمنع كلياً وجود أجهزة تلفزيون أو أي شاشات في غرف المرضى.",tag:"مهم"},
+{id:"E1-05",ic:"📋",nm:"وثيقة تعديل الوصية",desc:"قُبيل الوفاة بأسبوع عدّل خالد وصيته. تُعطي شريكه فيصل النمر 40% من الثروة على حساب حصة الزوجة.",tag:"قانوني"},
+{id:"E1-06",ic:"🔬",nm:"تقرير الطب الشرعي",desc:"الوفاة بين 11 م و12:30 ص. السيانيد: بوتاسيوم سيانيد — يُباع في مستودعات صناعية ومحلات تحميض الصور.",tag:"جنائي"}
 ],
 sus:[
-{id:"S1-01",nm:"نورة الرشيدي",rl:"زوجة الضحية",em:"👩",st:`"كنت بعيدة تلك الليلة. والدتي في مستشفى الرازي قسم العناية المركزة. ذهبت بعد المغرب وبقيت حتى منتصف الليل. شاهدنا فلماً في غرفتها قبل أن تنام. زواجي من خالد كان ممتازاً. نعم عرفت بتعديل الوصية لكنني لم أكترث بالمال يوماً."`,con:"ادّعت مشاهدة التلفزيون في غرفة والدتها بمستشفى الرازي — لكن سجلات المستشفى تُثبت أن قسم العناية المركزة يحظر الشاشات كلياً!"},
-{id:"S1-02",nm:"فيصل النمر",rl:"الشريك التجاري",em:"👨‍💼",st:`"كنت في مكتبي الطابق السابع طوال الليل — لديّ شهود. خالد أضاف اسمي للوصية كمكافأة على صفقة ناجحة. لو أردت الأموال لانتظرت — الشركة ستجني ضعف هذا الرقم العام القادم."`,con:null},
-{id:"S1-03",nm:"سامي القحطاني",rl:"السائق الشخصي",em:"🚗",st:`"كنت في الموقف طوال الليل أنتظر. أوصلت السيدة نورة للمستشفى الساعة 8 مساءً وعدت. تلقيت اتصالاً منها 11:45 م لأعود واصطحبها. المفتاح الاحتياطي؟ لا أعلم عنه شيئاً."`,con:null}
+{id:"S1-01",nm:"نورة الرشيدي",rl:"زوجة الضحية",em:"👩",st:`كنت بعيدة تلك الليلة. والدتي في مستشفى الرازي قسم العناية المركزة. ذهبت بعد المغرب وبقيت حتى منتصف الليل. شاهدنا فلماً في غرفتها قبل أن تنام. زواجي من خالد كان ممتازاً. نعم عرفت بتعديل الوصية لكنني لم أكترث بالمال يوماً.`,con:"ادّعت مشاهدة التلفزيون في غرفة والدتها بمستشفى الرازي — لكن سجلات المستشفى تُثبت أن قسم العناية المركزة يحظر الشاشات كلياً!"},
+{id:"S1-02",nm:"فيصل النمر",rl:"الشريك التجاري",em:"👨‍💼",st:`كنت في مكتبي الطابق السابع طوال الليل — لديّ شهود. خالد أضاف اسمي للوصية كمكافأة على صفقة ناجحة. لو أردت الأموال لانتظرت — الشركة ستجني ضعف هذا الرقم العام القادم.`,con:null},
+{id:"S1-03",nm:"سامي القحطاني",rl:"السائق الشخصي",em:"🚗",st:`كنت في الموقف طوال الليل أنتظر. أوصلت السيدة نورة للمستشفى الساعة 8 مساءً وعدت. تلقيت اتصالاً منها 11:45 م لأعود واصطحبها.`,con:null}
 ],
-hints:[{i:">>",t:"المفتاح الاحتياطي اختفى من منزل الضحية — من كان له صلاحية الوصول للمنزل؟"},{i:">>",t:"الدليل E1-04 يصف سياسة المستشفى — قارنه بأقوال أحد المشتبه بهم"},{i:">>",t:"الوصية الجديدة تضرّ بمصلحة شخص واحد — من هو؟"},{i:">>",t:"السائق قال إنها اتصلت 11:45 م — الوفاة بين 11 م و12:30 ص"}],
+hints:[{t:"المفتاح الاحتياطي اختفى من منزل الضحية — من كان له صلاحية الوصول للمنزل؟"},{t:"الدليل E1-04 يصف سياسة المستشفى — قارنه بأقوال أحد المشتبه بهم"},{t:"الوصية الجديدة تضرّ بمصلحة شخص واحد — من هو؟"},{t:"السائق قال إنها اتصلت 11:45 م — الوفاة بين 11 م و12:30 ص"}],
 conns:["المفتاح المفقود + وصول الزوجة = الدخول للمكتب","الوصية المعدّلة + خسارة الزوجة = الدافع","ادعاء المستشفى + حظر الشاشات = الكذبة الكاشفة"],
-sol:`<h3>مشهد التحقيق الأخير</h3><p>في غرفة الاستجواب، يضع المحقق أمام <span class="highlight">نورة الرشيدي</span> لائحة سياسة مستشفى الرازي.</p><div class="proof">المحقق: "قلت إنكِ شاهدتِ فلماً مع والدتك. قسم العناية المركزة يحظر الشاشات. كيف شاهدتِ ما لا يُوجد؟"\n\nصمتت نورة لحظات طويلة — ثم انهار دفاعها.</div><h3>تفاصيل الجريمة</h3><p>نورة اكتشفت تعديل الوصية وأدركت أنها ستخسر نصف ثروتها. حصلت على السيانيد، أخذت المفتاح الاحتياطي، دخلت المكتب وأضافت السمّ للزجاجة ثم أعادت إقفال الباب بخيط رفيع تحت الباب.</p><div class="proof">// الثغرة القاتلة:\nادّعت مشاهدة التلفزيون في مكان يحظر التلفزيون.</div><p>صدر الحكم: <strong>السجن المؤبد.</strong></p>`
+sol:`<h3>لحظة الانهيار</h3><p>في غرفة الاستجواب، يضع المحقق أمام <span class="sol-highlight">نورة الرشيدي</span> لائحة سياسة مستشفى الرازي.</p><div class="sol-proof">المحقق: "قلت إنكِ شاهدتِ فلماً مع والدتك. قسم العناية المركزة يحظر الشاشات. كيف شاهدتِ ما لا يُوجد؟"\n\nصمتت نورة لحظات طويلة — ثم انهار دفاعها.</div><h3>كيف نفّذت الجريمة</h3><p>نورة اكتشفت تعديل الوصية وأدركت أنها ستخسر نصف ثروتها. حصلت على السيانيد، أخذت المفتاح الاحتياطي، دخلت المكتب وأضافت السمّ ثم أعادت الإقفال.</p><div class="sol-proof">// الثغرة القاتلة:\nادّعت مشاهدة التلفزيون في مكان يحظر التلفزيون.</div><p>الحكم: <strong>السجن المؤبد.</strong></p>`
 },
-2:{id:2,title:"الصفقة الملوثة",type:"CORRUPTION",answer:"عبدالرحمن الغامدي",
-aliases:["عبد الرحمن الغامدي","عبدالرحمن الغامدي","الغامدي","عبدالرحمن"],
+2:{id:2,title:"الصفقة الملوثة",caseId:"#2024-002",type:"فساد مالي",badgeCls:"badge-gold",answer:"عبدالرحمن الغامدي",
+aliases:["عبد الرحمن الغامدي","الغامدي","عبدالرحمن"],
 ev:[
-{id:"E2-01",ic:"📊",nm:"التحويلات البنكية",desc:"تحويلات من حساب البلدية إلى 'مجموعة الأفق' ثم لحسابات خارجية فوراً. آخر تحويل قبل 72 ساعة من التحقيق.",tag:"FINANCIAL"},
-{id:"E2-02",ic:"🏢",nm:"السجل التجاري لشركة الأفق",desc:"سُجّلت رسمياً 15 مارس 2024. لا يوجد مقرّ فعلي أو موظفون. العنوان شقة سكنية فارغة.",tag:"COMMERCIAL"},
-{id:"E2-03",ic:"✍️",nm:"خطاب ترحيب بالمقاول",desc:"خطاب رسمي بترويسة البلدية موقّع من المدير الغامدي يُرحّب بشركة الأفق. التاريخ: 10 يناير 2024 — قبل 65 يوماً من تأسيس الشركة!",tag:"⚠ CRITICAL"},
-{id:"E2-04",ic:"📧",nm:"رسائل إلكترونية مشفّرة",desc:"رسائل محذوفة من جهاز المساعد طارق عن 'تفاصيل التحويل'. الصياغة تشير لمنفّذ أوامر لا مخطط.",tag:"DIGITAL"},
-{id:"E2-05",ic:"💳",nm:"حساب مصرفي مجهول",desc:"حساب مرتبط برقم هاتف أحد أفراد أسرة المدير الغامدي — استقبل مبالغ منتظمة قبل أن ترتفع فجأة.",tag:"FINANCIAL"},
-{id:"E2-06",ic:"🖥️",nm:"سجلات الدخول للنظام",desc:"كلا الموظفَين دخلا النظام في ليالٍ مختلفة، لكن المحاسب رياض لم يدخل إطلاقاً خارج ساعات العمل.",tag:"DIGITAL"}
+{id:"E2-01",ic:"📊",nm:"التحويلات البنكية",desc:"تحويلات من حساب البلدية إلى 'مجموعة الأفق' ثم لحسابات خارجية فوراً. آخر تحويل قبل 72 ساعة من التحقيق.",tag:"مالي"},
+{id:"E2-02",ic:"🏢",nm:"السجل التجاري",desc:"سُجّلت رسمياً 15 مارس 2024. لا يوجد مقرّ فعلي أو موظفون. العنوان شقة سكنية فارغة.",tag:"تجاري"},
+{id:"E2-03",ic:"✍️",nm:"خطاب ترحيب المقاول",desc:"خطاب رسمي موقّع من المدير الغامدي يُرحّب بشركة الأفق. التاريخ: 10 يناير 2024 — قبل 65 يوماً من تأسيس الشركة!",tag:"مهم"},
+{id:"E2-04",ic:"📧",nm:"رسائل إلكترونية مشفّرة",desc:"رسائل محذوفة من جهاز المساعد طارق عن 'تفاصيل التحويل'. الصياغة تشير لمنفّذ أوامر لا مخطط.",tag:"رقمي"},
+{id:"E2-05",ic:"💳",nm:"حساب مصرفي مجهول",desc:"حساب مرتبط برقم هاتف أحد أفراد أسرة المدير الغامدي — استقبل مبالغ منتظمة قبل أن ترتفع فجأة.",tag:"مالي"},
+{id:"E2-06",ic:"🖥️",nm:"سجلات الدخول للنظام",desc:"كلا الموظفَين دخلا النظام في ليالٍ مختلفة، لكن المحاسب رياض لم يدخل إطلاقاً خارج ساعات العمل.",tag:"رقمي"}
 ],
 sus:[
-{id:"S2-01",nm:"عبدالرحمن الغامدي",rl:"مدير بلدية الغرب",em:"👔",st:`"أنا ضحية! طارق هو من أدار كل شيء. أنا وقّعت ما يُحضره لي دون تفاصيل. التحقق من الشركات ليس من مهامي. لم أوقّع على أي وثيقة تتعلق بشركة الأفق."`,con:"قال إنه لم يوقّع على وثائق شركة الأفق — لكن الدليل E2-03 يُظهر توقيعه الشخصي على خطاب ترحيب بها قبل تأسيسها بشهرين كاملين!"},
-{id:"S2-02",nm:"طارق السلمي",rl:"المساعد الإداري",em:"👨‍💻",st:`"تواصلت مع شركة الأفق لكنني كنت أنفّذ أوامر المدير. كل ما فعلته: أرسلت رسائل وأضفت الشركة بعد وثيقة موقّعة. لا أملك صلاحية التحويل وحدي. أنا موظف صغير محاصر."`,con:null},
-{id:"S2-03",nm:"رياض قبّاني",rl:"المحاسب الرئيسي",em:"🧮",st:`"وقّعت أوامر الصرف لأنها جاءت بموافقات المدير والمساعد. العملية بدت قانونية. لم أكن أعلم أن الشركة وهمية."`,con:null}
+{id:"S2-01",nm:"عبدالرحمن الغامدي",rl:"مدير بلدية الغرب",em:"👔",st:`أنا ضحية! طارق هو من أدار كل شيء. أنا وقّعت ما يُحضره لي دون تفاصيل. التحقق من الشركات ليس من مهامي. لم أوقّع على أي وثيقة تتعلق بشركة الأفق.`,con:"قال إنه لم يوقّع على وثائق شركة الأفق — لكن الدليل E2-03 يُظهر توقيعه الشخصي على خطاب ترحيب بها قبل تأسيسها بشهرين كاملين!"},
+{id:"S2-02",nm:"طارق السلمي",rl:"المساعد الإداري",em:"👨‍💻",st:`تواصلت مع شركة الأفق لكنني كنت أنفّذ أوامر المدير. كل ما فعلته: أرسلت رسائل وأضفت الشركة بعد وثيقة موقّعة. لا أملك صلاحية التحويل وحدي.`,con:null},
+{id:"S2-03",nm:"رياض قبّاني",rl:"المحاسب الرئيسي",em:"🧮",st:`وقّعت أوامر الصرف لأنها جاءت بموافقات المدير والمساعد. العملية بدت قانونية. لم أكن أعلم أن الشركة وهمية.`,con:null}
 ],
-hints:[{i:">>",t:"تأسيس الشركة: 15 مارس. خطاب الترحيب: 10 يناير. الفرق 65 يوماً — كيف ذلك؟"},{i:">>",t:"الدليل E2-03 هو الأقوى — من وقّع الخطاب ومتى بالضبط؟"},{i:">>",t:"الحساب البنكي المجهول (E2-05) مرتبط بأسرة من؟"},{i:">>",t:"من يقول 'لم أوقّع شيئاً' بينما يوجد توقيعه فعلياً؟"}],
+hints:[{t:"تأسيس الشركة: 15 مارس. خطاب الترحيب: 10 يناير. الفرق 65 يوماً — كيف ذلك؟"},{t:"الدليل E2-03 هو الأقوى — من وقّع الخطاب ومتى بالضبط؟"},{t:"الحساب البنكي المجهول (E2-05) مرتبط بأسرة من؟"},{t:"من يقول 'لم أوقّع شيئاً' بينما يوجد توقيعه فعلياً؟"}],
 conns:["خطاب (يناير) + تأسيس الشركة (مارس) = الغامدي علم مسبقاً","توقيعه + إنكاره = الكذبة الكاشفة","حساب أسرة الغامدي + التحويلات = الدليل المالي"],
-sol:`<h3>لحظة الانهيار</h3><p>وضع المحقق أمام <span class="highlight">عبدالرحمن الغامدي</span> خطاب الترحيب — توقيعه وتاريخ يناير واضحان.</p><div class="proof">المحقق: "قلت إنك لم توقّع أي وثيقة لشركة الأفق. هذا توقيعك؟"\nالغامدي: "هذا... ربما خطأ إداري..."\nالمحقق: "شركة الأفق لم تتأسس إلا بعد 65 يوماً من هذا التاريخ."</div><h3>كيف نفّذ الجريمة</h3><p>أسّس الشركة عبر وسيط ووقّع خطاب الترحيب مسبقاً. أعطى طارق تعليمات جزئية مما جعله شاهداً لا شريكاً.</p><div class="proof">// الثغرة القاتلة:\nلا يمكن لأحد الترحيب بشركة قبل وجودها القانوني\nإلا إذا كان هو من أسّسها.</div><p>صدر الحكم: <strong>السجن 15 سنة وإعادة الأموال.</strong></p>`
+sol:`<h3>لحظة الانهيار</h3><p>وضع المحقق أمام <span class="sol-highlight">عبدالرحمن الغامدي</span> خطاب الترحيب — توقيعه وتاريخ يناير واضحان.</p><div class="sol-proof">المحقق: "قلت إنك لم توقّع أي وثيقة لشركة الأفق. هذا توقيعك؟"\nالغامدي: "هذا... ربما خطأ إداري..."\nالمحقق: "شركة الأفق لم تتأسس إلا بعد 65 يوماً من هذا التاريخ."</div><h3>كيف نفّذ الجريمة</h3><p>أسّس الشركة عبر وسيط ووقّع خطاب الترحيب مسبقاً. أعطى طارق تعليمات جزئية مما جعله شاهداً لا شريكاً.</p><div class="sol-proof">// الثغرة القاتلة:\nلا يمكن الترحيب بشركة قبل وجودها القانوني\nإلا إذا كان هو من أسّسها.</div><p>الحكم: <strong>السجن 15 سنة وإعادة الأموال.</strong></p>`
 },
-3:{id:3,title:"الشبح الرقمي",type:"CYBERCRIME",answer:"يوسف الحمدان",
-aliases:["يوسف الحمدان","الحمدان","يوسف"],
+3:{id:3,title:"الشبح الرقمي",caseId:"#2024-003",type:"جريمة سيبرانية",badgeCls:"badge-cyan",answer:"يوسف الحمدان",
+aliases:["الحمدان","يوسف"],
 ev:[
-{id:"E3-01",ic:"💻",nm:"سجل دخول الخادم",desc:"دخول باستخدام بيانات حساب يوسف الحمدان الساعة 2:17 ص من داخل شبكة VPN البنك.",tag:"DIGITAL"},
-{id:"E3-02",ic:"🌐",nm:"عنوان IP المخترق",desc:"IP من شبكة VPN هولندية مدفوعة. الاشتراك تمّ قبل 3 أشهر من الهجوم — تخطيط مسبق.",tag:"TECHNICAL"},
-{id:"E3-03",ic:"🗂️",nm:"الملف على الدارك ويب",desc:"عُرضت البيانات بعد 6 ساعات. الملف يحتوي حقولاً لا تظهر في الواجهة العامة — المخترق يعرف البنية الداخلية.",tag:"DIGITAL"},
-{id:"E3-04",ic:"🌧️",nm:"تقرير الطقس — 3 مارس",desc:"ليلة 3 مارس: عاصفة رعدية نادرة في المدينة من الساعة 11 م مع أمطار غزيرة وبرق حتى الفجر. أُغلقت بعض الطرق.",tag:"⚠ CRITICAL"},
-{id:"E3-05",ic:"✈️",nm:"سجلات جوازات السفر",desc:"يوسف لديه طابع دخول لتايلاند 1 مارس. لكن لا يوجد طابع عودة حتى 5 مارس — فجوة زمنية مشبوهة.",tag:"TRAVEL"},
-{id:"E3-06",ic:"🔧",nm:"كود الاستغلال المكتشف",desc:"أداة بأسلوب برمجي نادر ومتخصص — يدل على شخص يعمل في تحليل الأنظمة الداخلية.",tag:"TECHNICAL"}
+{id:"E3-01",ic:"💻",nm:"سجل دخول الخادم",desc:"دخول باستخدام بيانات حساب يوسف الحمدان الساعة 2:17 ص من داخل شبكة VPN البنك.",tag:"رقمي"},
+{id:"E3-02",ic:"🌐",nm:"عنوان IP المخترق",desc:"IP من شبكة VPN هولندية مدفوعة. الاشتراك تمّ قبل 3 أشهر من الهجوم — تخطيط مسبق.",tag:"تقني"},
+{id:"E3-03",ic:"🗂️",nm:"الملف على الدارك ويب",desc:"عُرضت البيانات بعد 6 ساعات. الملف يحتوي حقولاً لا تظهر في الواجهة العامة — المخترق يعرف البنية الداخلية.",tag:"رقمي"},
+{id:"E3-04",ic:"🌧️",nm:"تقرير الطقس — 3 مارس",desc:"ليلة 3 مارس: عاصفة رعدية نادرة في المدينة من الساعة 11 م مع أمطار غزيرة وبرق حتى الفجر.",tag:"مهم"},
+{id:"E3-05",ic:"✈️",nm:"سجلات جوازات السفر",desc:"يوسف لديه طابع دخول لتايلاند 1 مارس. لكن لا يوجد طابع عودة حتى 5 مارس — فجوة زمنية مشبوهة.",tag:"سفر"},
+{id:"E3-06",ic:"🔧",nm:"كود الاستغلال المكتشف",desc:"أداة بأسلوب برمجي نادر ومتخصص — يدل على شخص يعمل في تحليل الأنظمة الداخلية.",tag:"تقني"}
 ],
 sus:[
-{id:"S3-01",nm:"يوسف الحمدان",rl:"محلل أنظمة — البنك المركزي",em:"👨‍💻",st:`"كنت في بانكوك تلك الليلة — عندي تذكرة الطيران وصور. شخصاً ما سرق كلمة مروري! وليلة 3 مارس كانت ليلة هادئة — أتذكرها جيداً، جلست في فندقي أشاهد التلفزيون، كان الطقس لطيفاً والأجواء ممتعة في المدينة."`,con:"قال إن ليلة 3 مارس 'كانت هادئة والطقس لطيف في المدينة' — لكن تقرير الأرصاد يُثبت أن المدينة شهدت عاصفة رعدية شديدة! كيف يعرف طقس المدينة لو كان في بانكوك؟"},
-{id:"S3-02",nm:"هند الزهراني",rl:"مديرة أمن المعلومات",em:"👩‍💻",st:`"أنا أديرت التحقيق الداخلي. صلاحياتي أعلى من يوسف ولو أردت الاختراق لما احتجت لبياناته. كنت في مكتبي ليلة الحادثة — عندي سجل دخول للمبنى."`,con:null},
-{id:"S3-03",nm:"نبيل العتيبي",rl:"مطوّر قواعد البيانات",em:"🗄️",st:`"صممت جزءاً من قاعدة البيانات نعم. لكنني استقلت قبل 4 أشهر ولا تصاريح وصول لي الآن. كلمة المرور القديمة أُلغيت فور استقالتي تلقائياً."`,con:null}
+{id:"S3-01",nm:"يوسف الحمدان",rl:"محلل أنظمة — البنك المركزي",em:"👨‍💻",st:`كنت في بانكوك تلك الليلة — عندي تذكرة الطيران وصور. شخصاً ما سرق كلمة مروري! وليلة 3 مارس كانت ليلة هادئة — أتذكرها جيداً، جلست في فندقي أشاهد التلفزيون، كان الطقس لطيفاً والأجواء ممتعة في المدينة.`,con:"قال إن ليلة 3 مارس 'كانت هادئة والطقس لطيف في المدينة' — لكن تقرير الأرصاد يُثبت أن المدينة شهدت عاصفة رعدية شديدة! كيف يعرف طقس المدينة لو كان في بانكوك؟"},
+{id:"S3-02",nm:"هند الزهراني",rl:"مديرة أمن المعلومات",em:"👩‍💻",st:`أنا أدرت التحقيق الداخلي. صلاحياتي أعلى من يوسف ولو أردت الاختراق لما احتجت لبياناته. كنت في مكتبي ليلة الحادثة — عندي سجل دخول للمبنى.`,con:null},
+{id:"S3-03",nm:"نبيل العتيبي",rl:"مطوّر قواعد البيانات",em:"🗄️",st:`صممت جزءاً من قاعدة البيانات نعم. لكنني استقلت قبل 4 أشهر ولا تصاريح وصول لي الآن. كلمة المرور القديمة أُلغيت فور استقالتي تلقائياً.`,con:null}
 ],
-hints:[{i:">>",t:"الدليل E3-04 يصف ليلة محددة في المدينة — قارنه بأقوال المشتبه بهم"},{i:">>",t:"وجود طابع دخول لا يعني الإقامة — فجوة العودة مشبوهة في E3-05"},{i:">>",t:"من يعرف بنية قاعدة البيانات الداخلية كما يصفها E3-03؟"},{i:">>",t:"من تحدّث عن تفاصيل لا يمكنه معرفتها لو كان بعيداً فعلاً؟"}],
+hints:[{t:"الدليل E3-04 يصف ليلة محددة في المدينة — قارنه بأقوال المشتبه بهم"},{t:"وجود طابع دخول لا يعني الإقامة — فجوة العودة مشبوهة في E3-05"},{t:"من يعرف بنية قاعدة البيانات الداخلية كما يصفها E3-03؟"},{t:"من تحدّث عن تفاصيل لا يمكنه معرفتها لو كان بعيداً فعلاً؟"}],
 conns:["وصف الطقس 'اللطيف' + تقرير العاصفة = يوسف كان في المدينة","بيانات الدخول + VPN مسبق = تخطيط بيده","معرفة البنية الداخلية + عمله في التحليل = الشخص الوحيد القادر"],
-sol:`<h3>الفخ الذي نصبه لنفسه</h3><p>بدا <span class="highlight">يوسف الحمدان</span> هادئاً — حتى سأله المحقق سؤالاً واحداً:</p><div class="proof">المحقق: "صفت ليلة 3 مارس في المدينة بأنها هادئة ولطيفة. من أين جاءك هذا؟"\nيوسف: "أنا... قصدت في بانكوك..."\nالمحقق: "قلت 'في المدينة'. تقرير الأرصاد يقول عاصفة رعدية.\nلو كنت في بانكوك لقلت 'الطقس كان جيداً هناك'."</div><h3>كيف نفّذ الجريمة</h3><p>استخدم تذكرة ذهاب فقط وعاد سراً. أعدّ VPN مسبقاً وفي ليلة الاختراق كان في شقته يستغل معرفته ببنية أنظمة البنك. باع البيانات بالعملات الرقمية.</p><div class="proof">// الثغرة القاتلة:\nتحدّث عن طقس المدينة كشاهد عيان\nبينما كانت تشهد عاصفة رعدية نادرة.</div><p>صدر الحكم: <strong>السجن 10 سنوات.</strong></p>`
+sol:`<h3>الفخ الذي نصبه لنفسه</h3><p>بدا <span class="sol-highlight">يوسف الحمدان</span> هادئاً — حتى سأله المحقق سؤالاً واحداً:</p><div class="sol-proof">المحقق: "صفت ليلة 3 مارس في المدينة بأنها هادئة ولطيفة. من أين جاءك هذا؟"\nيوسف: "أنا... قصدت في بانكوك..."\nالمحقق: "قلت 'في المدينة'. تقرير الأرصاد يقول عاصفة رعدية.\nلو كنت في بانكوك لقلت 'الطقس كان جيداً هناك'."</div><h3>كيف نفّذ الجريمة</h3><p>استخدم تذكرة ذهاب فقط وعاد سراً. أعدّ VPN مسبقاً وفي ليلة الاختراق كان في شقته يستغل معرفته ببنية الأنظمة.</p><div class="sol-proof">// الثغرة القاتلة:\nتحدّث عن طقس المدينة كشاهد عيان\nبينما كانت تشهد عاصفة رعدية نادرة.</div><p>الحكم: <strong>السجن 10 سنوات.</strong></p>`
 }
 };
 
-// ─── الحالة ───
-var cur=null,modalTimer=null,notesStore={},flashTimer=null;
-
-function loadSolved(){
-  try{var r=localStorage.getItem('inv4');if(!r)return[];var p=JSON.parse(r);return Array.isArray(p)?p.filter(function(x){return typeof x==='number';}):[]}catch(e){return[]}
-}
-function saveSolved(a){try{localStorage.setItem('inv4',JSON.stringify(a))}catch(e){}}
-var solved=loadSolved();
-
-function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
-
-function show(id){
-  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active')});
-  document.getElementById(id).classList.add('active');
-  window.scrollTo(0,0);
-}
+var cur=null,solved=[],notesStore={},flashT=null,modalT=null;
+try{var s=localStorage.getItem('inv5');if(s){var p=JSON.parse(s);if(Array.isArray(p))solved=p.filter(function(x){return typeof x==='number';})}}catch(e){}
+function saveSolved(){try{localStorage.setItem('inv5',JSON.stringify(solved))}catch(e){}}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function show(id){document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active')});document.getElementById(id).classList.add('active');window.scrollTo(0,0)}
 
 function refreshDash(){
   document.getElementById('solved-count').textContent=solved.length;
   [1,2,3].forEach(function(id){
-    var el=document.getElementById('card-'+id);
-    if(!el)return;
+    var el=document.getElementById('card-'+id);if(!el)return;
     if(solved.includes(id)){
-      el.classList.add('solved');
-      // أضف ختم محلولة لو لم يكن موجوداً
-      if(!el.querySelector('.solved-stamp')){
-        var s=document.createElement('div');
-        s.className='solved-stamp';
-        s.textContent='✓ SOLVED';
-        el.appendChild(s);
-      }
-      el.querySelector('.dot')&&el.querySelector('.dot').classList.replace('dot-red','dot-green');
+      el.classList.add('solved-case');
+      if(!el.querySelector('.solved-stamp')){var st=document.createElement('div');st.className='solved-stamp';st.textContent='✓ محلولة';el.appendChild(st)}
+      var dot=el.querySelector('.status-dot');if(dot){dot.className='status-dot dot-solved'}
+      var span=el.querySelector('.fi-status span');if(span){span.textContent='محلولة';span.style.color='#27ae60'}
     }
   });
 }
 
 function openCase(id){
-  if(modalTimer){clearTimeout(modalTimer);modalTimer=null}
+  if(modalT){clearTimeout(modalT);modalT=null}
   cur=C[id];
-  document.getElementById('cb-name').textContent=cur.title;
-  document.getElementById('cb-type').textContent=cur.type;
+  document.getElementById('ctb-name').textContent=cur.title;
+  document.getElementById('ctb-id').textContent=cur.caseId;
+  var b=document.getElementById('ctb-badge');b.textContent=cur.type;b.className='ctb-badge '+cur.badgeCls;
   buildEv();buildSus();buildNb();resetSolve();
   show('case-screen');
-  document.querySelectorAll('.ftab').forEach(function(t){t.classList.remove('active')});
-  document.querySelectorAll('.pane').forEach(function(p){p.classList.remove('active')});
-  document.getElementById('ftab-evidence').classList.add('active');
+  document.querySelectorAll('.ctab').forEach(function(t){t.classList.remove('active')});
+  document.querySelectorAll('.cpane').forEach(function(p){p.classList.remove('active')});
+  document.querySelector('.ctab[data-tab="evidence"]').classList.add('active');
   document.getElementById('tab-evidence').classList.add('active');
 }
 
 function buildEv(){
   document.getElementById('ev-grid').innerHTML=cur.ev.map(function(e){
-    return '<div class="ev-wrap" onclick="this.classList.toggle(\'flipped\')">'
-    +'<div class="ev-inner"><div class="ev-front"><div class="ev-grid-bg"></div>'
-    +'<div class="ev-eid">'+esc(e.id)+'</div>'
-    +'<div class="ev-ico">'+e.ic+'</div>'
-    +'<div class="ev-nm">'+esc(e.nm)+'</div>'
-    +'<div class="ev-tip">CLICK TO REVEAL</div>'
-    +'<div class="ev-tag">'+esc(e.tag)+'</div>'
+    var crit=e.tag==='مهم'?' ev-critical':'';
+    return '<div class="ev-card'+crit+'" onclick="this.classList.toggle(\'flipped\')">'
+    +'<div class="ev-inner"><div class="ev-front">'
+    +'<div class="ev-front-tag">'+esc(e.id)+'</div>'
+    +'<div class="ev-front-ico">'+e.ic+'</div>'
+    +'<div class="ev-front-name">'+esc(e.nm)+'</div>'
+    +'<div class="ev-front-hint">اضغط للكشف</div>'
     +'</div><div class="ev-back">'
-    +'<div class="ev-bid">'+esc(e.id)+'</div>'
-    +'<div class="ev-bnm">'+esc(e.nm)+'</div>'
-    +'<div class="ev-bdesc">'+esc(e.desc)+'</div>'
+    +'<div class="ev-back-id">'+esc(e.id)+' · '+esc(e.tag)+'</div>'
+    +'<div class="ev-back-name">'+esc(e.nm)+'</div>'
+    +'<div class="ev-back-desc">'+esc(e.desc)+'</div>'
     +'</div></div></div>';
   }).join('');
 }
 
 function buildSus(){
-  document.getElementById('sg').innerHTML=cur.sus.map(function(s){
-    var con=s.con?'<div class="sc-con">'+esc(s.con)+'</div>':'';
-    return '<div class="sc"><div class="sc-h"><span class="sc-hl">SUSPECT_FILE</span><span class="sc-hn">'+esc(s.id)+'</span></div>'
-    +'<div class="sc-b"><div class="sc-row">'
-    +'<div class="sc-ph">'+s.em+'</div>'
-    +'<div class="sc-inf"><div class="sc-nm">'+esc(s.nm)+'</div><div class="sc-rl">'+esc(s.rl)+'</div>'
-    +'<button class="btn-st" onclick="toggleSt(\'st-'+esc(s.id)+'\',this)">▶ STATEMENT</button></div></div>'
-    +'<div class="sc-stmt" id="st-'+esc(s.id)+'"><div class="sc-stl">// OFFICIAL_STATEMENT</div>'
-    +'<div class="sc-stt">'+esc(s.st)+'</div>'+con+'</div></div></div>';
+  document.getElementById('sus-grid').innerHTML=cur.sus.map(function(s){
+    var con=s.con?'<div class="sus-contradiction">'+esc(s.con)+'</div>':'';
+    return '<div class="sus-card">'
+    +'<div class="sus-card-head">'
+    +'<div class="sus-avatar">'+s.em+'</div>'
+    +'<div class="sus-info"><div class="sus-name">'+esc(s.nm)+'</div><div class="sus-role">'+esc(s.rl)+'</div></div>'
+    +'</div>'
+    +'<div class="sus-card-actions">'
+    +'<button class="btn-stmt" onclick="toggleStmt(\'stmt-'+esc(s.id)+'\',this)">عرض الإفادة الرسمية</button>'
+    +'</div>'
+    +'<div class="sus-stmt" id="stmt-'+esc(s.id)+'">'
+    +'<div class="sus-stmt-label">الإفادة الرسمية</div>'
+    +'<div class="sus-stmt-text">'+esc(s.st)+'</div>'
+    +con+'</div></div>';
   }).join('');
 }
 
-function toggleSt(id,btn){
+function toggleStmt(id,btn){
   var el=document.getElementById(id);if(!el)return;
   var open=el.classList.toggle('open');
-  btn.textContent=open?'▼ HIDE':'▶ STATEMENT';
+  btn.textContent=open?'إخفاء الإفادة':'عرض الإفادة الرسمية';
 }
 
 function buildNb(){
   document.getElementById('nb-hints').innerHTML=cur.hints.map(function(h){
-    return '<div class="hr"><span class="hi">'+esc(h.i)+'</span><span>'+esc(h.t)+'</span></div>';
+    return '<div class="nb-hint"><span class="nb-hint-icon">&gt;&gt;</span><span>'+esc(h.t)+'</span></div>';
   }).join('');
-  document.getElementById('nb-conn').innerHTML=cur.conns.map(function(c){
-    return '<div class="cr"><span class="cd">→</span><span>'+esc(c)+'</span></div>';
+  document.getElementById('nb-conns').innerHTML=cur.conns.map(function(c){
+    return '<div class="nb-conn"><span class="nb-conn-arrow">→</span><span>'+esc(c)+'</span></div>';
   }).join('');
   var ta=document.getElementById('nb-ta');
   ta.value=notesStore[cur.id]||'';
   ta.oninput=function(){notesStore[cur.id]=ta.value};
 }
 
-function resetSolve(){
-  document.getElementById('cinp').value='';
-  var r=document.getElementById('vres');r.style.display='none';r.className='vres';
-}
+function resetSolve(){document.getElementById('cinp').value='';var r=document.getElementById('vres');r.style.display='none';r.className='vres'}
 
-function checkSol(){
+function checkVerdict(){
   if(!cur)return;
   var raw=document.getElementById('cinp').value.trim();if(!raw)return;
   var inp=raw.toLowerCase().replace(/\s+/g,' ');
   var accepted=[cur.answer].concat(cur.aliases||[]);
-  var ok=accepted.some(function(a){
-    var al=a.toLowerCase().replace(/\s+/g,' ');
-    return inp===al||inp.includes(al)||al.includes(inp);
-  });
+  var ok=accepted.some(function(a){var al=a.toLowerCase().replace(/\s+/g,' ');return inp===al||inp.includes(al)||al.includes(inp)});
   var r=document.getElementById('vres');r.style.display='block';
   if(ok){
     r.className='vres ok';
-    r.innerHTML='<strong>// STATUS: CORRECT</strong><br/>الجاني: '+esc(cur.answer)+'<br/>تم إصدار أمر الاعتقال.';
-    if(!solved.includes(cur.id)){solved.push(cur.id);saveSolved(solved)}
-    modalTimer=setTimeout(showModal,800);
+    r.innerHTML='<strong>صحيح</strong><br/>الجاني: '+esc(cur.answer)+'<br/>تم إصدار أمر الاعتقال الرسمي.';
+    if(!solved.includes(cur.id)){solved.push(cur.id);saveSolved()}
+    modalT=setTimeout(showModal,700);
   }else{
     r.className='vres fail';
-    r.innerHTML='// ERROR: اسم خاطئ — راجع الأدلة والاستجوابات';
+    r.innerHTML='اسم خاطئ — راجع الأدلة والاستجوابات مجدداً';
     showFlash();
   }
 }
 
 function showModal(){
   if(!cur)return;
-  document.getElementById('modal-body').innerHTML='<div class="solution-scene">'+cur.sol+'</div>';
+  document.getElementById('modal-body').innerHTML='<div class="sol-scene">'+cur.sol+'</div>';
   document.getElementById('modal').classList.remove('off');
   document.body.style.overflow='hidden';
 }
+function closeModal(){document.getElementById('modal').classList.add('off');document.body.style.overflow='';goBack()}
+function goBack(){if(modalT){clearTimeout(modalT);modalT=null}document.body.style.overflow='';cur=null;show('dashboard-screen');refreshDash()}
+function showFlash(){var f=document.getElementById('flash');f.classList.remove('off');if(flashT)clearTimeout(flashT);flashT=setTimeout(function(){f.classList.add('off')},2500)}
 
-function closeModal(){
-  document.getElementById('modal').classList.add('off');
-  document.body.style.overflow='';
-  goBack();
-}
-
-function goBack(){
-  if(modalTimer){clearTimeout(modalTimer);modalTimer=null}
-  document.body.style.overflow='';
-  cur=null;
-  show('dashboard-screen');
-  refreshDash();
-}
-
-function showFlash(){
-  var f=document.getElementById('flash');f.classList.remove('off');
-  if(flashTimer)clearTimeout(flashTimer);
-  flashTimer=setTimeout(function(){f.classList.add('off')},2500);
-}
-
-// ساعة مباشرة
-function updateClock(){
-  var d=new Date(),h=String(d.getHours()).padStart(2,'0'),m=String(d.getMinutes()).padStart(2,'0'),s=String(d.getSeconds()).padStart(2,'0');
-  var el=document.getElementById('nav-clock');
-  if(el)el.textContent=h+':'+m+':'+s;
-}
+function updateClock(){var d=new Date(),h=String(d.getHours()).padStart(2,'0'),m=String(d.getMinutes()).padStart(2,'0'),s=String(d.getSeconds()).padStart(2,'0');var el=document.getElementById('nav-clock');if(el)el.textContent=h+':'+m+':'+s}
 setInterval(updateClock,1000);updateClock();
 
-// ربط الأزرار
-document.getElementById('btn-enter').addEventListener('click',function(){show('dashboard-screen');refreshDash()});
+document.getElementById('btn-start').addEventListener('click',function(){show('dashboard-screen');refreshDash()});
 document.getElementById('btn-back').addEventListener('click',goBack);
-document.getElementById('btn-verdict').addEventListener('click',checkSol);
-document.getElementById('cinp').addEventListener('keydown',function(e){if(e.key==='Enter')checkSol()});
-document.getElementById('btn-modal-close').addEventListener('click',closeModal);
-document.getElementById('btn-modal-ok').addEventListener('click',closeModal);
-document.querySelectorAll('.ftab').forEach(function(tab){
+document.getElementById('btn-verdict').addEventListener('click',checkVerdict);
+document.getElementById('cinp').addEventListener('keydown',function(e){if(e.key==='Enter')checkVerdict()});
+document.getElementById('btn-mclose').addEventListener('click',closeModal);
+document.getElementById('btn-mok').addEventListener('click',closeModal);
+document.querySelectorAll('.ctab').forEach(function(tab){
   tab.addEventListener('click',function(){
-    document.querySelectorAll('.ftab').forEach(function(t){t.classList.remove('active')});
-    document.querySelectorAll('.pane').forEach(function(p){p.classList.remove('active')});
+    document.querySelectorAll('.ctab').forEach(function(t){t.classList.remove('active')});
+    document.querySelectorAll('.cpane').forEach(function(p){p.classList.remove('active')});
     this.classList.add('active');
     document.getElementById('tab-'+this.getAttribute('data-tab')).classList.add('active');
   });
 });
-
 refreshDash();
 </script>
 </body>
