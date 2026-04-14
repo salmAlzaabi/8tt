@@ -867,20 +867,18 @@ function buildEv() {
 }
 
 /* ══════════════════════════════════
-   BUILD SUSPECTS
+    BUILD SUSPECTS (Manual Deduction Mode)
 ══════════════════════════════════ */
 function buildSus() {
   document.getElementById('sus-grid').innerHTML = cur.sus.map(function(s) {
-    var con = s.con
-      ? '<div class="sus-contradiction" style="margin-top:.8rem;background:rgba(231,76,60,.06);border:1px solid rgba(231,76,60,.2);border-radius:3px;padding:.7rem .9rem;font-size:.74rem;color:var(--red2);line-height:1.7"><strong>⚠ تناقض: </strong>' + esc(s.con) + '</div>'
-      : '';
+    // تم حذف متغير con هنا لإلغاء نظام التنبيه التلقائي
     return '<div class="sus-card">'
       + '<div class="sus-card-head"><div class="sus-avatar">' + s.em + '</div><div class="sus-info"><div class="sus-name">' + esc(s.nm) + '</div><div class="sus-role">' + esc(s.rl) + '</div></div></div>'
       + '<div class="sus-card-actions"><button class="btn-stmt" onclick="toggleStmt(\'stmt-' + esc(s.id) + '\',this)">عرض الإفادة الرسمية</button></div>'
       + '<div class="sus-stmt" id="stmt-' + esc(s.id) + '">'
       + '<div class="sus-stmt-label">الإفادة الرسمية</div>'
       + '<div class="sus-stmt-text">' + esc(s.st) + '</div>'
-      + con + '</div></div>';
+      + '</div></div>';
   }).join('');
 }
 
@@ -890,7 +888,7 @@ function toggleStmt(id, btn) {
   var open = el.classList.toggle('open');
   btn.textContent = open ? 'إخفاء الإفادة' : 'عرض الإفادة الرسمية';
 }
-
+  
 /* ══════════════════════════════════
    BUILD NOTEBOOK
 ══════════════════════════════════ */
