@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>FORENSIC INVESTIGATION UNIT</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=IBM+Plex+Mono:wght@400;600&family=Tajawal:wght@300;400;500&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -18,7 +18,7 @@
   --cyan:#0e7c8e;--cyan2:#17a2b8;--cyan-pale:#eafafc;--cyan-mid:#b2ecf3;
   --purple:#6c3483;--purple2:#8e44ad;--purple-pale:#f5eef8;--purple-mid:#d7bde2;
   --green:#1e8449;--green2:#27ae60;--green-pale:#eafaf1;--green-mid:#a9dfbf;
-  --fcairo:'Cairo',sans-serif;--fmono:'IBM Plex Mono',monospace;
+  --fcairo:'Cairo',sans-serif;--fmono:'IBM Plex Mono',monospace;--ftaj:'Tajawal',sans-serif;
 }
 html,body{min-height:100%;background:var(--navy);color:var(--white);font-family:var(--fcairo);-webkit-font-smoothing:antialiased;direction:rtl}
 
@@ -124,6 +124,18 @@ html,body{min-height:100%;background:var(--navy);color:var(--white);font-family:
 .ctb-info{flex:1}.ctb-name{font-size:.95rem;font-weight:700;color:var(--white)}.ctb-id{font-family:var(--fmono);font-size:.58rem;color:var(--gray);letter-spacing:2px}
 .ctb-badge{font-family:var(--fmono);font-size:.55rem;padding:3px 10px;letter-spacing:1px}
 
+/* ══ TIMER BAR ══ */
+.timer-bar{background:var(--navy3);border-bottom:1px solid var(--border);padding:.5rem 1.5rem;display:flex;align-items:center;gap:1.5rem}
+.timer-display{font-family:var(--fmono);font-size:1rem;font-weight:600;color:var(--white);min-width:80px}
+.timer-display.warn{color:var(--gold2)}
+.timer-display.danger{color:var(--red2);animation:timerPulse 1s ease-in-out infinite}
+@keyframes timerPulse{0%,100%{opacity:1}50%{opacity:.5}}
+.timer-label{font-family:var(--fmono);font-size:.55rem;color:var(--gray);letter-spacing:2px}
+.timer-progress{flex:1;height:3px;background:var(--border);border-radius:2px;overflow:hidden}
+.timer-fill{height:100%;background:var(--blue2);transition:width 1s linear,background .3s}
+.score-display{font-family:var(--fmono);font-size:.65rem;color:var(--gray)}
+.score-display strong{color:var(--gold2);font-size:.8rem}
+
 /* ══ SCENARIO POPUP ══ */
 .scenario-overlay{position:fixed;inset:0;background:rgba(5,8,18,.95);z-index:9998;display:flex;align-items:center;justify-content:center;padding:1.5rem;backdrop-filter:blur(6px)}
 .scenario-overlay.off{display:none}
@@ -169,6 +181,10 @@ html,body{min-height:100%;background:var(--navy);color:var(--white);font-family:
 .ev-back-id{font-family:var(--fmono);font-size:.52rem;color:var(--blue3);letter-spacing:2px;margin-bottom:.4rem;padding-bottom:.4rem;border-bottom:1px solid var(--border)}
 .ev-back-name{font-size:.78rem;font-weight:700;color:var(--white);margin-bottom:.5rem}
 .ev-back-desc{font-size:.72rem;color:var(--gray);line-height:1.7;flex:1;overflow:auto}
+/* Pin to notebook button */
+.ev-back-pin{margin-top:.5rem;background:transparent;border:1px solid var(--border2);color:var(--gray);padding:4px 10px;font-family:var(--fcairo);font-size:.65rem;cursor:pointer;transition:all .15s;width:100%;text-align:center}
+.ev-back-pin:hover{border-color:var(--gold2);color:var(--gold2)}
+.ev-back-pin.pinned{border-color:var(--gold2);color:var(--gold2);background:rgba(212,160,23,.08)}
 
 /* ══ SUSPECTS ══ */
 .sus-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.1rem}
@@ -184,18 +200,177 @@ html,body{min-height:100%;background:var(--navy);color:var(--white);font-family:
 .sus-stmt-label{font-family:var(--fmono);font-size:.52rem;letter-spacing:3px;color:var(--gray);margin-bottom:.5rem}
 .sus-stmt-text{font-size:.78rem;color:var(--gray2);line-height:1.85;font-style:italic;border-right:2px solid var(--border2);padding-right:.9rem}
 
-/* ══ NOTEBOOK ══ */
-.nb-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
-.nb-card{background:var(--navy2);border:1px solid var(--border);padding:1.1rem}
-.nb-card-head{font-family:var(--fmono);font-size:.58rem;letter-spacing:3px;color:var(--gray);margin-bottom:.9rem;padding-bottom:.6rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.5rem}
-.nb-card-head::before{content:'';display:inline-block;width:5px;height:5px;background:var(--blue3);border-radius:50%;flex-shrink:0}
-.nb-conn{display:flex;gap:.6rem;padding:.38rem 0;border-bottom:1px solid var(--border);font-size:.73rem;color:var(--gray);line-height:1.55;font-family:var(--fmono)}
-.nb-conn:last-child{border-bottom:none}
-.nb-conn-arrow{color:var(--blue3);flex-shrink:0}
-.nb-full{grid-column:1/-1}
-.nb-ta{width:100%;min-height:120px;background:var(--navy);border:1px solid var(--border);font-family:var(--fmono);font-size:.72rem;padding:.8rem;color:var(--gray2);resize:vertical;line-height:1.9;outline:none;transition:border-color .18s;direction:rtl}
-.nb-ta:focus{border-color:var(--blue2)}
-.nb-ta::placeholder{color:var(--gray);opacity:.5;font-size:.65rem}
+/* ══ NOTEBOOK — DETECTIVE JOURNAL ══ */
+#tab-notebook .pane-label{margin-bottom:0}
+.notebook-wrap{
+  max-width:720px;
+  margin:1.5rem auto 0;
+  background: #f5efe0;
+  border-radius:2px;
+  box-shadow: 0 8px 40px rgba(0,0,0,.5), inset 0 0 0 1px rgba(0,0,0,.1);
+  position:relative;
+  overflow:hidden;
+  direction:rtl;
+}
+/* Book spine */
+.notebook-wrap::before{
+  content:'';
+  position:absolute;
+  top:0;bottom:0;right:0;
+  width:36px;
+  background:linear-gradient(to left, #c8a96e 0%, #b8945a 40%, #a07840 100%);
+  border-left:1px solid rgba(0,0,0,.15);
+  z-index:2;
+}
+/* Red margin line */
+.notebook-wrap::after{
+  content:'';
+  position:absolute;
+  top:0;bottom:0;right:56px;
+  width:1.5px;
+  background:rgba(180,60,60,.35);
+  z-index:2;
+  pointer-events:none;
+}
+.notebook-header{
+  background:linear-gradient(135deg, #e8dcc8 0%, #ddd0b8 100%);
+  border-bottom:2px solid rgba(0,0,0,.12);
+  padding:.9rem 1.4rem .9rem 1.4rem;
+  padding-right:52px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  position:relative;
+  z-index:3;
+}
+.nb-header-title{
+  font-family:'Georgia',serif;
+  font-size:1rem;
+  font-weight:700;
+  color:#3d2b1a;
+  letter-spacing:.5px;
+}
+.nb-header-sub{
+  font-family:var(--fmono);
+  font-size:.55rem;
+  color:#7a5c3a;
+  letter-spacing:2px;
+  opacity:.8;
+}
+.nb-case-id{
+  font-family:var(--fmono);
+  font-size:.6rem;
+  color:#7a5c3a;
+  background:rgba(0,0,0,.06);
+  padding:3px 10px;
+  border:1px solid rgba(0,0,0,.1);
+  border-radius:2px;
+}
+/* Ruled paper area */
+.notebook-lines{
+  background-image:
+    repeating-linear-gradient(
+      transparent,
+      transparent 31px,
+      rgba(100,140,200,.18) 31px,
+      rgba(100,140,200,.18) 32px
+    );
+  background-size:100% 32px;
+  background-position:0 8px;
+  min-height:520px;
+  padding:12px 1.4rem 2rem 1.4rem;
+  padding-right:70px;
+  position:relative;
+  z-index:1;
+}
+/* Textarea — handwriting style */
+.nb-journal-ta{
+  width:100%;
+  min-height:480px;
+  background:transparent;
+  border:none;
+  outline:none;
+  font-family:'Tajawal', 'Cairo', sans-serif;
+  font-size:.95rem;
+  font-weight:400;
+  color:#2a1a0a;
+  line-height:32px;
+  resize:none;
+  direction:rtl;
+  letter-spacing:.3px;
+  caret-color:#3a2a1a;
+}
+.nb-journal-ta::placeholder{
+  color:#b8a080;
+  font-style:italic;
+  font-size:.85rem;
+  opacity:.7;
+}
+/* Pinned evidence section */
+.nb-pinned-section{
+  border-top:1px dashed rgba(0,0,0,.15);
+  padding:.8rem 1.4rem .8rem 70px;
+  background:rgba(0,0,0,.03);
+  min-height:60px;
+  position:relative;
+  z-index:3;
+}
+.nb-pinned-label{
+  font-family:var(--fmono);
+  font-size:.5rem;
+  letter-spacing:3px;
+  color:#9a7a50;
+  margin-bottom:.6rem;
+  display:flex;
+  align-items:center;
+  gap:.5rem;
+}
+.nb-pinned-items{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.5rem;
+}
+.nb-pinned-chip{
+  background:#fffbe8;
+  border:1px solid rgba(184,134,11,.3);
+  border-radius:2px;
+  padding:4px 10px;
+  font-family:var(--ftaj);
+  font-size:.72rem;
+  color:#5a3e1a;
+  display:flex;
+  align-items:center;
+  gap:.4rem;
+  box-shadow:0 1px 3px rgba(0,0,0,.08);
+}
+.nb-pinned-chip button{
+  background:none;
+  border:none;
+  cursor:pointer;
+  color:#9a7a50;
+  font-size:.7rem;
+  padding:0;
+  line-height:1;
+  transition:color .15s;
+}
+.nb-pinned-chip button:hover{color:var(--red2)}
+.nb-pinned-empty{
+  font-family:var(--ftaj);
+  font-size:.75rem;
+  color:#b8a080;
+  font-style:italic;
+}
+/* Sticker / tape effect top corner */
+.nb-tape{
+  position:absolute;
+  top:-6px;left:30%;
+  width:80px;height:22px;
+  background:rgba(255,255,200,.6);
+  transform:rotate(-2deg);
+  z-index:10;
+  border:1px solid rgba(0,0,0,.06);
+  pointer-events:none;
+}
 
 /* ══ VERDICT ══ */
 .vwrap{max-width:520px;margin:0 auto}
@@ -217,6 +392,9 @@ html,body{min-height:100%;background:var(--navy);color:var(--white);font-family:
 .vres{margin-top:1rem;padding:.9rem;text-align:center;display:none;font-family:var(--fmono);font-size:.7rem;line-height:1.9;border-radius:3px}
 .vres.ok{background:rgba(39,174,96,.07);border:1px solid rgba(39,174,96,.25);color:#27ae60}
 .vres.fail{background:rgba(231,76,60,.07);border:1px solid rgba(231,76,60,.25);color:var(--red2)}
+/* Score summary in verdict */
+.score-summary{background:var(--navy3);border:1px solid var(--border);padding:.7rem 1rem;margin-bottom:1rem;text-align:center;font-family:var(--fmono);font-size:.62rem;color:var(--gray)}
+.score-summary strong{color:var(--gold2);font-size:.9rem}
 
 /* ══ MODAL ══ */
 .modal-bg{position:fixed;inset:0;background:rgba(5,8,18,.94);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1.5rem;backdrop-filter:blur(6px)}
@@ -228,6 +406,10 @@ html,body{min-height:100%;background:var(--navy);color:var(--white);font-family:
 .btn-mclose{background:transparent;border:1px solid var(--border2);color:var(--gray);width:28px;height:28px;cursor:pointer;font-size:.75rem;transition:all .15s}
 .btn-mclose:hover{border-color:var(--red2);color:var(--red2)}
 .modal-body{padding:1.5rem}
+.modal-score-banner{background:linear-gradient(135deg,rgba(212,160,23,.1),rgba(212,160,23,.05));border:1px solid rgba(212,160,23,.3);padding:1rem;text-align:center;margin-bottom:1.2rem;border-radius:3px}
+.modal-score-pts{font-size:2rem;font-weight:900;color:var(--gold2);font-family:var(--fmono)}
+.modal-score-lbl{font-family:var(--fmono);font-size:.55rem;color:var(--gray);letter-spacing:3px;margin-top:.3rem}
+.modal-score-time{font-family:var(--fmono);font-size:.65rem;color:var(--gray2);margin-top:.4rem}
 .sol-scene{font-size:.83rem;color:var(--gray2);line-height:1.95}
 .sol-scene h3{font-size:.72rem;font-family:var(--fmono);letter-spacing:3px;color:var(--blue3);margin:1.2rem 0 .6rem;display:flex;align-items:center;gap:.6rem}
 .sol-scene h3::after{content:'';flex:1;height:1px;background:var(--border)}
@@ -240,9 +422,11 @@ html,body{min-height:100%;background:var(--navy);color:var(--white);font-family:
 /* ══ FLASH ══ */
 .flash-msg{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:var(--navy2);border:1px solid var(--red2);color:var(--red2);font-family:var(--fmono);font-size:.65rem;letter-spacing:2px;padding:.6rem 1.5rem;z-index:9999;pointer-events:none;box-shadow:0 4px 20px rgba(0,0,0,.4)}
 .flash-msg.off{display:none}
+/* Evidence pinned flash */
+.flash-green{border-color:var(--green2)!important;color:var(--green2)!important}
 
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--navy)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
-@media(max-width:700px){.nb-grid{grid-template-columns:1fr}.sus-grid{grid-template-columns:1fr}.ev-grid{grid-template-columns:repeat(2,1fr)}.fi-body{flex-wrap:wrap}.fi-right{flex-direction:row;align-items:center}}
+@media(max-width:700px){.sus-grid{grid-template-columns:1fr}.ev-grid{grid-template-columns:repeat(2,1fr)}.fi-body{flex-wrap:wrap}.fi-right{flex-direction:row;align-items:center}}
 </style>
 </head>
 <body>
@@ -310,6 +494,7 @@ html,body{min-height:100%;background:var(--navy);color:var(--white);font-family:
     </div>
     <div class="dnav-right">
       <div class="dnav-stat">محلولة: <strong id="solved-count">0</strong>/10</div>
+      <div class="dnav-stat">النقاط: <strong id="total-score">0</strong></div>
       <div class="dnav-clock" id="nav-clock">--:--:--</div>
     </div>
   </nav>
@@ -326,15 +511,24 @@ html,body{min-height:100%;background:var(--navy);color:var(--white);font-family:
     <div class="ctb-info"><div class="ctb-name" id="ctb-name">—</div><div class="ctb-id" id="ctb-id"></div></div>
     <span class="ctb-badge" id="ctb-badge"></span>
   </div>
+  <!-- TIMER BAR -->
+  <div class="timer-bar">
+    <div>
+      <div class="timer-label">الوقت المتبقي</div>
+      <div class="timer-display" id="timer-display">20:00</div>
+    </div>
+    <div class="timer-progress"><div class="timer-fill" id="timer-fill" style="width:100%"></div></div>
+    <div class="score-display">النقاط المحتملة: <strong id="potential-score">1000</strong></div>
+  </div>
   <div class="case-tabs">
     <div class="ctab active" data-tab="evidence">الأدلة</div>
     <div class="ctab" data-tab="interrogation">المشتبه بهم</div>
-    <div class="ctab" data-tab="notebook">الملاحظات</div>
+    <div class="ctab" data-tab="notebook">دفتر المحقق</div>
     <div class="ctab" data-tab="solve">الحكم النهائي</div>
   </div>
   <div class="case-desk">
     <div class="cpane active" id="tab-evidence">
-      <div class="pane-label">الأدلة الجنائية — اضغط لكشف التفاصيل</div>
+      <div class="pane-label">الأدلة الجنائية — اضغط لكشف التفاصيل · 📌 لتثبيت الدليل في الدفتر</div>
       <div class="ev-grid" id="ev-grid"></div>
     </div>
     <div class="cpane" id="tab-interrogation">
@@ -342,19 +536,26 @@ html,body{min-height:100%;background:var(--navy);color:var(--white);font-family:
       <div class="sus-grid" id="sus-grid"></div>
     </div>
     <div class="cpane" id="tab-notebook">
-      <div class="pane-label">مفكرة المحقق</div>
-      <div class="nb-grid">
-        <div class="nb-card">
-          <div class="nb-card-head">ربط الأدلة</div>
-          <div id="nb-conns"></div>
+      <div class="pane-label">دفتر المحقق الشخصي</div>
+      <div class="notebook-wrap">
+        <div class="nb-tape"></div>
+        <div class="notebook-header">
+          <div>
+            <div class="nb-header-title">🔍 ملاحظات التحقيق</div>
+            <div class="nb-header-sub">DETECTIVE FIELD NOTES</div>
+          </div>
+          <div class="nb-case-id" id="nb-case-id-label">—</div>
         </div>
-        <div class="nb-card">
-          <div class="nb-card-head">تسلسل الأحداث المحتمل</div>
-          <div id="nb-timeline"></div>
+        <!-- Pinned evidence chips -->
+        <div class="nb-pinned-section">
+          <div class="nb-pinned-label">📌 أدلة مثبتة من ملف القضية</div>
+          <div class="nb-pinned-items" id="nb-pinned-items">
+            <span class="nb-pinned-empty">لم تثبّت أي دليل بعد — اذهب للأدلة واضغط 📌</span>
+          </div>
         </div>
-        <div class="nb-card nb-full">
-          <div class="nb-card-head">ملاحظاتك الشخصية</div>
-          <textarea class="nb-ta" id="nb-ta" placeholder="اكتب ملاحظاتك... من تشتبه به ولماذا؟ ما التناقضات التي رصدتها؟"></textarea>
+        <!-- Ruled paper textarea -->
+        <div class="notebook-lines">
+          <textarea class="nb-journal-ta" id="nb-ta" placeholder="اكتب ملاحظاتك هنا...&#10;&#10;من تشتبه به ولماذا؟&#10;ما التناقضات التي رصدتها؟&#10;ما الرابط بين الأدلة؟"></textarea>
         </div>
       </div>
     </div>
@@ -369,6 +570,7 @@ html,body{min-height:100%;background:var(--navy);color:var(--white);font-family:
           <div class="vdoc-body">
             <div class="vdoc-title">إصدار أمر الاعتقال</div>
             <p class="vdoc-sub">بعد مراجعة جميع الأدلة، أدخل أسماء المتورطين بالجريمة</p>
+            <div class="score-summary">الوقت المستغرق: <strong id="elapsed-display">—</strong> · النقاط المحتملة: <strong id="score-preview">—</strong></div>
             <div class="vdoc-warn" id="vdoc-suspects-hint">⚠ تحقق من عدد المتورطين الفعلي قبل الحكم</div>
             <label class="vlabel" for="cinp">الجاني الأول:</label>
             <input type="text" class="vinp" id="cinp" placeholder="أدخل الاسم الكامل..."/>
@@ -418,14 +620,16 @@ html,body{min-height:100%;background:var(--navy);color:var(--white);font-family:
 
 <script>
 /* ══════════════════════════════════
-   UTILITY: show a screen
+   UTILITY
 ══════════════════════════════════ */
 function show(id) {
-  document.querySelectorAll('.screen').forEach(function(s) {
-    s.classList.remove('active');
-  });
+  document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
   document.getElementById(id).classList.add('active');
   window.scrollTo(0, 0);
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 /* ══════════════════════════════════
@@ -450,7 +654,7 @@ function pinEnter() {
   if (pinCurrent.length < 4) return;
   if (pinCurrent === PIN_CORRECT) {
     document.getElementById('pin-screen').classList.add('off');
-    show('intro-screen'); /* ← FIX: show intro after PIN unlocked */
+    show('intro-screen');
   } else {
     pinCurrent = '';
     updateDots(true);
@@ -460,9 +664,7 @@ function pinEnter() {
     b.classList.add('pin-shake');
     setTimeout(function() {
       b.classList.remove('pin-shake');
-      for (var i = 0; i < 4; i++) {
-        document.getElementById('pd' + i).classList.remove('error');
-      }
+      for (var i = 0; i < 4; i++) document.getElementById('pd' + i).classList.remove('error');
     }, 400);
   }
 }
@@ -471,11 +673,8 @@ function updateDots(err) {
   for (var i = 0; i < 4; i++) {
     var dot = document.getElementById('pd' + i);
     dot.classList.remove('filled', 'error');
-    if (err) {
-      dot.classList.add('error');
-    } else if (i < pinCurrent.length) {
-      dot.classList.add('filled');
-    }
+    if (err) dot.classList.add('error');
+    else if (i < pinCurrent.length) dot.classList.add('filled');
   }
 }
 
@@ -505,12 +704,10 @@ ev:[
 {id:"E4-06",ic:"📞",nm:"رسالة واتساب محذوفة",desc:"رسالة استُرجعت من هاتف ريم بعد الحذف: 'تم. سأكون في الخارج يوم الجمعة.' أُرسلت لرقم غير محفوظ — تبيّن لاحقاً أنه رقم تطابق مع خط ثانٍ غير مسجل باسم منصور."}
 ],
 sus:[
-{id:"S4-01",nm:"ريم الدوسري",rl:"ابنة الضحية",em:"👩",st:"كنت في المطبخ لكنني أعددت طعاماً مختلفاً. أمي طلبت وجبتها الخاصة ودخلت لغرفتها مبكراً. لم أفكر في الوصية يوماً — زواجي بخير ولا أحتاج لشقق.",con:null},
-{id:"S4-02",nm:"فهد الدوسري",rl:"زوج ريم وابن الضحية بالتبني",em:"👨",st:"كنت في الصالة طوال الليل أشاهد مباراة. لا علاقة لي بالمطبخ. علاقتي بأم ريم ممتازة — هي من أقنعت ريم بالزواج مني في الأصل.",con:null},
-{id:"S4-03",nm:"منصور القحطاني",rl:"صيدلاني وصديق العائلة",em:"💊",st:"لم أكن في الفيلا تلك الليلة. اتصالاتي بريم طبيعية — نحن أصدقاء قدامى. أعرف الأدوية لكنني لا أبيع سموماً ولم أشترِ شيئاً غير معتاد.",con:"أكد أنه لم يشترِ أي مواد غير معتادة — لكن سجل الصيدلية (E4-05) يُثبت أن شخصاً يعرف الاسم الكيميائي الدقيق اشترى المادة قبل ٣ أيام، وهو تخصص صيدلاني بامتياز. وسجل المكالمات يضعه في اتصال مباشر مع ريم وقت الإعداد."}
+{id:"S4-01",nm:"ريم الدوسري",rl:"ابنة الضحية",em:"👩",st:"كنت في المطبخ لكنني أعددت طعاماً مختلفاً. أمي طلبت وجبتها الخاصة ودخلت لغرفتها مبكراً. لم أفكر في الوصية يوماً — زواجي بخير ولا أحتاج لشقق."},
+{id:"S4-02",nm:"فهد الدوسري",rl:"زوج ريم وابن الضحية بالتبني",em:"👨",st:"كنت في الصالة طوال الليل أشاهد مباراة. لا علاقة لي بالمطبخ. علاقتي بأم ريم ممتازة — هي من أقنعت ريم بالزواج مني في الأصل."},
+{id:"S4-03",nm:"منصور القحطاني",rl:"صيدلاني وصديق العائلة",em:"💊",st:"لم أكن في الفيلا تلك الليلة. اتصالاتي بريم طبيعية — نحن أصدقاء قدامى. أعرف الأدوية لكنني لا أبيع سموماً ولم أشترِ شيئاً غير معتاد."}
 ],
-conns:["وصول للمطبخ + الوصية المشروطة = دافع ريم","معرفة كيميائية + سجل صيدلية = منصور المورّد","الرسالة المحذوفة 'تم' + المكالمة وقت الطبخ = تنسيق مسبق","فهد يربح بقاء الزواج = لا دافع له للقتل"],
-timeline:["ظهر اليوم: مكالمة منصور لريم بعد بدء الطبخ بـ ٢ ساعة","طوال اليوم: أُعدّ السُّم ووُضع في طعام الضحية","مساء: العشاء العائلي — الضحية تأكل بلا شك","ليلاً: تدهور حالة الضحية وتوفيها"],
 sol:`<h3>التخطيط المشترك</h3><p>لم يكن القتل عفوياً. <span class="sol-highlight">ريم الدوسري</span> أرادت الشقتين دون خطر فقدانهما بالطلاق — وكانت علاقتها بمنصور القحطاني تجاوزت حدود الصداقة.<br/>منصور وفّر السُّم من خلال معرفته الصيدلانية، وريم أضافته لطعام والدتها.</p><div class="sol-proof">الدليل الحاسم:\nالرسالة المحذوفة "تم" أُرسلت لرقم منصور\nبعد مكالمته أثناء تحضير الطعام مباشرة.\nلا يوجد تفسير آخر لهذا التسلسل.</div><h3>الحكم</h3><p>ريم الدوسري: <strong>السجن المؤبد</strong><br/>منصور القحطاني: <strong>السجن ٢٠ سنة</strong></p>`
 },
 
@@ -529,12 +726,10 @@ ev:[
 {id:"E5-06",ic:"🏦",nm:"حسابات مالية مجمّدة",desc:"بعد الاغتيال بـ٢٤ ساعة، حاول شخص ما تحويل ١.٢ مليون لحساب خارجي — الحوالة تمت من خلال وسيط يعمل في شركة تعود ملكيتها لطارق المنصوري."}
 ],
 sus:[
-{id:"S5-01",nm:"طارق المنصوري",rl:"رجل أعمال — متورط في ملف الاختلاس",em:"👔",st:"لم أرَ بدر منذ أسابيع. الملف الذي يتحدث عنه الناس مجرد إشاعات — ليس لدي أي علاقة بأي صندوق استثماري بهذا الحجم.",con:"أنكر أي صلة بالملف — لكن الشركة الوسيطة في الحوالة المريبة (E5-06) تعود ملكيتها له مباشرة. وأحرف ط.م في دفتر بدر (E5-05) تتطابق مع اسمه."},
-{id:"S5-02",nm:"وليد الشمري",rl:"محامٍ شريك في مكتب بدر",em:"⚖️",st:"بدر كان يعمل على ملف كبير لكنه لم يخبرني بالتفاصيل. الليلة التي اغتيل فيها كنت في مؤتمر في الرياض — عندي فندق وإيصالات عشاء.",con:null},
-{id:"S5-03",nm:"سلمى الحربي",rl:"سكرتيرة بدر",em:"👩‍💼",st:"كنت آخر من يراه قبل خروجه. قال إنه 'سيلتقي شخصاً مهماً'. بدا هادئاً. لم يكن خائفاً — كأنه يثق في من سيقابله.",con:null}
+{id:"S5-01",nm:"طارق المنصوري",rl:"رجل أعمال — متورط في ملف الاختلاس",em:"👔",st:"لم أرَ بدر منذ أسابيع. الملف الذي يتحدث عنه الناس مجرد إشاعات — ليس لدي أي علاقة بأي صندوق استثماري بهذا الحجم."},
+{id:"S5-02",nm:"وليد الشمري",rl:"محامٍ شريك في مكتب بدر",em:"⚖️",st:"بدر كان يعمل على ملف كبير لكنه لم يخبرني بالتفاصيل. الليلة التي اغتيل فيها كنت في مؤتمر في الرياض — عندي فندق وإيصالات عشاء."},
+{id:"S5-03",nm:"سلمى الحربي",rl:"سكرتيرة بدر",em:"👩‍💼",st:"كنت آخر من يراه قبل خروجه. قال إنه 'سيلتقي شخصاً مهماً'. بدا هادئاً. لم يكن خائفاً — كأنه يثق في من سيقابله."}
 ],
-conns:["الملف + موعد التسليم = الدافع لطارق","'ط.م' + دفتر بدر = طارق المنصوري باسمه","زاوية الطلق + الثقة = شخص يعرفه بدر","الحوالة المريبة + شركة طارق = تحريك مال بعد القتل"],
-timeline:["قبل أسبوع: بدر يُكمل ملف الاختلاس وينتظر الموعد","يوم الجريمة صباحاً: رسائل مع م.ع لترتيب اللقاء","المساء: بدر يجلس في سيارته وينتظر","تمام الساعة ٨:٤٠ م: طلقة واحدة — القاتل يغادر هادئاً"],
 sol:`<h3>من أرسل القاتل</h3><p><span class="sol-highlight">طارق المنصوري</span> لم يضغط الزناد بنفسه — لكنه هو من رتّب الاغتيال وأرسل قاتلاً محترفاً.</p><div class="sol-proof">الربط الحاسم:\n- ملف الاختلاس يدينه بـ ٤٢ مليون\n- "ط.م" في دفتر بدر = طارق المنصوري\n- شركته وراء الحوالة بعد الاغتيال\n- الضحية فتحت الباب طوعاً = شخص موثوق أرسله</div><h3>الحكم</h3><p>طارق المنصوري: <strong>الإعدام بتهمة الاغتيال العمد والفساد المالي</strong></p>`
 },
 
@@ -553,13 +748,11 @@ ev:[
 {id:"E6-06",ic:"📞",nm:"مكالمات دييغو",desc:"دييغو أجرى ٤ مكالمات لرقم خارجي بعد مغادرة غرفة كارلوس مساءً. نفس الرقم اتصل بنايف الزهراني صباح اليوم التالي. الرقم مسجّل بهوية مزيّفة."}
 ],
 sus:[
-{id:"S6-01",nm:"نايف الزهراني",rl:"موظف صيانة في الفندق",em:"🔧",st:"بطاقتي الطوارئ موجودة في جيبي دائماً. لكنني لم أذهب للغرفة ٣١٢ تلك الليلة أبداً. ربما استُخدمت بطاقتي دون علمي — الخزانة ليست مقفلة جيداً.",con:"ادّعى أن بطاقته لم تُستخدم — لكن سجل النظام يُظهر بوضوح أن بطاقته هي التي فتحت الغرفة الساعة ٢:٢٣ صباحاً. والقفازات الجراحية من نوع حصري لموظفي الصيانة."},
-{id:"S6-02",nm:"دييغو فيغا",rl:"نزيل الغرفة ٣٠٨ — صديق الضحية",em:"🕵️",st:"نعم زرته مساءً — حديث عادي. أعرفه من سنوات. تركته بخير الساعة ١٠:٣٠. نمت مبكراً ولم أخرج من غرفتي.",con:"أكد أنه نام مبكراً — لكن كاميرا الممر تُظهر شخصاً بنفس بنيته ونفس حذائه يدخل الغرفة الساعة ٢:٢١. ومكالماته لرقم تواصل مع نايف تربطهما معاً."},
-{id:"S6-03",nm:"رانيا السبيعي",rl:"مديرة استقبال الفندق",em:"👩‍💼",st:"سجّلت كارلوس بنفسي. دييغو نزيل عادي. لا شيء مثير للريبة في أي منهما. نايف موظف موثوق لم تكن هناك مشاكل في سجله.",con:null},
-{id:"S6-04",nm:"حمد العمري",rl:"مشرف الأمن — الفندق",em:"🛡️",st:"راجعت الكاميرات كلها بعد الحادثة. الشخص في الممر غير محدد الهوية. لم يكن هناك اختراق أمني واضح في سجلاتي.",con:null}
+{id:"S6-01",nm:"نايف الزهراني",rl:"موظف صيانة في الفندق",em:"🔧",st:"بطاقتي الطوارئ موجودة في جيبي دائماً. لكنني لم أذهب للغرفة ٣١٢ تلك الليلة أبداً. ربما استُخدمت بطاقتي دون علمي — الخزانة ليست مقفلة جيداً."},
+{id:"S6-02",nm:"دييغو فيغا",rl:"نزيل الغرفة ٣٠٨ — صديق الضحية",em:"🕵️",st:"نعم زرته مساءً — حديث عادي. أعرفه من سنوات. تركته بخير الساعة ١٠:٣٠. نمت مبكراً ولم أخرج من غرفتي."},
+{id:"S6-03",nm:"رانيا السبيعي",rl:"مديرة استقبال الفندق",em:"👩‍💼",st:"سجّلت كارلوس بنفسي. دييغو نزيل عادي. لا شيء مثير للريبة في أي منهما. نايف موظف موثوق لم تكن هناك مشاكل في سجله."},
+{id:"S6-04",nm:"حمد العمري",rl:"مشرف الأمن — الفندق",em:"🛡️",st:"راجعت الكاميرات كلها بعد الحادثة. الشخص في الممر غير محدد الهوية. لم يكن هناك اختراق أمني واضح في سجلاتي."}
 ],
-conns:["بطاقة نايف + ألياف قفاز صيانة = نايف داخل الغرفة","بنية الشخص في الكاميرا + حذاء دييغو = دييغو هو القاتل الفعلي","مكالمات دييغو + اتصال بنايف = تنسيق مسبق","لابتوب مسروق + معلومات تهريب = الدافع واضح"],
-timeline:["٩ مساءً: دييغو يزور كارلوس ويفحص الوضع","١٠:٣٠ م: دييغو يغادر ويتصل بالرقم الخارجي ٤ مرات","٢:٢١ ص: دييغو يعود للممر، نايف يفتح الباب ببطاقته","٢:٢٣-٢:٣٨ ص: الجريمة — اللابتوب يُسرق والغرفة تُغلق"],
 sol:`<h3>اللحظة الحاسمة</h3><p>كارلوس لم يكن يعرف أن صديقه القديم <span class="sol-highlight">دييغو فيغا</span> يعمل ضده. دييغو جاء لمعرفة ما يملكه كارلوس — ثم قرر إسكاته نهائياً بمساعدة <span class="sol-highlight">نايف الزهراني</span> الذي أتاح الوصول للغرفة.</p><div class="sol-proof">الدليل المزدوج:\n- بطاقة نايف + قفازات الصيانة = دخول مُرتّب\n- كاميرا الممر + بنية دييغو = القاتل الفعلي\n- مكالمات تربط الاثنين = جريمة منسّقة</div><h3>الحكم</h3><p>دييغو فيغا: <strong>السجن المؤبد</strong><br/>نايف الزهراني: <strong>السجن ١٥ سنة</strong></p>`
 },
 
@@ -578,14 +771,12 @@ ev:[
 {id:"E7-06",ic:"🌙",nm:"شهادة الخادمة",desc:"الخادمة أم عبدالله قالت إنها رأت إضاءة في غرفة جاسم الساعة ٣:١٥ صباحاً وسمعت صوت باب يُفتح ثم يُغلق برفق. ولما سُئلت عن من رأت — قالت: رأيت ظلاً لامرأة في ثوب أبيض."}
 ],
 sus:[
-{id:"S7-01",nm:"سلوى العجمي",rl:"الابنة الكبرى",em:"👩",st:"أعطيت أبي حقنه كالمعتاد قبل النوم. نمت مبكراً ولم أخرج من غرفتي. أنا التي أعتني به منذ سنوات — لماذا أؤذيه؟",con:"استلمت مسؤولية الحقن بعد إقالة الممرضة (E7-03). بحثها على الإنترنت عن جرعات الأنسولين المميتة (E7-05) قبل ١١ يوماً. والإرث المعدّل سيقلّص نصيبها."},
-{id:"S7-02",nm:"عمر العجمي",rl:"الابن الأصغر",em:"👦",st:"أنا كنت نائماً في الغرفة الخارجية. الإرث الجديد لصالحي نعم — لكنني أحب أبي وكنت سعيداً بقرار التعديل. لا داعي لأقتله وأنا الرابح.",con:null},
-{id:"S7-03",nm:"فهد العجمي",rl:"الابن الأكبر",em:"👨",st:"نمت الساعة ١١ ولم أستيقظ حتى الفجر. الإرث موزّع بالعدل منذ البداية — لن أكسب ولن أخسر من التعديل.",con:null},
-{id:"S7-04",nm:"مريم العجمي",rl:"الابنة الثانية",em:"👧",st:"كنت في غرفتي أقرأ حتى منتصف الليل. لا أعرف شيئاً عن الحقن — لم تكن من مسؤوليتي أبداً.",con:null},
-{id:"S7-05",nm:"ناصر الغانم",rl:"الزوج — زوج سلوى",em:"👨‍👩",st:"زوجتي لم تخرج من غرفتنا تلك الليلة أبداً. أنا صحيت مرة للحمام وعدت — هي كانت نائمة.",con:"شهادته لصالح زوجته مباشرة — لكن الخادمة رأت ظل امرأة قرب غرفة جاسم في نفس التوقيت. شهادة الزوج وحدها غير كافية."}
+{id:"S7-01",nm:"سلوى العجمي",rl:"الابنة الكبرى",em:"👩",st:"أعطيت أبي حقنه كالمعتاد قبل النوم. نمت مبكراً ولم أخرج من غرفتي. أنا التي أعتني به منذ سنوات — لماذا أؤذيه؟"},
+{id:"S7-02",nm:"عمر العجمي",rl:"الابن الأصغر",em:"👦",st:"أنا كنت نائماً في الغرفة الخارجية. الإرث الجديد لصالحي نعم — لكنني أحب أبي وكنت سعيداً بقرار التعديل. لا داعي لأقتله وأنا الرابح."},
+{id:"S7-03",nm:"فهد العجمي",rl:"الابن الأكبر",em:"👨",st:"نمت الساعة ١١ ولم أستيقظ حتى الفجر. الإرث موزّع بالعدل منذ البداية — لن أكسب ولن أخسر من التعديل."},
+{id:"S7-04",nm:"مريم العجمي",rl:"الابنة الثانية",em:"👧",st:"كنت في غرفتي أقرأ حتى منتصف الليل. لا أعرف شيئاً عن الحقن — لم تكن من مسؤوليتي أبداً."},
+{id:"S7-05",nm:"ناصر الغانم",rl:"الزوج — زوج سلوى",em:"👨‍👩",st:"زوجتي لم تخرج من غرفتنا تلك الليلة أبداً. أنا صحيت مرة للحمام وعدت — هي كانت نائمة."}
 ],
-conns:["استلام الحقن + إقالة الممرضة = سيطرة سلوى","البحث الإنترنت + ١١ يوم قبل الجريمة = تخطيط مسبق","الإرث المقلص + الاجتماع قبل يومين = الدافع","ظل امرأة بالليل + شهادة الزوج الوحيدة = رواية مشكوك فيها"],
-timeline:["قبل أسبوعين: سلوى تقيل الممرضة وتستلم الحقن","قبل ١١ يوم: بحث عن الجرعات المميتة","قبل يومين: جاسم يُخبر العائلة بموعد التعديل","٣:١٥ ص: ظل امرأة قرب الغرفة — الحقن تُعطى","صباحاً: جاسم لا يستيقظ"],
 sol:`<h3>الجريمة المُحكمة</h3><p><span class="sol-highlight">سلوى العجمي</span> خطّطت بدقة. أقالت الممرضة لتسيطر على الحقن، بحثت عن الجرعة المميتة قبل أسابيع، وانتظرت حتى يأتي موعد تعديل الإرث لتتحرك.</p><div class="sol-proof">الثلاثي المدمّر:\n١. هي الوحيدة التي تسيطر على الحقن\n٢. البحث الإنترنت قبل ١١ يوماً بيدها\n٣. الدافع: الإرث المقلص قبل يومين من الجريمة</div><h3>الحكم</h3><p>سلوى العجمي: <strong>الإعدام بتهمة قتل العمد مع سبق الإصرار</strong></p>`
 },
 
@@ -604,12 +795,10 @@ ev:[
 {id:"E8-06",ic:"🩺",nm:"تقرير الطب الشرعي",desc:"آثار كدمات على ذراعي محمود من الأعلى — تدل على مسك قوي من الخلف. لا توجد إصابات في الأصابع تتوافق مع محاولة التشبث بالنافذة طوعاً — الجسم أُلقي بقوة."}
 ],
 sus:[
-{id:"S8-01",nm:"خالد الزيد",rl:"نائب مدير الشركة",em:"👔",st:"كنت في الطابق السابع للتوقيع على وثائق عادية. دخلت ورأيت النافذة مفتوحة ومحمود غائب — صعقت وأبلغت الأمن فوراً.",con:"هو أول من أبلغ — لكن ردّه على رسالة ليلى 'لا تتصلي بي بعد الآن' يعني أنه كان يعرف بالخطة. الطب الشرعي يُثبت القتل بالدفع — وهو كان موجوداً في الطابق."},
-{id:"S8-02",nm:"ليلى الأحمد",rl:"المديرة المالية",em:"👩‍💼",st:"خسارة محمود مأساة. أنا لم أكن موجودة لحظة الحادثة — دخلت الطابق باكراً وخرجت قبل ٣٠ دقيقة من وقت الحادثة وفق سجل البطاقة.",con:"رسالتها لخالد 'الآن أو لا' قبل ٤٠ دقيقة = من دفع إلى التنفيذ. وهي المتورطة في ملفات الاختلاس التي كان محمود على وشك كشفها."},
-{id:"S8-03",nm:"سامر العوض",rl:"موظف محاسبة",em:"🧮",st:"أنا في الطابق الخامس طوال اليوم. لم أصعد للسابع أبداً. سجل بطاقتي يُثبت ذلك.",con:null}
+{id:"S8-01",nm:"خالد الزيد",rl:"نائب مدير الشركة",em:"👔",st:"كنت في الطابق السابع للتوقيع على وثائق عادية. دخلت ورأيت النافذة مفتوحة ومحمود غائب — صعقت وأبلغت الأمن فوراً."},
+{id:"S8-02",nm:"ليلى الأحمد",rl:"المديرة المالية",em:"👩‍💼",st:"خسارة محمود مأساة. أنا لم أكن موجودة لحظة الحادثة — دخلت الطابق باكراً وخرجت قبل ٣٠ دقيقة من وقت الحادثة وفق سجل البطاقة."},
+{id:"S8-03",nm:"سامر العوض",rl:"موظف محاسبة",em:"🧮",st:"أنا في الطابق الخامس طوال اليوم. لم أصعد للسابع أبداً. سجل بطاقتي يُثبت ذلك."}
 ],
-conns:["ليلى + ملفات الاختلاس + إبلاغ محمود = الدافع واضح","رسالة 'الآن أو لا' + توقيت خالد = تنسيق","الكدمات + عدم التشبث = دُفع قسراً","خالد في الطابق وقت الجريمة = المنفّذ"],
-timeline:["قبل ٣ أيام: محمود يُبلغ ليلى بتسليم الملفات","قبل ٤٠ دقيقة: ليلى تضغط على خالد 'الآن أو لا'","خالد يرد بقطع الاتصال ثم يصعد للطابق","الجريمة — خالد يُلقيه من النافذة","خالد يتصل بالأمن ليلعب دور المكتشف"],
 sol:`<h3>الشريكان في الجريمة</h3><p><span class="sol-highlight">ليلى الأحمد</span> أعطت الأمر وكانت تعرف أن محمود سيدمّرها مهنياً. <span class="sol-highlight">خالد الزيد</span> نفّذ بيديه.</p><div class="sol-proof">الرسالة التي دمّرتهما:\n"الآن أو لا. الملفات ستُسلّم الاثنين."\n= ليلى هي المحرّض\n= خالد موجود في الطابق وقت الجريمة\n= الكدمات تؤكد الدفع القسري</div><h3>الحكم</h3><p>خالد الزيد: <strong>السجن المؤبد</strong><br/>ليلى الأحمد: <strong>السجن ٢٠ سنة تحريضاً على القتل</strong></p>`
 },
 
@@ -628,12 +817,10 @@ ev:[
 {id:"E9-06",ic:"🔍",nm:"شاهد العيان",desc:"بائع جوّال كان في المنطقة يقول إنه رأى سيارة بيضاء تتوقف بجانب فتاة ثم تنطلق بسرعة. يصف السائق بأنه رجل في الثلاثينات بملامح 'تبدو محلية'. لم يرَ لوحة السيارة."}
 ],
 sus:[
-{id:"S9-01",nm:"ضياء الحمدان",rl:"مصدر نادية في التحقيق",em:"🕵️",st:"نعم كنت أساعدها في التحقيق لكنني لم أقتلها. هاتفها اتصل بمنطقتي لأنها كانت عائدة من لقائنا مبكراً في المساء. تركتها بخير وذهبت لمنزلي.",con:"قال إن اللقاء كان 'مبكراً في المساء' — لكن آخر إشارة لهاتف نادية كانت قرب منزله الساعة ٢:٥٠ صباحاً. التوقيت لا يتطابق مع روايته أبداً."},
-{id:"S9-02",nm:"عبدالله الرشيد",rl:"مالك مجموعة الرشيد للمقاولات",em:"👷",st:"شركتي تعمل بشكل قانوني ١٠٠٪. لا أعرف هذه الصحفية. سياراتنا موجودة في المستودع — أي حديث عن سيارة من شركتي مجرد تلفيق.",con:"ستيكر شركته على السيارة المحروقة (E9-01) — الدليل المادي يربطه مباشرة. والصورة في الكاميرا (E9-02) ترصد عملية في مستودعه. الإنكار لا يكفي."},
-{id:"S9-03",nm:"هيا الدوسري",rl:"زميلة نادية في الصحيفة",em:"📰",st:"نادية كانت تعمل على قضية كبرى لكنها لم تخبرني بالتفاصيل. لم أرَها بعد الساعة ٦ مساءً يوم الحادثة.",con:null}
+{id:"S9-01",nm:"ضياء الحمدان",rl:"مصدر نادية في التحقيق",em:"🕵️",st:"نعم كنت أساعدها في التحقيق لكنني لم أقتلها. هاتفها اتصل بمنطقتي لأنها كانت عائدة من لقائنا مبكراً في المساء. تركتها بخير وذهبت لمنزلي."},
+{id:"S9-02",nm:"عبدالله الرشيد",rl:"مالك مجموعة الرشيد للمقاولات",em:"👷",st:"شركتي تعمل بشكل قانوني ١٠٠٪. لا أعرف هذه الصحفية. سياراتنا موجودة في المستودع — أي حديث عن سيارة من شركتي مجرد تلفيق."},
+{id:"S9-03",nm:"هيا الدوسري",rl:"زميلة نادية في الصحيفة",em:"📰",st:"نادية كانت تعمل على قضية كبرى لكنها لم تخبرني بالتفاصيل. لم أرَها بعد الساعة ٦ مساءً يوم الحادثة."}
 ],
-conns:["ستيكر الرشيد + السيارة المحروقة = الدليل المادي","هاتف نادية بالقرب من ضياء الساعة ٢:٥٠ = رواية ضياء كاذبة","دفتر نادية + اسم ضياء = علمه بالقضية","صورة المستودع + مقاولات وهمية = دافع الرشيد"],
-timeline:["مساء: نادية تلتقي ضياء — لكن التوقيت الحقيقي بعد منتصف الليل","٢:٥٠ ص: هاتفها قرب منزل ضياء ثم يُغلق","٣:٠٠ ص: نادية على الرصيف — دهس متعمد","السيارة تُحرق على بُعد ٤ كيلومترات"],
 sol:`<h3>من قتل نادية</h3><p><span class="sol-highlight">عبدالله الرشيد</span> أعطى الأمر حين علم أن نادية تملك الأدلة. <span class="sol-highlight">ضياء الحمدان</span> خان الثقة — أبلغ الرشيد بموعد وموقع نادية ثم نفّذ الدهس بسيارة الشركة.</p><div class="sol-proof">الدليلان الحاسمان:\n- ستيكر الرشيد على السيارة المحروقة\n- هاتف نادية قرب منزل ضياء الساعة ٢:٥٠\n  بينما قال إن لقاءهم كان 'مبكراً في المساء'</div><h3>الحكم</h3><p>ضياء الحمدان: <strong>الإعدام</strong><br/>عبدالله الرشيد: <strong>السجن المؤبد + مصادرة الشركة</strong></p>`
 },
 
@@ -652,13 +839,11 @@ ev:[
 {id:"E10-06",ic:"🔔",nm:"نبضات الساعة الذكية",desc:"ساعة البريكي الذكية سجّلت توقف نبضه الساعة ٧:٤٨ مساءً. يتطابق مع وجود الشخص في مكتبه بين ٧:٤٠ و٧:٥٢ من تسجيل الكاميرا. وقت الجريمة دقيق."}
 ],
 sus:[
-{id:"S10-01",nm:"رنا الصباح",rl:"طبيبة تخدير",em:"👩‍⚕️",st:"مناوبتي انتهت الساعة ٧. بقيت لاستكمال ورق إداري. لم أذهب لمكتب البريكي — لا أعرف لماذا اسمي في أي ملف. البريكي كان زميلاً محترماً لا خلاف بيننا.",con:"اسمها في ملف بيع الأعضاء (E10-02). بطاقتها في المبنى حتى ٨:١٠ (E10-05) بينما الجريمة ٧:٤٨. وأخذ العقار بخط مشابه لها (E10-03)."},
-{id:"S10-02",nm:"د. فواز الشريف",rl:"رئيس قسم الجراحة",em:"👨‍⚕️",st:"كنت في غرفة العمليات من ٦ مساءً حتى ٩:٣٠ ليلاً. العملية موثّقة بالكامل وفيها طاقم طبي كامل. اسمي في ملف البريكي؟ هذا افتراء.",con:null},
-{id:"S10-03",nm:"ممرضة هنادي",rl:"ممرضة وحدة العناية المركزة",em:"👩‍⚕️",st:"الدواء لا يُعطى إلا بتوقيع طبيب. في ذلك الوقت كانت رنا هي الطبيبة الوحيدة غير المتواجدة في العمليات.",con:null},
-{id:"S10-04",nm:"د. سعيد الأحمدي",rl:"طبيب داخلي — متورط في الملف",em:"👨‍⚕️",st:"أنا في مقابلة مع إدارة المستشفى من ٧ حتى ٨:٣٠ — مديرة التمريض شاهدة. لو البريكي يملك ملفات عليّ، أفضل أعرف ما فيها — لا أقتل من يعرف.",con:null}
+{id:"S10-01",nm:"رنا الصباح",rl:"طبيبة تخدير",em:"👩‍⚕️",st:"مناوبتي انتهت الساعة ٧. بقيت لاستكمال ورق إداري. لم أذهب لمكتب البريكي — لا أعرف لماذا اسمي في أي ملف. البريكي كان زميلاً محترماً لا خلاف بيننا."},
+{id:"S10-02",nm:"د. فواز الشريف",rl:"رئيس قسم الجراحة",em:"👨‍⚕️",st:"كنت في غرفة العمليات من ٦ مساءً حتى ٩:٣٠ ليلاً. العملية موثّقة بالكامل وفيها طاقم طبي كامل. اسمي في ملف البريكي؟ هذا افتراء."},
+{id:"S10-03",nm:"ممرضة هنادي",rl:"ممرضة وحدة العناية المركزة",em:"👩‍⚕️",st:"الدواء لا يُعطى إلا بتوقيع طبيب. في ذلك الوقت كانت رنا هي الطبيبة الوحيدة غير المتواجدة في العمليات."},
+{id:"S10-04",nm:"د. سعيد الأحمدي",rl:"طبيب داخلي — متورط في الملف",em:"👨‍⚕️",st:"أنا في مقابلة مع إدارة المستشفى من ٧ حتى ٨:٣٠ — مديرة التمريض شاهدة. لو البريكي يملك ملفات عليّ، أفضل أعرف ما فيها — لا أقتل من يعرف."}
 ],
-conns:["اسمها في الملف + دافع إسكات البريكي = رنا المتورطة","بطاقتها بالمبنى + توقيت الجريمة = كانت هناك","خط الدواء + تخصصها = لديها الوصول والمعرفة","كاميرا الممر + معطف أبيض = شخص طبي"],
-timeline:["٦:١٥ م: أخذ عقار البوتاسيوم بخط مشابه لرنا","٧:٠٠ م: انتهاء مناوبتها رسمياً — لكنها لم تغادر","٧:٤٠ م: شخص يدخل مكتب البريكي","٧:٤٨ م: توقف نبض البريكي","٧:٥٢ م: الشخص يغادر المكتب","٨:١٠ م: بطاقة رنا تُسجّل خروجها"],
 sol:`<h3>طبيبة قتلت لإسكات الحقيقة</h3><p>اسمها في ملف بيع الأعضاء كان كافياً — <span class="sol-highlight">رنا الصباح</span> علمت بوجود الملف وقرّرت أن الصمت الأبدي هو الحل الوحيد.</p><div class="sol-proof">السلسلة التي لا تُكسر:\n- اسمها في الملف = الدافع\n- أخذ الدواء المطابق = الأداة\n- بطاقتها في المبنى وقت الجريمة = كانت هناك\n- الجريمة في ٧:٤٨ وخروجها ٨:١٠ = الجدول الزمني مضبوط</div><h3>الحكم</h3><p>رنا الصباح: <strong>الإعدام + التحقيق في ملف بيع الأعضاء</strong></p>`
 },
 
@@ -677,12 +862,10 @@ ev:[
 {id:"E11-06",ic:"🧪",nm:"كوب الشاي",desc:"وُجد كوب شاي في غرفة تركي — المادة المنومة اكتُشفت فيه. الكوب خارجي الصنع — لا يشبه أكواب المنزل. من جلبه؟"}
 ],
 sus:[
-{id:"S11-01",nm:"سارة الهاجري",rl:"الشقيقة الكبرى وشريكة المشروع",em:"👩",st:"تركي كان يعاني في صمت ولم نعرف. رسالة الانتحار كُتبت بيده — ربما تغيّر خطه تحت الضغط. أنا خسرت أخي — ليس لديّ دافع.",con:"رسالتها المحذوفة 'إذا وثّق المحامي — خلصنا' قبل الجريمة بأيام. المشروع سيصبح بالكامل لها. والكوب الخارجي مع المادة المنومة — من جلبه إن لم يكن أحد من الداخل؟"},
-{id:"S11-02",nm:"فهد الهاجري",rl:"الأب",em:"👨",st:"لاحظت على تركي تعباً أخيراً لكنه لم يتحدث. دخلت غرفته الساعة ١١ ليلاً ووجدته — اعتقدت أنه نائم في البداية.",con:null},
-{id:"S11-03",nm:"زياد حمدان",rl:"صديق تركي المقرب",em:"👦",st:"تركي لم يكن مكتئباً — حدثني عن المشروع قبل يومين وكان متحمساً جداً. قال إن سارة ستتضايق من قرار المحامي لكنه لم يبدُ خائفاً.",con:null}
+{id:"S11-01",nm:"سارة الهاجري",rl:"الشقيقة الكبرى وشريكة المشروع",em:"👩",st:"تركي كان يعاني في صمت ولم نعرف. رسالة الانتحار كُتبت بيده — ربما تغيّر خطه تحت الضغط. أنا خسرت أخي — ليس لديّ دافع."},
+{id:"S11-02",nm:"فهد الهاجري",rl:"الأب",em:"👨",st:"لاحظت على تركي تعباً أخيراً لكنه لم يتحدث. دخلت غرفته الساعة ١١ ليلاً ووجدته — اعتقدت أنه نائم في البداية."},
+{id:"S11-03",nm:"زياد حمدان",rl:"صديق تركي المقرب",em:"👦",st:"تركي لم يكن مكتئباً — حدثني عن المشروع قبل يومين وكان متحمساً جداً. قال إن سارة ستتضايق من قرار المحامي لكنه لم يبدُ خائفاً."}
 ],
-conns:["رسالة 'الانتحار' بخط مختلف = مزوّرة","البريد للمحامي قبل ١٠ دقائق = لم يكن ينوي الانتحار","رسالة سارة المحذوفة + الـ ٣ أيام = جدول زمني","الكوب الخارجي + المادة المنومة = جلبته سارة"],
-timeline:["قبل أسبوع: تركي يتصل بمحامٍ لتوثيق حصته","قبل ٣ أيام: سارة ترسل 'خلصنا. عنده ٣ أيام'","يوم الجريمة: كوب شاي مسموم في الغرفة","قبل ١٠ دقائق: تركي يبعث بريداً للمحامي — لا يعرف","فقدان الوعي ثم الوفاة — رسالة مزيّفة تُوضع"],
 sol:`<h3>الشقيقة والإرث الرقمي</h3><p><span class="sol-highlight">سارة الهاجري</span> فهمت أن توثيق حصة تركي يعني نهاية سيطرتها على المشروع — فاختارت أن تنهيه بدلاً من ذلك.</p><div class="sol-proof">الخطأ الذي دمّرها:\nرسالتها المحذوفة "إذا وثّق المحامي — خلصنا"\nجاءت قبل ٣ أيام من الجريمة بالضبط.\n\nثم: الرسالة المزيّفة بخط مختلف\nثم: الكوب الخارجي بالمادة المنومة</div><h3>الحكم</h3><p>سارة الهاجري: <strong>السجن المؤبد + مصادرة حصتها في المشروع</strong></p>`
 },
 
@@ -701,13 +884,11 @@ ev:[
 {id:"E12-06",ic:"🔑",nm:"دخول غير مصرح",desc:"كاميرا الأمن رصدت شخصاً دخل غرفة الخلف الساعة ٥:٣٠ مساءً — قبل ساعتين من الحفلة. الشخص يرتدي ملابس طاقم العمل لكن بطاقته لا تتطابق مع أي من الموظفين المصرّح لهم."}
 ],
 sus:[
-{id:"S12-01",nm:"رامي شحادة",rl:"المساعد الشخصي للمغنية",em:"👨‍💼",st:"أعددت الماء كالمعتاد. لمياء طلبت مني دائماً تجهيز زجاجتها الخاصة. لا أعرف شيئاً عن سُمّ. الحوالة المالية كانت لقرض عادي من صديق.",con:"يُعدّ الزجاجة بيديه (E12-01). تلقّى ٢٥٠ ألف في نفس يوم إبلاغ لمياء لفريد (E12-04). مكالمات مع غادة قبل الجريمة (E12-05)."},
-{id:"S12-02",nm:"فريد الحجاوي",rl:"مدير شركة نوتة للفنون",em:"🎵",st:"لمياء حرة في قرارها. ٨ ملايين خسارة نعم — لكنني رجل أعمال ناضج ولا أقتل فنانيني. وثيقة الخسارة موجودة — لكنها ليست دافعاً للقتل في عالمي.",con:null},
-{id:"S12-03",nm:"غادة الحسيني",rl:"مساعدة مدير نوتة",em:"👩",st:"مكالماتي لرامي؟ تنسيق فعاليات عادية — نحن نتعاون أحياناً. لا علاقة لي بما حدث.",con:"مكالماتها لرامي قبل الجريمة (E12-05) — وهي التي لها وصول لملف لمياء الطبي لكونها تعمل في فريق الإدارة. والدخول غير المصرّح في الكاميرا مجهول الهوية."},
-{id:"S12-04",nm:"نور باسل",rl:"صديقة لمياء المقربة",em:"🤝",st:"لمياء كانت سعيدة بالعقد الجديد. لم أكن أعلم بالتفاصيل المالية. رأيتها قبل الحفلة وبدت طبيعية.",con:null}
+{id:"S12-01",nm:"رامي شحادة",rl:"المساعد الشخصي للمغنية",em:"👨‍💼",st:"أعددت الماء كالمعتاد. لمياء طلبت مني دائماً تجهيز زجاجتها الخاصة. لا أعرف شيئاً عن سُمّ. الحوالة المالية كانت لقرض عادي من صديق."},
+{id:"S12-02",nm:"فريد الحجاوي",rl:"مدير شركة نوتة للفنون",em:"🎵",st:"لمياء حرة في قرارها. ٨ ملايين خسارة نعم — لكنني رجل أعمال ناضج ولا أقتل فنانيني. وثيقة الخسارة موجودة — لكنها ليست دافعاً للقتل في عالمي."},
+{id:"S12-03",nm:"غادة الحسيني",rl:"مساعدة مدير نوتة",em:"👩",st:"مكالماتي لرامي؟ تنسيق فعاليات عادية — نحن نتعاون أحياناً. لا علاقة لي بما حدث."},
+{id:"S12-04",nm:"نور باسل",rl:"صديقة لمياء المقربة",em:"🤝",st:"لمياء كانت سعيدة بالعقد الجديد. لم أكن أعلم بالتفاصيل المالية. رأيتها قبل الحفلة وبدت طبيعية."}
 ],
-conns:["رامي + إعداد الزجاجة + حوالة = المنفّذ","غادة + ملف طبي + مكالمات رامي = المخططة","فريد = الدافع الأكبر لكن لا دليل مباشر","الدخول غير المصرح + وقت التجهيز = غادة أضافت السُّم"],
-timeline:["٤ أيام قبل: حوالة ٢٥٠ ألف لرامي","٣ ساعات قبل: مكالمة أخيرة بين غادة ورامي","٥:٣٠ م: دخول غير مصرّح به — غادة تُجهّز السُّم","رامي يُعدّ الزجاجة — السُّم موجود","بعد الحفلة: لمياء تشرب وتنهار"],
 sol:`<h3>المساعد والمخططة</h3><p><span class="sol-highlight">رامي شحادة</span> كان الأداة — و<span class="sol-highlight">غادة الحسيني</span> هي من خطّطت ووفّرت السُّم والمعلومات الطبية لحماية مصالح الشركة.</p><div class="sol-proof">الثالوث المميت:\n١. رامي: وحده يُعدّ الزجاجة + حوالة مشبوهة\n٢. غادة: وصول للملف الطبي + مكالمات سرية + دخول غير مصرّح\n٣. التوقيت: كل شيء حدث بعد إبلاغ فريد بالقرار</div><h3>الحكم</h3><p>رامي شحادة: <strong>السجن ٢٥ سنة</strong><br/>غادة الحسيني: <strong>السجن المؤبد — تخطيط وتنفيذ</strong></p>`
 },
 
@@ -726,12 +907,10 @@ ev:[
 {id:"E13-06",ic:"🔐",nm:"سجل الدخول الإلكتروني",desc:"مبنى الشقة له نظام دخول إلكتروني. سُجّل ضيف دخل معه مسعد الساعة ١١:٠٢ م — ما يعني أن مسعد فتح الباب طوعاً لشخص يعرفه."}
 ],
 sus:[
-{id:"S13-01",nm:"عادل البلوي",rl:"رجل أعمال — المتهم في قضية مسعد",em:"👔",st:"أنا رجل أعمال محترم. شهادة مسعد مجرد ادعاءات كاذبة. كنت في منزلي ليلة الحادثة مع عائلتي. لا أعرف شيئاً عن سيارة أو رسالة.",con:"رسالة التهديد بطابعة شركته (E13-04). سيارة أسطوله أمام الشقة وقت الجريمة (E13-03). الشهادة التي تُدينه (E13-02) = دافع واضح."},
-{id:"S13-02",nm:"رلى غصن",rl:"المدعية العامة المشرفة على القضية",em:"👩‍⚖️",st:"مسعد كان يعمل تحت إشرافي. الشهادة كانت قوية. نعم أعلم بوجود ضغوط عليه لكنه لم يُخبرني بتفاصيل. أنا في المكتب حتى الساعة ٩ ليلاً وسجل الدخول يُثبت ذلك.",con:null},
-{id:"S13-03",nm:"نزار حمدان",rl:"المحامي المدافع عن عادل البلوي",em:"⚖️",st:"موكلي بريء. الشهادة كانت مبنية على وثائق مزوّرة. لو أراد موكلي إسكات مسعد لفعل ذلك بطرق قانونية.",con:null}
+{id:"S13-01",nm:"عادل البلوي",rl:"رجل أعمال — المتهم في قضية مسعد",em:"👔",st:"أنا رجل أعمال محترم. شهادة مسعد مجرد ادعاءات كاذبة. كنت في منزلي ليلة الحادثة مع عائلتي. لا أعرف شيئاً عن سيارة أو رسالة."},
+{id:"S13-02",nm:"رلى غصن",rl:"المدعية العامة المشرفة على القضية",em:"👩‍⚖️",st:"مسعد كان يعمل تحت إشرافي. الشهادة كانت قوية. نعم أعلم بوجود ضغوط عليه لكنه لم يُخبرني بتفاصيل. أنا في المكتب حتى الساعة ٩ ليلاً وسجل الدخول يُثبت ذلك."},
+{id:"S13-03",nm:"نزار حمدان",rl:"المحامي المدافع عن عادل البلوي",em:"⚖️",st:"موكلي بريء. الشهادة كانت مبنية على وثائق مزوّرة. لو أراد موكلي إسكات مسعد لفعل ذلك بطرق قانونية."}
 ],
-conns:["طابعة البلوي + رسالة التهديد = جاءت منه","سيارة أسطوله + التوقيت = موجودة هناك","الشهادة المدينة + الاثنين قبل التقديم = الدافع والتوقيت","مسعد فتح الباب طوعاً = أرسل البلوي شخصاً يعرفه"],
-timeline:["يومان قبل: رسالة تهديد بطابعة شركة البلوي","مساء الجريمة: مسعد يصل للشقة","١١:٠٢ م: ضيف يدخل معه — مسعد فتح الباب طوعاً","١١-١:٣٠ ص: سيارة أسطول البلوي في المنطقة","تقدير الوفاة: حوالي ١١ م"],
 sol:`<h3>النافذ الذي خاف من الحقيقة</h3><p><span class="sol-highlight">عادل البلوي</span> أرسل شخصاً بسيارة من أسطوله لتنفيذ الجريمة — وكان مسعد يعرف هذا الشخص فلم يخشَ منه ففتح الباب.</p><div class="sol-proof">الثلاثي المدمّر:\n١. طابعة شركته = رسالة التهديد\n٢. سيارة أسطوله = موجودة وقت الجريمة\n٣. الشهادة التي تُدينه بـ١٥٠ مليون = الدافع الأكبر</div><h3>الحكم</h3><p>عادل البلوي: <strong>الإعدام — اغتيال مسؤول قضائي + تزوير عقود حكومية</strong></p>`
 }
 };
@@ -741,26 +920,108 @@ sol:`<h3>النافذ الذي خاف من الحقيقة</h3><p><span class="so
 ══════════════════════════════════ */
 var cur = null;
 var solved = [];
+var scoresStore = {};
 var notesStore = {};
+var pinnedStore = {};
 var flashT = null;
 var modalT = null;
 var pendingCaseId = null;
 
-/* Load solved cases from localStorage */
+/* Timer state */
+var timerInterval = null;
+var timerStart = null;
+var TIMER_DURATION = 20 * 60; // 20 minutes in seconds
+var timerElapsed = 0;
+
+/* Score system */
+var BASE_SCORE = 1000;
+var scoreAtSolve = 0;
+
+/* Load from localStorage */
 try {
-  var s = localStorage.getItem('inv_v2');
+  var s = localStorage.getItem('inv_v3');
   if (s) {
     var p = JSON.parse(s);
-    if (Array.isArray(p)) solved = p.filter(function(x) { return typeof x === 'number'; });
+    if (p.solved && Array.isArray(p.solved)) solved = p.solved.filter(function(x) { return typeof x === 'number'; });
+    if (p.scores) scoresStore = p.scores;
+    if (p.notes) notesStore = p.notes;
+    if (p.pinned) pinnedStore = p.pinned;
   }
 } catch(e) {}
 
-function saveSolved() {
-  try { localStorage.setItem('inv_v2', JSON.stringify(solved)); } catch(e) {}
+function saveState() {
+  try {
+    localStorage.setItem('inv_v3', JSON.stringify({
+      solved: solved,
+      scores: scoresStore,
+      notes: notesStore,
+      pinned: pinnedStore
+    }));
+  } catch(e) {}
 }
 
-function esc(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+function totalScore() {
+  var t = 0;
+  Object.keys(scoresStore).forEach(function(k) { t += scoresStore[k] || 0; });
+  return t;
+}
+
+/* ══════════════════════════════════
+   TIMER
+══════════════════════════════════ */
+function startTimer() {
+  clearTimer();
+  timerStart = Date.now();
+  timerElapsed = 0;
+  updateTimerDisplay();
+  timerInterval = setInterval(function() {
+    timerElapsed = Math.floor((Date.now() - timerStart) / 1000);
+    updateTimerDisplay();
+  }, 1000);
+}
+
+function clearTimer() {
+  if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+}
+
+function updateTimerDisplay() {
+  var remaining = Math.max(0, TIMER_DURATION - timerElapsed);
+  var m = Math.floor(remaining / 60);
+  var s = remaining % 60;
+  var txt = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+  var el = document.getElementById('timer-display');
+  var fill = document.getElementById('timer-fill');
+  var pot = document.getElementById('potential-score');
+  if (!el) return;
+  el.textContent = txt;
+  var pct = remaining / TIMER_DURATION;
+  fill.style.width = (pct * 100) + '%';
+  // Color changes
+  el.className = 'timer-display';
+  if (remaining < 300) { el.classList.add('danger'); fill.style.background = 'var(--red2)'; }
+  else if (remaining < 600) { el.classList.add('warn'); fill.style.background = 'var(--gold2)'; }
+  else { fill.style.background = 'var(--blue2)'; }
+  // Potential score
+  var pts = calcScore(timerElapsed);
+  if (pot) pot.textContent = pts;
+  // Update verdict tab too
+  var ep = document.getElementById('elapsed-display');
+  var sp = document.getElementById('score-preview');
+  if (ep) ep.textContent = formatElapsed(timerElapsed);
+  if (sp) sp.textContent = pts + ' نقطة';
+}
+
+function calcScore(elapsed) {
+  if (elapsed <= 0) return BASE_SCORE;
+  var minutes = elapsed / 60;
+  var pts = Math.round(BASE_SCORE * Math.max(0.1, 1 - (minutes / 30)));
+  return Math.max(50, pts);
+}
+
+function formatElapsed(secs) {
+  var m = Math.floor(secs / 60);
+  var s = secs % 60;
+  return m + ' دقيقة و' + s + ' ثانية';
 }
 
 /* ══════════════════════════════════
@@ -768,11 +1029,15 @@ function esc(s) {
 ══════════════════════════════════ */
 function buildDash() {
   var el = document.getElementById('files-list');
+  // Get all case IDs and shuffle them
+  var ids = Object.keys(C).map(Number);
+  shuffleArray(ids);
   var html = '';
-  Object.keys(C).forEach(function(k) {
+  ids.forEach(function(k) {
     var c = C[k];
     var isSolved = solved.includes(c.id);
     var colCls = 'case-' + c.color;
+    var caseScore = scoresStore[c.id] ? ' · ' + scoresStore[c.id] + ' نقطة' : '';
     html += '<div class="file-item ' + colCls + (isSolved ? ' solved-case' : '') + '" id="card-' + c.id + '" onclick="triggerScenario(' + c.id + ')">'
       + '<div class="fi-stripe" style="background:var(--' + c.color + '2)"></div>'
       + '<div class="fi-body">'
@@ -784,7 +1049,7 @@ function buildDash() {
       + '</div>'
       + '<div class="fi-right">'
       + '<div class="fi-status"><div class="status-dot ' + (isSolved ? 'dot-solved' : 'dot-open') + '"></div>'
-      + '<span style="color:' + (isSolved ? '#27ae60' : 'var(--red2)') + ';font-family:var(--fmono);font-size:.58rem">' + (isSolved ? 'محلولة' : 'مفتوحة') + '</span></div>'
+      + '<span style="color:' + (isSolved ? '#27ae60' : 'var(--red2)') + ';font-family:var(--fmono);font-size:.58rem">' + (isSolved ? 'محلولة' + caseScore : 'مفتوحة') + '</span></div>'
       + '<button class="fi-btn">فتح الملف</button>'
       + '<div class="fi-date">' + esc(c.date) + '</div>'
       + '</div></div>'
@@ -794,8 +1059,17 @@ function buildDash() {
   el.innerHTML = html;
 }
 
+function shuffleArray(arr) {
+  for (var i = arr.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+  }
+  return arr;
+}
+
 function refreshDash() {
   document.getElementById('solved-count').textContent = solved.length;
+  document.getElementById('total-score').textContent = totalScore();
   buildDash();
 }
 
@@ -832,12 +1106,15 @@ function openCase(id) {
   var b = document.getElementById('ctb-badge');
   b.textContent = cur.type;
   b.className = 'ctb-badge ' + cur.badgeCls;
+  // Init pinned store for this case
+  if (!pinnedStore[id]) pinnedStore[id] = [];
   buildEv();
   buildSus();
   buildNb();
   resetSolve();
   show('case-screen');
   setTab('evidence');
+  startTimer();
 }
 
 function setTab(t) {
@@ -851,8 +1128,10 @@ function setTab(t) {
    BUILD EVIDENCE
 ══════════════════════════════════ */
 function buildEv() {
+  var pinned = pinnedStore[cur.id] || [];
   document.getElementById('ev-grid').innerHTML = cur.ev.map(function(e) {
-    return '<div class="ev-card" onclick="this.classList.toggle(\'flipped\')">'
+    var isPinned = pinned.includes(e.id);
+    return '<div class="ev-card" id="evcard-' + esc(e.id) + '" onclick="handleEvClick(event, \'' + esc(e.id) + '\')">'
       + '<div class="ev-inner"><div class="ev-front">'
       + '<div class="ev-front-tag">' + esc(e.id) + '</div>'
       + '<div class="ev-front-ico">' + e.ic + '</div>'
@@ -862,16 +1141,48 @@ function buildEv() {
       + '<div class="ev-back-id">' + esc(e.id) + '</div>'
       + '<div class="ev-back-name">' + esc(e.nm) + '</div>'
       + '<div class="ev-back-desc">' + esc(e.desc) + '</div>'
+      + '<button class="ev-back-pin' + (isPinned ? ' pinned' : '') + '" id="pinbtn-' + esc(e.id) + '" onclick="pinEvidence(event,\'' + esc(e.id) + '\',\'' + esc(e.nm) + '\')">'
+      + (isPinned ? '📌 مثبّت في الدفتر' : '📌 ثبّت في الدفتر')
+      + '</button>'
       + '</div></div></div>';
   }).join('');
 }
 
+function handleEvClick(event, evId) {
+  // Don't flip if clicking the pin button
+  if (event.target.closest('.ev-back-pin')) return;
+  var card = document.getElementById('evcard-' + evId);
+  if (card) card.classList.toggle('flipped');
+}
+
+function pinEvidence(event, evId, evName) {
+  event.stopPropagation();
+  if (!cur) return;
+  var pinned = pinnedStore[cur.id] || [];
+  var btn = document.getElementById('pinbtn-' + evId);
+  if (pinned.includes(evId)) {
+    // Unpin
+    pinnedStore[cur.id] = pinned.filter(function(x) { return x !== evId; });
+    if (btn) { btn.classList.remove('pinned'); btn.textContent = '📌 ثبّت في الدفتر'; }
+    showFlash('🗑️ تمت إزالة الدليل من الدفتر', false);
+  } else {
+    // Pin
+    pinnedStore[cur.id].push(evId);
+    if (btn) { btn.classList.add('pinned'); btn.textContent = '📌 مثبّت في الدفتر'; }
+    showFlash('📌 تم تثبيت الدليل في الدفتر', true);
+  }
+  saveState();
+  refreshNbPinned();
+}
+
 /* ══════════════════════════════════
-    BUILD SUSPECTS (Manual Deduction Mode)
+   BUILD SUSPECTS — SHUFFLED
 ══════════════════════════════════ */
 function buildSus() {
-  document.getElementById('sus-grid').innerHTML = cur.sus.map(function(s) {
-    // تم حذف متغير con هنا لإلغاء نظام التنبيه التلقائي
+  // Shuffle suspects array for this session
+  var suspects = cur.sus.slice();
+  shuffleArray(suspects);
+  document.getElementById('sus-grid').innerHTML = suspects.map(function(s) {
     return '<div class="sus-card">'
       + '<div class="sus-card-head"><div class="sus-avatar">' + s.em + '</div><div class="sus-info"><div class="sus-name">' + esc(s.nm) + '</div><div class="sus-role">' + esc(s.rl) + '</div></div></div>'
       + '<div class="sus-card-actions"><button class="btn-stmt" onclick="toggleStmt(\'stmt-' + esc(s.id) + '\',this)">عرض الإفادة الرسمية</button></div>'
@@ -888,20 +1199,43 @@ function toggleStmt(id, btn) {
   var open = el.classList.toggle('open');
   btn.textContent = open ? 'إخفاء الإفادة' : 'عرض الإفادة الرسمية';
 }
-  
+
 /* ══════════════════════════════════
    BUILD NOTEBOOK
 ══════════════════════════════════ */
 function buildNb() {
-  document.getElementById('nb-conns').innerHTML = cur.conns.map(function(c) {
-    return '<div class="nb-conn"><span class="nb-conn-arrow">→</span><span>' + esc(c) + '</span></div>';
-  }).join('');
-  document.getElementById('nb-timeline').innerHTML = (cur.timeline || []).map(function(t) {
-    return '<div class="nb-conn"><span class="nb-conn-arrow">◆</span><span>' + esc(t) + '</span></div>';
-  }).join('');
+  if (!cur) return;
+  document.getElementById('nb-case-id-label').textContent = cur.caseId;
   var ta = document.getElementById('nb-ta');
   ta.value = notesStore[cur.id] || '';
-  ta.oninput = function() { notesStore[cur.id] = ta.value; };
+  ta.oninput = function() {
+    notesStore[cur.id] = ta.value;
+    saveState();
+  };
+  refreshNbPinned();
+}
+
+function refreshNbPinned() {
+  if (!cur) return;
+  var pinned = pinnedStore[cur.id] || [];
+  var container = document.getElementById('nb-pinned-items');
+  if (!container) return;
+  if (pinned.length === 0) {
+    container.innerHTML = '<span class="nb-pinned-empty">لم تثبّت أي دليل بعد — اذهب للأدلة واضغط 📌</span>';
+    return;
+  }
+  // Build chips
+  var html = '';
+  pinned.forEach(function(evId) {
+    // Find evidence name
+    var ev = cur.ev.find(function(e) { return e.id === evId; });
+    if (!ev) return;
+    html += '<div class="nb-pinned-chip">'
+      + ev.ic + ' ' + esc(ev.nm)
+      + ' <button onclick="pinEvidence(event,\'' + esc(evId) + '\',\'\')" title="إزالة">✕</button>'
+      + '</div>';
+  });
+  container.innerHTML = html;
 }
 
 /* ══════════════════════════════════
@@ -948,7 +1282,7 @@ function checkVerdict() {
     ok = nameMatch(v1, cur.answers[0]);
   } else {
     var v2 = document.getElementById('cinp2').value.trim();
-    if (!v2) { showFlash(); return; }
+    if (!v2) { showFlash('أدخل اسم الجاني الثاني', false); return; }
     var bothDiff = (nameMatch(v1, cur.answers[0]) && nameMatch(v2, cur.answers[1]))
                 || (nameMatch(v1, cur.answers[1]) && nameMatch(v2, cur.answers[0]));
     ok = bothDiff;
@@ -956,15 +1290,23 @@ function checkVerdict() {
   var r = document.getElementById('vres');
   r.style.display = 'block';
   if (ok) {
+    clearTimer();
+    scoreAtSolve = calcScore(timerElapsed);
     var names = cur.answers.map(function(a) { return a[0]; }).join(' و ');
     r.className = 'vres ok';
-    r.innerHTML = '<strong>✓ صحيح</strong><br/>الجاني/الجناة: ' + esc(names) + '<br/>تم إصدار أمر الاعتقال الرسمي.';
-    if (!solved.includes(cur.id)) { solved.push(cur.id); saveSolved(); }
+    r.innerHTML = '<strong>✓ صحيح</strong><br/>الجاني/الجناة: ' + esc(names) + '<br/>تم إصدار أمر الاعتقال الرسمي.<br/>النقاط المكتسبة: <strong>' + scoreAtSolve + '</strong>';
+    if (!solved.includes(cur.id)) {
+      solved.push(cur.id);
+      scoresStore[cur.id] = scoreAtSolve;
+    }
+    saveState();
     modalT = setTimeout(showModal, 700);
   } else {
+    // Penalty: subtract 50 seconds from score time
+    timerElapsed = Math.min(timerElapsed + 50, TIMER_DURATION);
     r.className = 'vres fail';
-    r.innerHTML = 'اسم خاطئ أو ناقص — راجع الأدلة والتناقضات مجدداً';
-    showFlash();
+    r.innerHTML = 'اسم خاطئ أو ناقص — راجع الأدلة مجدداً<br/><span style="color:var(--gold2);font-size:.6rem">-٥٠ ثانية من وقتك</span>';
+    showFlash('اسم خاطئ — راجع الأدلة', false);
   }
 }
 
@@ -973,7 +1315,14 @@ function checkVerdict() {
 ══════════════════════════════════ */
 function showModal() {
   if (!cur) return;
-  document.getElementById('modal-body').innerHTML = '<div class="sol-scene">' + cur.sol + '</div>';
+  var timeTxt = formatElapsed(timerElapsed);
+  document.getElementById('modal-body').innerHTML =
+    '<div class="modal-score-banner">'
+    + '<div class="modal-score-pts">' + scoreAtSolve + '</div>'
+    + '<div class="modal-score-lbl">نقطة مكتسبة</div>'
+    + '<div class="modal-score-time">⏱ ' + timeTxt + '</div>'
+    + '</div>'
+    + '<div class="sol-scene">' + cur.sol + '</div>';
   document.getElementById('modal').classList.remove('off');
   document.body.style.overflow = 'hidden';
 }
@@ -986,6 +1335,7 @@ function closeModal() {
 
 function goBack() {
   if (modalT) { clearTimeout(modalT); modalT = null; }
+  clearTimer();
   document.body.style.overflow = '';
   document.getElementById('scenario-overlay').classList.add('off');
   cur = null;
@@ -994,9 +1344,13 @@ function goBack() {
   refreshDash();
 }
 
-function showFlash() {
+/* ══════════════════════════════════
+   FLASH
+══════════════════════════════════ */
+function showFlash(msg, isGreen) {
   var f = document.getElementById('flash');
-  f.classList.remove('off');
+  f.textContent = msg || 'خطأ — اسم المشتبه به غير صحيح';
+  f.className = 'flash-msg' + (isGreen ? ' flash-green' : '');
   if (flashT) clearTimeout(flashT);
   flashT = setTimeout(function() { f.classList.add('off'); }, 2500);
 }
@@ -1045,7 +1399,6 @@ document.querySelectorAll('.ctab').forEach(function(tab) {
   tab.addEventListener('click', function() { setTab(this.getAttribute('data-tab')); });
 });
 
-/* Initial render — dashboard will build when needed */
 refreshDash();
 </script>
 </body>
