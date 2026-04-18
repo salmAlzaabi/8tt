@@ -53,7 +53,6 @@ html,body{min-height:100%;background:var(--navy);color:var(--white);font-family:
 
 /* ══ SCREENS ══ */
 .screen{display:none}
-.screen.active{display:block}
 #intro-screen.active{display:flex;min-height:100vh;flex-direction:column}
 #dashboard-screen.active{display:flex;min-height:100vh;flex-direction:column}
 #case-screen.active{display:flex;min-height:100vh;flex-direction:column}
@@ -70,9 +69,33 @@ html,body{min-height:100%;background:var(--navy);color:var(--white);font-family:
 .hero-sub{font-size:1rem;color:var(--gray);font-weight:300;margin-bottom:3rem;max-width:380px;line-height:1.7}
 .hero-stats{display:flex;gap:2.5rem;margin-bottom:3rem;justify-content:center}
 .hstat{text-align:center}.hstat-n{font-size:1.8rem;font-weight:700;color:var(--white)}.hstat-l{font-size:.72rem;color:var(--gray);margin-top:2px}
-.btn-start{background:var(--blue2);color:var(--white);border:none;padding:14px 40px;font-family:var(--fcairo);font-size:.95rem;font-weight:600;cursor:pointer;border-radius:4px;letter-spacing:.5px;transition:all .2s}
-.btn-start:hover{background:var(--blue3);transform:translateY(-1px)}
-.intro-scroll-hint{font-family:var(--fmono);font-size:.58rem;color:var(--gray);letter-spacing:2px;opacity:.5;margin-top:2rem}
+.tap-anywhere{display:flex;flex-direction:column;align-items:center;gap:.6rem;margin-bottom:1.5rem;cursor:pointer;opacity:.7;animation:tapPulse 2s ease-in-out infinite}
+.tap-icon{font-size:2rem}
+.tap-text{font-family:var(--fmono);font-size:.65rem;letter-spacing:3px;color:var(--gray)}
+@keyframes tapPulse{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:1;transform:scale(1.05)}}
+.intro-scroll-hint{font-family:var(--fmono);font-size:.58rem;color:var(--gray);letter-spacing:2px;opacity:.5;margin-top:1rem}
+
+/* ══ PIN PANEL ══ */
+#panel-pin{animation:fadeUp .25s ease both}
+.pin-panel-icon{font-size:3rem;margin-bottom:.8rem;filter:drop-shadow(0 0 16px rgba(77,163,232,.4))}
+.pin-panel-title{font-size:1.3rem;font-weight:700;color:var(--white);margin-bottom:.2rem}
+.pin-panel-sub{font-family:var(--fmono);font-size:.55rem;letter-spacing:4px;color:var(--gray);margin-bottom:1.8rem;opacity:.6}
+.pin-dots-row{display:flex;gap:14px;justify-content:center;margin-bottom:1.8rem}
+.pin-dot{width:18px;height:18px;border-radius:50%;border:2px solid var(--border2);background:transparent;transition:all .2s}
+.pin-dot.filled{background:var(--blue2);border-color:var(--blue2);box-shadow:0 0 12px rgba(36,132,212,.6)}
+.pin-dot.error{background:var(--red2);border-color:var(--red2);box-shadow:0 0 12px rgba(231,76,60,.6)}
+.pin-numpad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:260px;margin:0 auto 1rem}
+.pnum{background:var(--navy3);border:1px solid var(--border);color:var(--white);font-family:var(--fmono);font-size:1.2rem;font-weight:600;padding:15px;cursor:pointer;transition:all .15s;border-radius:4px;touch-action:manipulation}
+.pnum:hover{background:var(--navy4);border-color:var(--border2)}
+.pnum:active{transform:scale(.92);background:var(--blue);border-color:var(--blue2)}
+.pdel{color:var(--gray);font-size:.9rem}
+.penter{background:rgba(36,132,212,.12);border-color:rgba(36,132,212,.35);color:var(--blue3);font-size:1rem}
+.penter:hover{background:var(--blue2);color:var(--white)}
+.pin-err-msg{font-family:var(--fmono);font-size:.62rem;color:var(--red2);letter-spacing:2px;height:18px;opacity:0;transition:opacity .2s;margin-bottom:.8rem}
+.pin-err-msg.show{opacity:1}
+.pin-shake{animation:pinShake .35s ease}
+.pin-back-btn{background:transparent;border:none;color:var(--gray);font-family:var(--fcairo);font-size:.8rem;cursor:pointer;padding:.4rem .8rem;transition:color .15s;margin-top:.5rem}
+.pin-back-btn:hover{color:var(--white)}
 
 /* ══ DASHBOARD ══ */
 .dash-nav{background:var(--navy2);border-bottom:1px solid var(--border);padding:.85rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:40}
@@ -426,62 +449,85 @@ html,body{min-height:100%;background:var(--navy);color:var(--white);font-family:
 .flash-green{border-color:var(--green2)!important;color:var(--green2)!important}
 
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--navy)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
-@media(max-width:700px){.sus-grid{grid-template-columns:1fr}.ev-grid{grid-template-columns:repeat(2,1fr)}.fi-body{flex-wrap:wrap}.fi-right{flex-direction:row;align-items:center}}
+@media(max-width:700px){
+  .sus-grid{grid-template-columns:1fr}
+  .ev-grid{grid-template-columns:repeat(2,1fr)}
+  .fi-body{flex-wrap:wrap}
+  .fi-right{flex-direction:row;align-items:center}
+  .hero-title{font-size:2.2rem}
+  .hero-stats{gap:1.5rem}
+  .hstat-n{font-size:1.4rem}
+  .case-tabs{padding:0 .5rem}
+  .ctab{padding:.6rem .8rem;font-size:.72rem}
+  .case-desk{padding:1.2rem 1rem}
+  .ev-grid{grid-template-columns:repeat(2,1fr)}
+  .dash-body{padding:1rem}
+  .dnav-right .dnav-stat:first-child{display:none}
+  .fi-body{gap:1rem}
+  .nb-case-id{display:none}
+  .vwrap{max-width:100%}
+  .timer-bar{flex-wrap:wrap;gap:.8rem;padding:.5rem 1rem}
+  .sus-card-head{flex-wrap:wrap}
+  .access-hint{font-size:.55rem;letter-spacing:2px}
+}
 </style>
 </head>
 <body>
 
-<!-- ══ PIN LOCK ══ -->
-<div id="pin-screen">
-  <div class="pin-bg-lines"></div>
-  <div class="pin-logo">
-    <div class="pin-shield">🛡️</div>
-    <div class="pin-title">وحدة التحقيقات الجنائية</div>
-    <div class="pin-sub">FORENSIC INVESTIGATION UNIT</div>
-  </div>
-  <div class="pin-box" id="pin-box">
-    <div class="pin-prompt">أدخل رمز الوصول السري</div>
-    <div class="pin-dots" id="pin-dots">
-      <div class="pin-dot" id="pd0"></div>
-      <div class="pin-dot" id="pd1"></div>
-      <div class="pin-dot" id="pd2"></div>
-      <div class="pin-dot" id="pd3"></div>
-    </div>
-    <div class="numpad">
-      <button class="num-btn" onclick="pinPress('1')">1</button>
-      <button class="num-btn" onclick="pinPress('2')">2</button>
-      <button class="num-btn" onclick="pinPress('3')">3</button>
-      <button class="num-btn" onclick="pinPress('4')">4</button>
-      <button class="num-btn" onclick="pinPress('5')">5</button>
-      <button class="num-btn" onclick="pinPress('6')">6</button>
-      <button class="num-btn" onclick="pinPress('7')">7</button>
-      <button class="num-btn" onclick="pinPress('8')">8</button>
-      <button class="num-btn" onclick="pinPress('9')">9</button>
-      <button class="num-btn del" onclick="pinDel()">مسح</button>
-      <button class="num-btn" onclick="pinPress('0')">0</button>
-      <button class="num-btn enter" onclick="pinEnter()">دخول</button>
-    </div>
-    <div class="pin-err" id="pin-err">رمز خاطئ — حاول مجدداً</div>
-  </div>
-</div>
-
 <!-- ══ INTRO ══ -->
-<div id="intro-screen" class="screen">
+<div id="intro-screen" class="screen active" onclick="openPinPanel()">
   <nav class="intro-nav">
     <div class="intro-nav-brand">FORENSIC_INVESTIGATION_SYSTEM</div>
     <div class="intro-nav-badge">سري للغاية</div>
   </nav>
   <div class="intro-hero">
-    <div class="hero-label">وزارة الداخلية — وحدة التحقيقات الجنائية</div>
-    <h1 class="hero-title">ملفات <span>التحقيق</span><br/>السرية</h1>
-    <p class="hero-sub">عشر قضايا معقدة. لا تلميحات. لا سهولة. فقط الأدلة وعقلك.</p>
-    <div class="hero-stats">
-      <div class="hstat"><div class="hstat-n">10</div><div class="hstat-l">قضايا نشطة</div></div>
-      <div class="hstat"><div class="hstat-n">37</div><div class="hstat-l">مشتبه بهم</div></div>
-      <div class="hstat"><div class="hstat-n">60</div><div class="hstat-l">قطعة دليل</div></div>
+
+    <!-- PANEL 1: LANDING -->
+    <div id="panel-landing">
+      <div class="hero-label">وزارة الداخلية — وحدة التحقيقات الجنائية</div>
+      <h1 class="hero-title">ملفات <span>التحقيق</span><br/>السرية</h1>
+      <p class="hero-sub">عشر قضايا معقدة. لا تلميحات. لا سهولة. فقط الأدلة وعقلك.</p>
+      <div class="hero-stats">
+        <div class="hstat"><div class="hstat-n">10</div><div class="hstat-l">قضايا نشطة</div></div>
+        <div class="hstat"><div class="hstat-n">37</div><div class="hstat-l">مشتبه بهم</div></div>
+        <div class="hstat"><div class="hstat-n">60</div><div class="hstat-l">قطعة دليل</div></div>
+      </div>
+      <div class="tap-anywhere" onclick="openPinPanel()">
+        <div class="tap-icon">👆</div>
+        <div class="tap-text">اضغط في أي مكان للدخول</div>
+      </div>
+      <div class="intro-scroll-hint">حقوق النشر © 2026 'Sal</div>
     </div>
-    <button class="btn-start" id="btn-start">فتح الملفات</button>
-    <div class="intro-scroll-hint">حقوق النشر © 2026 'Sal</div>
+
+    <!-- PANEL 2: PIN (hidden initially) -->
+    <div id="panel-pin" style="display:none" onclick="event.stopPropagation()">
+      <div class="pin-panel-icon">🛡️</div>
+      <div class="pin-panel-title">أدخل رمز الوصول</div>
+      <div class="pin-panel-sub">ENTER ACCESS CODE</div>
+      <div class="pin-dots-row" id="pin-dots">
+        <div class="pin-dot" id="pd0"></div>
+        <div class="pin-dot" id="pd1"></div>
+        <div class="pin-dot" id="pd2"></div>
+        <div class="pin-dot" id="pd3"></div>
+      </div>
+      <div class="pin-numpad">
+        <button class="pnum" onclick="pinPress('1')">1</button>
+        <button class="pnum" onclick="pinPress('2')">2</button>
+        <button class="pnum" onclick="pinPress('3')">3</button>
+        <button class="pnum" onclick="pinPress('4')">4</button>
+        <button class="pnum" onclick="pinPress('5')">5</button>
+        <button class="pnum" onclick="pinPress('6')">6</button>
+        <button class="pnum" onclick="pinPress('7')">7</button>
+        <button class="pnum" onclick="pinPress('8')">8</button>
+        <button class="pnum" onclick="pinPress('9')">9</button>
+        <button class="pnum pdel" onclick="pinDel()">⌫</button>
+        <button class="pnum" onclick="pinPress('0')">0</button>
+        <button class="pnum penter" onclick="pinEnter()">✓</button>
+      </div>
+      <div class="pin-err-msg" id="pin-err">✕ رمز خاطئ — حاول مجدداً</div>
+      <button class="pin-back-btn" onclick="closePinPanel()">← رجوع</button>
+    </div>
+
   </div>
 </div>
 
@@ -507,7 +553,7 @@ html,body{min-height:100%;background:var(--navy);color:var(--white);font-family:
 <!-- ══ CASE SCREEN ══ -->
 <div id="case-screen" class="screen">
   <div class="case-topbar">
-    <button class="btn-back" id="btn-back">← رجوع</button>
+    <button class="btn-back" id="btn-back" onclick="document.getElementById('scenario-overlay').classList.add('off');goBack()">← رجوع</button>
     <div class="ctb-info"><div class="ctb-name" id="ctb-name">—</div><div class="ctb-id" id="ctb-id"></div></div>
     <span class="ctb-badge" id="ctb-badge"></span>
   </div>
@@ -577,7 +623,7 @@ html,body{min-height:100%;background:var(--navy);color:var(--white);font-family:
             <label class="vlabel" for="cinp2" id="cinp2-label" style="display:none">الجاني الثاني:</label>
             <input type="text" class="vinp" id="cinp2" placeholder="أدخل الاسم الكامل..." style="display:none"/>
             <span class="vinp-note" id="vinp-note"></span>
-            <button class="btn-verdict" id="btn-verdict">إصدار الحكم الرسمي</button>
+            <button class="btn-verdict" id="btn-verdict" onclick="checkVerdict()">إصدار الحكم الرسمي</button>
             <div class="vres" id="vres"></div>
           </div>
         </div>
@@ -598,7 +644,7 @@ html,body{min-height:100%;background:var(--navy);color:var(--white);font-family:
       <div class="scenario-text" id="sc-text"></div>
       <div class="scenario-meta" id="sc-meta"></div>
       <div class="scenario-suspects-count" id="sc-sus-count"></div>
-      <button class="btn-enter-case" id="btn-enter-case">بدء التحقيق ←</button>
+      <button class="btn-enter-case" id="btn-enter-case" onclick="document.getElementById('scenario-overlay').classList.add('off');if(pendingCaseId)openCase(pendingCaseId)">بدء التحقيق ←</button>
     </div>
   </div>
 </div>
@@ -608,10 +654,10 @@ html,body{min-height:100%;background:var(--navy);color:var(--white);font-family:
   <div class="modal-box">
     <div class="modal-head">
       <div class="modal-head-title">حل القضية</div>
-      <button class="btn-mclose" id="btn-mclose">✕</button>
+      <button class="btn-mclose" id="btn-mclose" onclick="closeModal()">✕</button>
     </div>
     <div class="modal-body" id="modal-body"></div>
-    <div class="modal-foot"><button class="btn-mok" id="btn-mok">إغلاق</button></div>
+    <div class="modal-foot"><button class="btn-mok" id="btn-mok" onclick="closeModal()">إغلاق</button></div>
   </div>
 </div>
 
@@ -638,10 +684,25 @@ function esc(s) {
 var PIN_CORRECT = '7749';
 var pinCurrent = '';
 
+function openPinPanel() {
+  if (document.getElementById('panel-pin').style.display !== 'none') return;
+  pinCurrent = '';
+  updateDots();
+  document.getElementById('pin-err').classList.remove('show');
+  document.getElementById('panel-landing').style.display = 'none';
+  document.getElementById('panel-pin').style.display = 'block';
+}
+
+function closePinPanel() {
+  document.getElementById('panel-pin').style.display = 'none';
+  document.getElementById('panel-landing').style.display = 'block';
+}
+
 function pinPress(d) {
   if (pinCurrent.length >= 4) return;
   pinCurrent += d;
   updateDots();
+  if (pinCurrent.length === 4) pinEnter();
 }
 
 function pinDel() {
@@ -653,19 +714,19 @@ function pinDel() {
 function pinEnter() {
   if (pinCurrent.length < 4) return;
   if (pinCurrent === PIN_CORRECT) {
-    document.getElementById('pin-screen').classList.add('off');
-    show('intro-screen');
+    refreshDash();
+    show('dashboard-screen');
   } else {
     pinCurrent = '';
     updateDots(true);
-    var e = document.getElementById('pin-err');
-    e.classList.add('show');
-    var b = document.getElementById('pin-box');
-    b.classList.add('pin-shake');
+    document.getElementById('pin-err').classList.add('show');
+    var box = document.getElementById('panel-pin');
+    box.classList.add('pin-shake');
     setTimeout(function() {
-      b.classList.remove('pin-shake');
-      for (var i = 0; i < 4; i++) document.getElementById('pd' + i).classList.remove('error');
-    }, 400);
+      box.classList.remove('pin-shake');
+      updateDots();
+      document.getElementById('pin-err').classList.remove('show');
+    }, 800);
   }
 }
 
@@ -679,11 +740,12 @@ function updateDots(err) {
 }
 
 document.addEventListener('keydown', function(e) {
-  if (document.getElementById('pin-screen').classList.contains('off')) return;
+  if (document.getElementById('panel-pin').style.display === 'none') return;
   if (e.key >= '0' && e.key <= '9') pinPress(e.key);
   else if (e.key === 'Backspace') pinDel();
   else if (e.key === 'Enter') pinEnter();
 });
+
 
 /* ══════════════════════════════════
    CASE DATA
@@ -1372,18 +1434,6 @@ updateClock();
 /* ══════════════════════════════════
    EVENT LISTENERS
 ══════════════════════════════════ */
-document.getElementById('btn-start').addEventListener('click', function() {
-  show('dashboard-screen');
-  refreshDash();
-});
-
-document.getElementById('btn-back').addEventListener('click', function() {
-  document.getElementById('scenario-overlay').classList.add('off');
-  goBack();
-});
-
-document.getElementById('btn-verdict').addEventListener('click', checkVerdict);
-
 document.getElementById('cinp').addEventListener('keydown', function(e) {
   if (e.key === 'Enter') checkVerdict();
 });
@@ -1392,14 +1442,9 @@ document.getElementById('cinp2').addEventListener('keydown', function(e) {
   if (e.key === 'Enter') checkVerdict();
 });
 
-document.getElementById('btn-mclose').addEventListener('click', closeModal);
-document.getElementById('btn-mok').addEventListener('click', closeModal);
-
 document.querySelectorAll('.ctab').forEach(function(tab) {
   tab.addEventListener('click', function() { setTab(this.getAttribute('data-tab')); });
 });
-
-refreshDash();
 </script>
 </body>
 </html>
